@@ -1,0 +1,66 @@
+
+
+<div id="sidebar">
+    <h2>Menu</h2>
+    <ul>
+        <li><a ui-sref="admindashboard">Statistics</a></li>
+        <li><a ui-sref="manageUser">Users</a></li>
+        <li><a ui-sref="adminListing">Listings</a></li>
+        <!-- <li><a href="/admin/history/admin-history.html">History</a></li> -->
+        <li><a ui-sref="profile">Profile</a></li>
+        <li id="logout" ng-click="logout()">Logout</li>
+    </ul>
+
+
+    <style>
+        #sidebar {
+    height: 100%;
+    width: 280px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #16404D;  
+    padding-top: 40px;
+    color: white;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease-in-out;
+}
+
+#sidebar h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #A6CDC6;  
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    padding: 16px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+#sidebar ul li:hover {
+    background-color: #DDA853; 
+}
+
+#sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: #16404D;  
+}
+      </style>
+</div>
+
+

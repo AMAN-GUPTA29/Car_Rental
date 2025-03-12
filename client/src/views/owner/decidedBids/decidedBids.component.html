@@ -1,0 +1,74 @@
+
+<div ng-controller="ApprovedBidsOwnerController" ng-init="init()" class="container">
+
+    <sidebar></sidebar> 
+
+    <div class="adjustmainbox card shadow p-4 panel panel-default">
+        <div class="container">
+            <h2 class="text-center mb-4">Approved Bids</h2>
+            <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2">
+                <label class="form-label">Category:
+                    <select ng-model="filter.category" class="form-control" ng-options="category for category in categories" ng-change="applyFilters()">
+                        <option value="">All</option>
+                    </select>
+                </label>
+                </div>
+                <div class="col-md-2">
+                <label class="form-label">Transmission:
+                    <select ng-model="filter.transmission" class="form-control" ng-options="transmission for transmission in transmissions" ng-change="applyFilters()">
+                        <option value="">All</option>
+                    </select>
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Start Date:
+                    <input type="date" class="form-control" ng-model="filter.startDate" ng-change="applyFilters()">
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">End Date:
+                    <input type="date" class="form-control" ng-model="filter.endDate" ng-change="applyFilters()">
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Min Bid Price:
+                    <input type="number" class="form-control" ng-model="filter.bidPrice" placeholder="Min Price" ng-change="applyFilters()">
+                </label>
+            </div>
+            </div>
+
+            <div class="table-responsive">
+            <table class="bid-table table table-bordered table-hover">
+                <tr >
+                    <th>Car Name & Model</th>
+                    <th>Category</th>
+                    <th>Transmission</th>
+                    <th>Bid Period</th>
+                    <th>Bid Price</th>
+                    <th>Status</th>
+                 
+                </tr>
+                <tr ng-repeat="bid in paginatedBids">
+                    <td>{{ bid.cardata.carMake }} {{ bid.cardata.carModel }}</td>
+                    <td>{{ bid.cardata.carCategory }}</td>
+                    <td>{{ bid.cardata.carTransmission }}</td>
+                    <td>{{ bid.startDate | date:'MM/dd/yyyy' }} - {{ bid.endDate | date:'MM/dd/yyyy' }}</td>
+                    <td>${{ bid.BidAmount }}</td>
+                    <td>{{ bid.status }}</td>
+                    
+                </tr>
+            </table>
+        </div>
+               
+            <div class="text-center">
+            <div  uib-pagination total-items="filteredBids.length" ng-model="currentPage" ng-change="pageChanged()"></div>
+        </div>
+        </div>
+
+    </div>
+    </div>
+
+</div>
+

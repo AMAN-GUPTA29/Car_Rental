@@ -1,0 +1,91 @@
+
+<div ng-controller="InvoiceController" ng-init="init()" class="container-fluid py-4">
+
+    <!-- Header Section -->
+    <div class="justify-content-between align-items-center mb-4">
+        <button class="btn back-btn btn-outline-secondary" go-Back>
+            <i class="fa fa-arrow-left"></i> Back
+        </button>
+        <h2 class="text-primary fw-bold text-center">Unpaid Invoice</h2>
+    </div>
+
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover border">
+            <thead class="table-dark">
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Car</th>
+                    <th>Booker</th>
+                    <th>Final Amount ($)</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="invoice in displayedInvoices ">
+                    <td>{{ invoice.invoiceid }}</td>
+                    <td>{{ invoice.cardata.carMake }} {{ invoice.cardata.carModel }}</td>
+                    <td>{{ invoice.booker.bookerName }}</td>
+                    <td>${{ invoice.finalamount }}</td>
+                    <td>{{ invoice.paid ? "Paid" : "Unpaid" }}</td>
+                    <td><button ng-click="openInvoiceModal(invoice)">View</button></td>
+                </tr>
+                <tr ng-if="displayedInvoices.length === 0">
+                    <td colspan="6">No unpaid invoices.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    
+    <!-- <div id="invoice-modal" ng-show="isModalOpen">
+        <div class="invoice-container">
+            <div class="invoice-header">Invoice</div>
+            <div class="invoice-body">
+                <p><strong>Invoice ID:</strong> {{ selectedInvoice.invoiceid }}</p>
+                <p><strong>Car:</strong> {{ selectedInvoice.cardata.carMake }} {{ selectedInvoice.cardata.carModel }}</p>
+                <p><strong>Booker:</strong> {{ selectedInvoice.booker.bookerName }}</p>
+                <p><strong>Amount:</strong> ${{ selectedInvoice.finalamount }}</p>
+                <p><strong>Status:</strong> {{ selectedInvoice.paid ? "Paid" : "Unpaid" }}</p>
+            </div>
+            <div class="invoice-footer">
+                <button ng-click="markAsPaid()" ng-show="!selectedInvoice.paid">Mark as Paid</button>
+                <button ng-click="closeModal()">Close</button>
+                <button ng-click="downloadInvoice()">Download Invoice</button>
+            </div>
+        </div>
+    </div> -->
+
+    <uib-modal id="invoice-modal" class="text-center"  ng-show="isModalOpen">
+        <div class="text-center modal-content">
+    <div class="">
+        <div class="modal-header" >
+            <h3 class="modal-title">Invoice</h3>
+        </div>
+        <div class="modal-body">
+            <p><strong>Invoice ID:</strong> {{ selectedInvoice.invoiceid }}</p>
+            <p><strong>Car:</strong> {{ selectedInvoice.cardata.carMake }} {{ selectedInvoice.cardata.carModel }}</p>
+            <p><strong>Booker:</strong> {{ selectedInvoice.booker.bookerName }}</p>
+            <p><strong>Amount:</strong> ${{ selectedInvoice.finalamount }}</p>
+            <p><strong>Status:</strong> 
+                <span class="label" ng-class="{'label-success': selectedInvoice.paid, 'label-danger': !selectedInvoice.paid}">
+                    {{ selectedInvoice.paid ? "Paid" : "Unpaid" }}
+                </span>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success" ng-click="markAsPaid()" ng-show="!selectedInvoice.paid">Mark as Paid</button>
+            <button class="btn btn-secondary" ng-click="closeModal()">Close</button>
+            <button class="btn btn-primary" ng-click="downloadInvoice()">Download Invoice</button>
+        </div>
+    </div>
+    </div>
+    </uib-modal>
+    
+    <div class="text-center">
+    <ul uib-pagination items-per-page="5"  class="justify-content-center" total-items="allInvoices.length" ng-model="currentPage" ng-change="pageChanged()"></ul>
+    </div>
+
+</div>
+

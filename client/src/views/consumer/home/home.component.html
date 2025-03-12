@@ -1,0 +1,101 @@
+<div class="bd" ng-controller="CarController" ng-init="init()">
+    <main >
+        <button id="options-btn" class="options-btn btn btn-primary" ng-click="toggleSidebar()">&#9776;</button>
+        <sidebar-component sidebar-open="sidebarOpen"></sidebar-component>
+        <a ui-sref="login" class="login-button" ng-show="!user">Login</a>
+
+
+
+        <section>
+            <h2 class="lop text-center">Welcome to Car Rental System</h2>
+            <p class="lop text-center">Find and book your perfect rental car easily with our platform.</p>
+
+            <div class="rental-container">
+                <div class="form-container">
+                    <div class="input-group">
+                        <label for="city-filter">Location</label>
+                        <select id="city-filter" class="colortext" ng-model="filters.city" ng-change="applyFilters()">
+                            <option value="all">All Cities</option>
+                            <option ng-repeat="city in uniqueCities" value="{{city}}">{{city}}</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="min-price">Min Base Price</label>
+                        <input type="number" class="colortext" id="min-price" ng-model="filters.minPrice" ng-change="applyFilters()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="max-price">Max Base Price</label>
+                        <input type="number" class="colortext" id="max-price" ng-model="filters.maxPrice" ng-change="applyFilters()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="category-filter">Category</label>
+                        <select id="category-filter" class="colortext" ng-model="filters.category" ng-change="applyFilters()">
+                            <option value="all">All Categories</option>
+                            <option ng-repeat="category in uniqueCategories" value="{{category}}">{{category}}</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="min-mileage">Min Mileage</label>
+                        <input type="number" class="colortext" id="min-mileage" ng-model="filters.minMileage" ng-change="applyFilters()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="model-filter">Car Model</label>
+                        <input type="text" class="colortext" id="model-filter" ng-model="filters.model" ng-change="applyFilters()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="transmission-filter">Transmission</label>
+                        <select id="transmission-filter" class="colortext" ng-model="filters.transmission" ng-change="applyFilters()">
+                            <option value="all">All</option>
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                            <option value="Semi Automatic">Semi Automatic</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div id="car-listings" class="car-container">
+                <div id="page-loading" ng-if="isLoading">
+                    <img style="margin: auto;"  src="/src/assets/images/Pulse@1x-1.0s-200px-200px.gif" />
+                    {{isLoading}}
+                </div>
+                <div class="col-md-4" ng-repeat="car in filteredCars" ng-if="!isLoading">
+                    <div class="panel panel-info">
+                        <h3 class="panel-title">{{car.cardata.carMake}} {{car.cardata.carModel}}</h3>
+                    <div class="panel-body">
+                    <div class="carousel">
+                        <button class="carousel-btn left" ng-click="prevImage(car)">&#9664;</button>
+                        <img ng-src="{{car.cardata.images[car.currentImageIndex]}}" class="carousel-image" alt="Car Image">
+                        <button class="carousel-btn right" ng-click="nextImage(car)">&#9654;</button>
+                    </div>
+        
+                    
+                        <p><strong>Base Price:</strong> ${{car.cardata.basePrice}}/day</p>
+                        <p><strong>Location:</strong> {{car.cardata.carcity}}</p>
+                        <p><strong>Mileage:</strong> {{car.cardata.carMileage}} km</p>
+                        <p><strong>Transmission:</strong> {{car.cardata.carTransmission}}</p>
+             
+                </div>
+        
+                    <button class="book-button" ng-click="goToCarDetails(car.listingID)">Book Now</button>
+                </div>
+            </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer>
+        <p>© 2025 Car Rental System. All rights reserved.</p>
+        <p>Contact us: info@carrentalsystem.com</p>
+        <a href="#">Admin Login</a>
+    </footer>
+</div>

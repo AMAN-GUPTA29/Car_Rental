@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "angular-jsdoc": "^1.5.1",
+    "jsdoc": "^4.0.4"
+  }
+}

@@ -1,0 +1,187 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FBF5DD;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+header {
+    background-color: #16404D;
+    color: white;
+    padding: 15px;
+    font-size: 24px;
+}
+
+.listings-container {
+    /* display: grid; */
+    /* grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));  */
+    /* gap: 20px; */
+    padding: 20px;
+    /* max-width: 1200px; */
+    margin: auto;
+    display: flex;
+    
+   
+}
+
+.listing-card {
+    background-color: #A6CDC6;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+    position: relative;
+    transition: transform 0.2s ease-in-out;
+}
+
+.listing-card:hover {
+    transform: scale(1.03);
+}
+
+.listing-card h2 {
+    color: #16404D;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.listing-card p {
+    color: #333;
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.carousel-images {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+    width: 100%;
+}
+
+.carousel-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+.carousel-btn:hover { background-color: rgba(0, 0, 0, 0.8); }
+
+.delete-btn {
+    background-color: #DDA853;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.delete-btn:hover {
+    background-color: #B68640;
+}
+
+.car-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #333;
+}
+
+.car-details div {
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 4px solid #16404D; 
+}
+
+
+
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #07252e; 
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    /* display: flex; */
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    width:5%;
+}
+
+.back-btn .arrow {
+    font-size: 20px;
+}
+
+.back-btn:hover {
+    background-color: #52847b; 
+}
+
+
+/* 📌 Search Filter Styling */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    padding: 10px;
+    background: #FBF5DD;
+    border-radius: 8px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+}
+
+.filter-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #16404D;
+    margin-right: 10px;
+}
+
+#emailSearch {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 2px solid #A6CDC6;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+/* Hover & Focus Effect */
+#emailSearch:hover, 
+#emailSearch:focus {
+    border-color: #DDA853;
+    background-color: #F5F5F5;
+}

@@ -1,0 +1,15 @@
+<div id="sidebar" class="sidebar" ng-class="{'active': sidebarComponent.sidebarOpen}">
+    <button id="close-sidebar" class="close-btn" ng-click="sidebarComponent.toggleSidebar()">&times;</button>
+    <ul>
+      
+            <li><a ui-sref="dashboard">Dashboard</a></li>
+            <!-- <li><a ui-sref="user-bookings">My Bookings</a></li> -->
+            <li><a ui-sref="carconsumerchat">Messages</a></li>
+            <li><a ui-sref="allbids">My Biddings</a></li>
+            <li><a ui-sref="profile">Profile</a></li>
+            <li><a ui-sref="invoice">Invoice</a></li>
+            <li><a href="#" ng-click="sidebarComponent.logout()">Logout</a></li>
+       
+        
+    </ul>
+</div>

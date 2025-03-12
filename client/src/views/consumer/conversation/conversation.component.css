@@ -1,0 +1,307 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: #FBF5DD;
+}
+
+/* Chat Container */
+.chat-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 18%;
+    background-color: #16404D;
+    color: white;
+    /* padding: 20px; */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.sidebar h2 {
+    margin-top: 30%;
+    margin-bottom: 10px;
+    margin-left: 5%;
+}
+
+#conversation-list {
+    list-style: none;
+    /* padding: 20; */
+    padding-inline-start: 10px;
+    padding-inline-end: 10px;
+}
+
+#conversation-list li {
+    margin: auto;
+    padding: 10px;
+    background-color: #A6CDC6;
+    /* margin: 0 0; */
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#conversation-list li:hover {
+    background-color: #DDA853;
+}
+
+/* Chat Window */
+.chat-window {
+    /* width: 100%; */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+
+.chat-header {
+    background: #7db2c3; /* Dark blue */
+    color: #FBF5DD; /* Soft cream */
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: center;
+    font-family: "Arial", sans-serif;
+    text-align: center;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background-image: url('/src/assets/images/chatbackground.jpg');
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    /* filter: blurpx);   */
+    /* z-index: -1; */
+ 
+
+}
+
+/* Messages */
+.message {
+    max-width: 70%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+.sent {
+    background-color: #DDA853;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.received {
+    background-color: #A6CDC6;
+    align-self: flex-start;
+}
+
+/* Chat Input */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background: #F1E8D9;
+    align-items: center;
+}
+
+.chat-input textarea {
+    flex: 1;
+    /* padding: 12px; */
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 10px 12px; 
+    line-height: 25px;
+    resize: none; 
+}
+
+#messageInput {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 12px 16px;
+    border: none;
+    background: #1b2422;
+    color: white;
+    border-radius: 10%;
+    cursor: pointer;
+}
+
+/* 
+sv
+*/
+
+/* Style the container holding the image input */
+.image-upload-container {
+    display: flex;
+    align-items: center;
+    /* margin-top: 10px; */
+    background-color: #DDA853;
+    margin-left: 10px;
+    padding: 1%;
+    border-radius: 8%;
+    
+}
+
+/* Hide the default file input */
+#imageInput {
+    display: none;
+}
+
+
+/* Style the custom label (which will look like a button) */
+#imageUploadLabel {
+    background-color: #A6CDC6;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect on the custom label */
+#imageUploadLabel:hover {
+    background-color: #DDA853;
+}
+
+/* Style the text input (message input) */
+
+.chat-image {
+    max-width: 250px;  /* Set a max width */
+    max-height: 200px; /* Set a max height */
+    width: auto;       /* Maintain aspect ratio */
+    height: auto;      /* Maintain aspect ratio */
+    border-radius: 8px;
+    margin-top: 5px;
+    display: block;
+}
+
+
+
+
+
+
+.booking-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Booking Details Section */
+
+#bookingDetails {
+    background: #A6CDC6; /* Soft green */
+    color: #16404D; /* Dark text */
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 280px;
+    margin-top: 5px;
+    transition: all 0.3s ease-in-out;
+    margin-left: 10%;
+}
+/* .booking-details {
+    background: #A6CDC6;
+    color: #16404D;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-family: "Arial", sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 350px;
+    transition: all 0.3s ease-in-out;
+} */
+
+/* Grid Layout for Better Alignment */
+#bookingDetails h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #DDA853; /* Gold */
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+/* Booking Details Text */
+#bookingDetails p {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    font-size: 11px;
+}
+
+/* Bold Labels */
+#bookingDetails strong {
+    color: #16404D;
+    font-weight: 600;
+}
+
+/* Highlight Bid Price */
+#bidAmount {
+    font-size: 13px;
+    font-weight: bold;
+    color: #DDA853; /* Gold */
+}
+
+
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #02181e; /* Dark Blue */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    /* display: flex; */
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    width:5%;
+}
+
+.back-btn .arrow {
+    font-size: 20px;
+}
+
+.back-btn:hover {
+    background-color: #52847b; /* Light Green */
+}
+

@@ -1,0 +1,36 @@
+<!-- <div class="bodyauth"> -->
+<div class="container" ng-controller="SignupController">
+    <div class="form-container">
+        <h2>Signup</h2>
+        <form ng-submit="signup()">
+            <label for="signup-role">Role:</label>
+            <select id="signup-role" ng-model="user.role">
+                <option value="admin">Admin</option>
+                <option value="owner">Owner</option>
+                <option value="user">User</option>
+            </select>
+
+            <label for="signup-email">Email:</label>
+            <input type="email" id="signup-email" ng-model="user.email" email-validation required>
+            <small class="warning">{{ warnings.email }}</small>
+
+            <label for="phone">Phone:</label>
+            <input type="number" id="phone" ng-model="user.phone" phone-validation required>
+            <small class="warning">{{ warnings.phone }}</small>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" ng-model="user.username" required>
+
+            <label for="aadhar">Aadhar:</label>
+            <input type="text" id="aadhar" ng-model="user.aadhar" required>
+
+            <label for="signup-password">Password:</label>
+            <input type="password" id="signup-password" ng-model="user.password" password-validation required>
+            <small class="warning">{{ warnings.password }}</small>
+
+            <button type="submit">Signup</button>
+        </form>
+        <p>Already have an account? <a ui-sref="login">Login here</a></p>
+    </div>
+</div>
+<!-- </div> -->

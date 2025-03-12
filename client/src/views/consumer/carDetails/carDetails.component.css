@@ -1,0 +1,419 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #FBF5DD;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #16404D;
+    margin-top: 20px;
+}
+
+#car-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px;
+    max-width: 1300px;
+    margin: 20px auto;
+}
+
+.car-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    border: 2px solid #A6CDC6;
+}
+
+.car-card h2 {
+    text-align: left;
+    color: #16404D;
+    margin-bottom: 15px;
+}
+
+.car-card p {
+    font-size: 16px;
+    color: #555;
+    margin: 5px 0;
+}
+
+.car-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px 20px;
+    font-size: 16px;
+    color: #444;
+}
+
+.car-details-grid div {
+    background: #A6CDC6;
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 4px solid #DDA853;
+}
+.car-details-grid div:last-child {
+    grid-column: span 2;
+}
+
+.booking-section {
+    grid-column: span 1;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    border: 2px solid #A6CDC6;
+    width: 100%;
+}
+
+.tripty{
+    padding: 10px;
+    font-size: 1rem;
+    width: 80%;
+    max-width: 300px;
+    border: 1px solid #A6CDC6;
+    border-radius: 5px;
+    background-color: #FBF5DD;
+}
+
+.date-picker,
+.triptype,
+.bid-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.date-picker label,
+.bid-input label
+.ojk {
+    font-weight: bold;
+    color: #16404D;
+}
+
+.date-picker input,
+.bid-input input {
+    padding: 10px;
+    font-size: 1rem;
+    width: 80%;
+    max-width: 300px;
+    border: 1px solid #A6CDC6;
+    border-radius: 5px;
+    background-color: #FBF5DD;
+}
+
+.date-picker input:focus,
+.bid-input input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(221, 168, 83, 0.5);
+}
+
+.book-btn {
+    background-color: #DDA853; 
+    color: white;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.book-btn:hover {
+    background-color: #A6CDC6; 
+    transform: scale(1.05);
+}
+
+.car-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    
+    
+}
+
+.carousel-container {
+    position: relative;
+   height: 100%;
+    overflow: hidden;
+    margin-bottom: 15px;
+    margin: 0 auto;
+    max-width: 500px;
+    min-width: 500px;
+
+}
+
+.carousel-images {
+    height: 110%;
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+}
+
+.carousel-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+button.prev-btn,
+button.next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+button.prev-btn {
+    left: 10px;
+}
+
+button.next-btn {
+    right: 10px;
+}
+
+button.prev-btn:hover,
+button.next-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.image-thumbnails {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.thumbnail {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    transition: 0.3s;
+}
+
+.thumbnail:hover {
+    border-color: #DDA853;
+}
+
+
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+    background-color: #FBF5DD;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-left: 10%;
+}
+
+.chat-window {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 300px;
+    border: 1px solid #A6CDC6; 
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+.chat-message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    /* max-width: 80%; */
+    word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.chat-message.user {
+    background-color: #A6CDC6;
+    color: #16404D;
+    align-self: flex-end; /* Moves message to the right */
+    margin-left: auto; /* Ensures full right alignment */
+    text-align: right;
+    max-width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    display: block;
+}
+
+.chat-message.owner {
+    background-color: #DDA853;
+    color: white;
+    align-self: flex-start; /* Moves message to the left */
+    margin-right: auto; /* Ensures full left alignment */
+    text-align: left;
+    max-width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    display: block;
+}
+
+.chat-input-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-input-area input {
+    padding: 10px;
+    font-size: 1rem;
+    width: 80%;
+    border: 1px solid #A6CDC6; 
+    border-radius: 5px;
+    background-color: #FBF5DD;
+}
+
+.chat-input-area button {
+    background-color: #DDA853; 
+    color: white;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.chat-input-area button:hover {
+    background-color: #A6CDC6; 
+}
+
+
+
+
+
+
+
+.options-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #DDA853; 
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    font-size: 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: 0.3s;
+}
+
+.options-btn:hover {
+    background-color: #A6CDC6; 
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #16404D; 
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    padding-top: 60px;
+    transition: 0.3s;
+    z-index: 999;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    border-bottom: 1px solid #A6CDC6; 
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #A6CDC6; 
+    padding-left: 10px;
+}
+
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #07252e; /* Dark Blue */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    /* display: flex; */
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    width:5%;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    color: white;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+
+.booked-date-highlight {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+
+.color-box {
+    display: inline-block;
+    width: 75%;
+    height: 20px;
+    border-radius: 5px; /* Rounded corners */
+    margin-left: 8px;
+    border: 1px solid #ccc; /* Optional border */
+    vertical-align: middle;
+}

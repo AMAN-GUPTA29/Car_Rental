@@ -1,0 +1,43 @@
+<body ng-controller="AdminHomeController">
+    
+    <admin-sidebar></admin-sidebar>
+    
+    <header class="admin-header text-center">
+        <h1>Hello, Admin {{ adminName }}</h1>
+    </header>
+    
+    <div class="container">
+        <div class="col-md-offset-2 row">
+            <div class="col-md-6" style="padding: 5px; height: 300px;">
+                <div class="chart-container" style="height: 100%;">
+                    <canvas id="biddingChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 5px; height: 300px;">
+                <div class="chart-container" style="height: 100%;">
+                    <canvas id="activeInactiveUsersChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 5px; height: 300px;">
+                <div class="chart-container" style="height: 100%;">
+                    <canvas id="mostPopularCarsChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 5px; height: 300px;">
+                <div class="chart-container" style="height: 100%;">
+                    <canvas id="mostBookedCarCategoriesChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 5px; height: 300px;">
+                <div class="chart-container" style="height: 100%;">
+                    <canvas id="averageBidPerCategoryChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 5px; height: 300px;">
+                <div class="chart-container" style="height: 100%;">
+                    <canvas id="carsListedByCategoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

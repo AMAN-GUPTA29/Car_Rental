@@ -1,0 +1,45 @@
+<div class="manage-users" ng-init="init()" class="container-fluid py-4">
+    <header class="admin-header">
+        <button go-Back class="btn back-btn btn-outline-secondary">
+            <i class="fa fa-arrow-left"></i> Back
+        </button>
+        <h1 class="text-primary fw-bold text-center">Manage Users</h1>
+    </header>
+
+    <div class="filter-container form-group text-center">
+        <label for="emailFilter" class="form-label fw-bold">Filter by Email:</label>
+        <input type="text" class="form-select" id="emailFilter" ng-model="emailFilter" ng-change="applyFilters()" placeholder="Enter email">
+    </div>
+
+    <main class="w-50 table-responsive table-responsive">
+        <table class="table table-striped table-hover border">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in paginatedUsers">
+                    <td class="text-center">{{ user.username }}</td>
+                    <td class="text-center">{{ user.email }}</td>
+                    <td class="text-center">{{ user.role }} <span ng-if="user.blocked">(Blocked)</span></td>
+                    <td class="text-center">
+                        <button ng-if="!user.blocked" ng-click="blockUser(user)" class="block-btn btn btn-danger btn-sm">Block</button>
+                        <button ng-if="user.blocked" ng-click="unblockUser(user)" class="unblock-btn btn btn-success btn-sm">Unblock</button>
+                    </td>
+                </tr>
+                <tr ng-if="paginatedUsers.length === 0">
+                    <td colspan="4">No users found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <div class="text-center">
+    <ul uib-pagination total-items="users.length" ng-model="currentPage" ng-change="pageChanged()"></ul>
+
+</div>
+    
+</div>

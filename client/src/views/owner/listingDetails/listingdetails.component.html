@@ -1,0 +1,106 @@
+
+<div ng-controller="OwnerCarController" ng-init="init()" class="container">
+
+    <sidebar></sidebar> 
+
+    <button id="editCarListingBtn" class="edit-car-btn btn btn-warning pull-right" ng-click="openEditModal()">✏️ Edit</button>
+
+    <div>
+        <div id="text-center panel panel-default">
+
+        <div class=" panel-body">
+        <div class="row pull-right">
+            <div class=" text-center col-md-6">
+            <ul class="">
+            <h2 class="text-center">{{car.cardata.carMake}} {{car.cardata.carModel}}</h2>
+            <p class="text-center"><strong>Base Price:</strong> ${{car.cardata.basePrice}}/day</p>
+            <p class="text-center"><strong>Outstation Price:</strong> {{car.cardata.outstationPrice ? '$' + car.cardata.outstationPrice + '/day' : 'NA'}}</p>
+            <p class="text-center"><strong>Location:</strong> {{car.cardata.carAddress}}</p>
+            <p class="text-center"><strong>Category:</strong> {{car.cardata.carCategory}}</p>
+            <p class="text-center"><strong>Transmission:</strong> {{car.cardata.carTransmission}}</p>
+            <p class="text-center"><strong>Color:</strong><span class="color-box" ng-style="{'background-color': car.cardata.carColor}"></span>
+            </p>
+                
+            <p class="text-center"><strong>Year:</strong> {{car.cardata.carYear}}</p>
+            <p class="text-center"><strong>Mileage:</strong> {{car.cardata.carMileage}} km</p>
+            </ul>
+        </div>
+
+        
+            
+            <div class=" text-center shiftr col-md-6">
+                <div class="carousel">
+                    <button class="prev" ng-click="prevImage(car)">&#10094;</button>
+                    <div class="carousel-inner">
+                        <img ng-src="{{car.cardata.images[carimgno]}}" class="carousel-image active" alt="Car Image">
+                    </div>
+                    <button class="next" ng-click="nextImage(car)">&#10095;</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <table id="biddingsTable" border="1">
+            <thead>
+                <tr>
+                    <th>Bidding Date</th>
+                    <th>Price</th>
+                    <th>Bidder Name</th>
+                    <th>Aadhar</th>
+                    <th>Booking Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="bid in biddings">
+                    <td>{{bid.startDate | date:'shortDate'}} - {{bid.endDate | date:'shortDate'}}</td>
+                    <td>${{bid.BidAmount || 'N/A'}}</td>
+                    <td>{{bid.booker.bookerName || 'Unknown'}}</td>
+                    <td>{{bid.booker.aadhar || 'Unknown'}}</td>
+                    <td>{{bid.booktype}}</td>
+                    <td>
+                        <button class="accept-btn" ng-click="acceptBid(bid)">✅ Accept</button>
+                        <button class="reject-btn" ng-click="rejectBid(bid)">❌ Reject</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div uib-modal id="editCarModal" class="car-modal" ng-show="isEditModalOpen">
+            <div class="car-modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Car Listing</h3>
+                    <button type="button" class="close" ng-click="close()">&times;</button>
+                </div>
+                <div class="modal-body">
+                <form id="editCarListingForm" ng-submit="updateCarListing()">
+                    <label>Car Make: <input type="text" ng-model="editCar.carMake"></label>
+                    <label for="car-model">Car Model:</label>
+            <select id="car-model" ng-model="editCar.carModel" required>
+                <option value="" disabled selected>Select Car Model</option>
+                <option ng-repeat="model in carModels" value="{{ model }}">{{ model }}</option>
+            </select>
+                    <label>Base Price: <input type="number" ng-model="editCar.carPrice"></label>
+                    <label>Outstation Price: <input type="number" ng-model="editCar.carOutstationPrice"></label>
+                    <label>Location: <input type="text" ng-model="editCar.carAddress"></label>
+                    <label for="car-category">Category:</label>
+                    <select id="car-category" ng-model="editCar.carCategory" required>
+                        <option value="" disabled selected>Select Car Category</option>
+                        <option ng-repeat="category in carCategories" value="{{ category }}">{{ category }}</option>
+                    </select>
+                    <label for="car-transmission">Transmission:</label>
+
+                    <select id="car-transmission" ng-model="editCar.carTransmission" required>
+                        <option value="" disabled selected>Select Transmission Type</option>
+                        <option ng-repeat="type in transmissionTypes" value="{{ type }}">{{ type }}</option>
+                    </select>                    <label>Color: <input type="color" ng-model="editCar.carColor"></label>
+                    <label>Year: <input type="number" ng-model="editCar.carYear"></label>
+                    <label>Mileage: <input type="number" ng-model="editCar.carMileage"></label>
+                    <button type="submit" class="save-car-btn">Save Changes</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

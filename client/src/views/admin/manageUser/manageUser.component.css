@@ -1,0 +1,170 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FBF5DD;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+.admin-header {
+    background-color: #16404D;
+    color: white;
+    padding: 20px;
+    font-size: 24px;
+}
+
+/* Table */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+th, td {
+    border: 1px solid #A6CDC6;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #DDA853;
+    color: white;
+}
+
+/* Buttons */
+.block-btn, .unblock-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.block-btn {
+    background-color: red;
+    color: white;
+}
+
+.unblock-btn {
+    background-color: green;
+    color: white;
+}
+
+
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #07252e; /* Dark Blue */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    /* display: flex; */
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    width:5%;
+}
+
+.back-btn .arrow {
+    font-size: 20px;
+}
+
+.back-btn:hover {
+    background-color: #52847b; /* Light Green */
+}
+
+
+.pagination-btn {
+    background-color: #DDA853;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.pagination-btn:disabled {
+    background-color: #A6CDC6;
+    cursor: not-allowed;
+}
+
+
+
+/* 📌 Email Filter Styling */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    gap: 10px;
+    background: #FBF5DD;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 400px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #16404D;
+}
+
+#emailFilter {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 2px solid #A6CDC6;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+/* Hover & Focus Effect */
+#emailFilter:hover, 
+#emailFilter:focus {
+    border-color: #DDA853;
+    background-color: #F5F5F5;
+}
+
+/* 📌 Pagination Styling */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pagination-btn {
+    background-color: #A6CDC6;
+    color: #16404D;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-btn:hover {
+    background-color: #DDA853;
+    transform: scale(1.05);
+}
+
+.pagination-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#pageIndicator {
+    font-size: 16px;
+    font-weight: bold;
+    color: #16404D;
+}

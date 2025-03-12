@@ -1,0 +1,52 @@
+<div ng-controller="OwnerHomeController">
+    <sidebar></sidebar> 
+  
+    <div id="userGreeting text-center">
+      <h3 id="usersalutation">Hello, {{ user.name }}!</h3>
+    </div>
+
+
+    <div id="main-content container">
+      <div class="col-md-offset-2 row">
+        <div class="col-md-6" style="padding: 5px; height: 300px;" ng-controller="BiddingController">
+          <div class="chart-container" style="height: 100%;">
+          <canvas id="biddingChart"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6" style="padding: 5px; height: 300px;">
+      <div class="chart-container" style="height: 100%;">
+        <canvas id="weeklyBiddingChart"></canvas>
+      </div>
+      </div>
+      <div class="col-md-6" style="padding: 5px; height: 300px;">
+      <div class="chart-container"  style="height: 100%;">
+        <canvas id="userComparisonChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6" style="padding: 5px; height: 300px;">
+      <div class="chart-container "  style="height: 100%;">
+        <canvas id="userEarningsChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6" style="padding: 5px; height: 300px;">
+      <div class="chart-container " style="height: 100%;">
+        <canvas id="popularCarModelsChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6" style="padding: 5px; height: 300px;">
+      <div class="chart-container" style="padding: 5px; height: 300px;">
+        <canvas id="categoryBookingsChart"></canvas>
+    </div>
+  </div>
+    <div class="col-md-6" style="padding: 5px; height: 300px;">
+    <div class="chart-container" style="padding: 5px; height: 300px;">
+      <canvas id="earningsComparisonChart"></canvas>
+    </div>
+  </div>
+      
+      
+      </div>
+    </div>
+
+  </div>
+  

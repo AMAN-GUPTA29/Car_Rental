@@ -1,0 +1,89 @@
+<div ng-controller="BiddingController" ng-init="init()" class="container-fluid py-4">
+
+    <!-- Header Section -->
+    <div class="justify-content-between align-items-center mb-4">
+        <button class="btn back-btn btn-outline-secondary" go-Back>
+            <i class="fa fa-arrow-left"></i> Back
+        </button>
+        <h2 class="text-primary fw-bold">My Bidding History</h2>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters row mb-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Category</label>
+            <select class="form-select" ng-model="filters.category" ng-change="applyFilters()" ng-options="category for category in categories">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">City</label>
+            <select class="form-select" ng-model="filters.city" ng-change="applyFilters()" ng-options="city for city in cities">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Owner Email</label>
+            <select class="form-select" ng-model="filters.ownerEmail" ng-change="applyFilters()" ng-options="email for email in ownerEmails">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Status</label>
+            <select class="form-select" ng-model="filters.status" ng-change="applyFilters()">
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="accept">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Bidding History Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover border">
+            <thead class="table-dark">
+                <tr>
+                    <th>Car</th>
+                    <th>Category</th>
+                    <th>City</th>
+                    <th>Bid Amount ($)</th>
+                    <th>Bid Date</th>
+                    <th>Owner</th>
+                    <th>Owner Email</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="bid in bids">
+                    <td class="text-center text-primary">{{ bid.cardata.carMake }} - {{ bid.cardata.carModel }}</td>
+                    <td class="text-center" >{{ bid.cardata.carCategory }}</td>
+                    <td class="text-center ">{{ bid.cardata.carcity }}</td>
+                    <td class="text-success text-center fw-bold">${{ bid.BidAmount }}</td>
+                    <td class="text-center ">{{ bid.biddingDate | date:'yyyy-MM-dd' }}</td>
+                    <td class="text-center">{{ bid.owner.ownerName }}</td>
+                    <td class="text-center ">{{ bid.owner.ownerEmail }}</td>
+                    <td class="text-center">
+                        <span class="badge text-center"
+
+                              ng-class="{'bg-warning text-center': bid.status === 'pending', 'classgreen': bid.status === 'accept', 'classred': bid.status === 'rejected'}">
+                            {{ bid.status || 'Pending' }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <button class="btn btn-warning" ng-disabled="currentPage === 1" ng-click="prevPage()">
+            <i class="fa fa-chevron-left"></i> Previous
+        </button>
+        <span class="fw-bold text-secondary">Page {{ currentPage }}</span>
+        <button class="btn btn-warning" ng-disabled="bids.length < rowsPerPage" ng-click="nextPage()">
+            Next <i class="fa fa-chevron-right"></i>
+        </button>
+    </div>
+
+</div>

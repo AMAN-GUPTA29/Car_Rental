@@ -1,0 +1,127 @@
+<div ng-controller="CarListingController" ng-init="init()" class="">
+
+    
+    <h2 class="text-center" id="usersalutation">Hello, {{ user.name }}!</h2>
+
+    <sidebar></sidebar> 
+   
+
+    <button class="btn btn-primary btn-show-popup" ng-click="openModal()">Register New Listing</button>
+
+  
+    <h3 class="headtoshow text-center" ng-show="listings.length > 0">Your Listings</h3>
+    <div class="col-md-offset-3">
+    <div id="row">
+        <!-- <div ng-if="!listings || listings.length === 0">
+            <p>No listings found.</p>
+        </div> -->
+
+        <div  ng-repeat="listing in listings" class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+            <div uib-carousel interval="3000"  no-wrap="false">
+                <div uib-slide ng-repeat="img in listing.cardata.images track by $index" index="$index">
+                    <img ng-src="{{ img || 'placeholder.jpg' }}" class="listing-image" alt="{{ listing.cardata.carMake }} {{ listing.cardata.carModel }}">
+                </div>
+            </div>
+
+            
+
+            <a ui-sref="carownerlisting({listingID: listing.listingID })" class="listing-link" style="text-decoration: none;">
+                <div class="listing-header">
+                    <h3 class="text-center">{{ listing.cardata.carMake }} {{ listing.cardata.carModel }}</h3>
+                    <p class="text-center price">${{ listing.cardata.basePrice }}/day</p>
+                </div>
+                <div class="listing-details">
+                    <p><strong>Location:</strong> {{ listing.cardata.carAddress }}</p>
+                    <p><strong>Category:</strong> {{ listing.cardata.carCategory }}</p>
+                    <p><strong>Transmission:</strong> {{ listing.cardata.carTransmission }}</p>
+                    <div>
+                        <strong>Color:</strong> 
+                        <span class="color-box" ng-style="{'background-color': listing.cardata.carColor}"></span>
+                    </div>
+                    <p><strong>Year:</strong> {{ listing.cardata.carYear }}</p>
+                    <p><strong>Mileage:</strong> {{ listing.cardata.carMileage }} km</p>
+                    <p ng-if="listing.cardata.isDeleted" style="color: red; font-weight: bold;">
+                        <strong>Car Blocked:</strong> Yes
+                    </p>
+                    <p><strong>Listing Date:</strong> {{ listing.listingDate | date:'medium' }}</p>
+                    <p><strong>Car City:</strong> {{ listing.cardata.carcity }}</p>
+                </div>
+            </a>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+    <div id="listingModal" class="modal" ng-if="isModalOpen">
+        <div class="modal-content">
+            <span class="close" ng-click="closeModal()">&times;</span>
+            <h3>Register New Listing</h3>
+            <form id="register-listing-form" ng-submit="registerListing()">
+                <label for="car-make">Car Name:</label>
+            <input type="text" id="car-make" ng-model="newCar.carMake" placeholder="Enter Car Make" required>
+            
+            <label for="car-model">Car Model:</label>
+            <select id="car-model" ng-model="newCar.carModel" required>
+                <option value="" disabled selected>Select Car Model</option>
+                <option ng-repeat="model in carModels" value="{{ model }}">{{ model }}</option>
+            </select>
+           
+            <label for="car-year">Year:</label>
+            <input type="number" id="car-year" ng-model="newCar.carYear" placeholder="Enter Year" year-validation required>
+            <small class="warning" ng-show="warnings.year">{{ warnings.year }}</small>
+
+            <label for="car-price">Base Price:</label>
+            <input type="number" id="car-price" ng-model="newCar.carPrice" price-validation placeholder="Base Price" required>
+            <div class="warning" ng-show="warnings.carPrice">{{ warnings.carPrice }}</div>
+
+
+            <label for="car-outstation-price">Outstation Price:</label>
+            <input type="number" id="car-outstation-price" ng-model="newCar.carOutstationPrice" price-validation placeholder="Outstation Price" required>
+            <div class="warning" ng-show="warnings.carOutstationPrice">{{ warnings.carOutstationPrice }}</div>
+
+            <label for="car-color">Color:</label>
+            <input type="color" id="car-color" ng-model="newCar.carColor" required>
+
+            <label for="car-mileage">Mileage:</label>
+            <input type="number" id="car-mileage" ng-model="newCar.carMileage" mileage-validation placeholder="Mileage" required>
+            <div class="warning" ng-show="warnings.carMileage">{{ warnings.carMileage }}</div>
+
+            <label for="car-transmission">Transmission:</label>
+<select id="car-transmission" ng-model="newCar.carTransmission" required>
+    <option value="" disabled selected>Select Transmission Type</option>
+    <option ng-repeat="type in transmissionTypes" value="{{ type }}">{{ type }}</option>
+</select>
+
+
+            <label for="car-category">Category:</label>
+<select id="car-category" ng-model="newCar.carCategory" required>
+    <option value="" disabled selected>Select Car Category</option>
+    <option ng-repeat="category in carCategories" value="{{ category }}">{{ category }}</option>
+</select>
+
+
+            <label for="car-description">Description:</label>
+            <textarea id="car-description" ng-model="newCar.carDescription" placeholder="Enter Car Description"></textarea>
+
+            <label for="car-address">Address:</label>
+            <input type="text" id="car-address" ng-model="newCar.carAddress" placeholder="Enter Address" required>
+
+            <label for="carcity">City:</label>
+            <select id="carcity" ng-model="newCar.carcity">
+                <option ng-repeat="city in cities" value="{{ city }}">{{ city }}</option>
+            </select>
+
+            <label for="car-images">Upload Images:</label>
+            <input type="file" id="car-images" multiple onchange="angular.element(this).scope().previewImages(event)" required>
+            
+            <div id="image-preview">
+                <img ng-repeat="image in newCar.images track by $index" ng-src="{{ image }}" class="preview-image">
+            </div>
+                <button type="submit">Register Listing</button>
+            </form>
+        </div>
+    </div>
+</div>

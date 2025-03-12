@@ -1,0 +1,90 @@
+<div class="container py-4 addhight" ng-controller="StartJourneyController" ng-init="init()">
+    <!-- Back Button -->
+    <button go-Back class="btn back-btn btn-outline-dark mb-3">
+        <i class="fa fa-arrow-left"></i> Back
+    </button>
+
+    <h2 class="text-center text-primary fw-bold mb-4">
+        <i class="fa fa-calendar"></i> Upcoming Car Bookings
+    </h2>
+
+    <!-- Booking Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th><i class="fa fa-car"></i> Car</th>
+                        <th><i class="fa fa-user"></i> Booker</th>
+                        <th><i class="fa fa-calendar-check"></i> Pick-up Date</th>
+                        <th><i class="fa fa-calendar-minus"></i> Drop-off Date</th>
+                        <th><i class="fa fa-money-bill"></i> Bid Amount ($)</th>
+                        <th class="text-center"><i class="fa fa-cogs"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- No Bookings Found -->
+                    <tr ng-if="bookings.length === 0">
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fa fa-car-slash fa-3x mb-3 text-secondary"></i>
+                            <h5>No upcoming bookings found.</h5>
+                        </td>
+                    </tr>
+
+                    <!-- Bookings List -->
+                    <tr ng-repeat="booking in bookings">
+                        <td>
+                            <span class="fw-bold">{{ booking.cardata.carMake }} {{ booking.cardata.carModel }}</span>
+                        </td>
+                        <td>{{ booking.booker.bookerName }}</td>
+                        <td>{{ booking.startDate | date:'MMM d, yyyy' }}</td>
+                        <td>{{ booking.endDate | date:'MMM d, yyyy' }}</td>
+                        <td class="text-success fw-bold">${{ booking.BidAmount | number:2 }}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary px-3" ng-click="openLogKmModal(booking)">
+                                <i class="fa fa-road"></i> Log KM
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul uib-pagination  total-items="bookings.length" ng-model="currentPage" ng-change="pageChanged()"></ul>
+
+        </div>
+    </div>
+
+    <!-- KM Logging Modal -->
+
+<uib-modal ng-if="isModalOpen">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-road"></i> Log Current KM</h5>
+                <button type="button" class="close" ng-click="closeKmModal()">&times;</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <label for="kmValue" class="form-label">Enter current KM:</label>
+                <input 
+                    type="number" 
+                    id="kmValue" 
+                    class="form-control" 
+                    ng-model="kmValue" 
+                    placeholder="Enter KM" 
+                    min="0"
+                />
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" ng-click="closeKmModal()">Cancel</button>
+                <button type="button" class="btn btn-success" ng-click="saveKm(kmValue)">
+                    <i class="fa fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</uib-modal>
+</div>

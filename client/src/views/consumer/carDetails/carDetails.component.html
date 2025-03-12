@@ -1,0 +1,92 @@
+
+    <div ng-controller="BookingController" ng-init="init()">
+        <button go-Back id="backButton" class="back-btn" ng-click="goBack()">
+            <span class="arrow">&#8592;</span> Back
+        </button>
+    <div id="car-details" ng-if="car">
+        
+        <div class="car-card">
+        <h2>{{ car.cardata.carMake }} - {{ car.cardata.carModel }}</h2>
+        <div class="car-details-grid">
+         <div>  <strong>Year:</strong> {{ car.cardata.carYear }}</div> 
+        <div>
+            
+            <strong>Color:</strong>
+            <span class="color-box" ng-style="{'background-color': car.cardata.carColor}"></span>
+            
+        </div>
+        <div><strong>Transmission:</strong> {{ car.cardata.carTransmission }}</div>
+        <div><strong>Mileage:</strong> {{ car.cardata.carMileage }} km </div>
+        <div><strong>Category:</strong> {{car.cardata.carCategory}}</div>
+        <div><strong>City:</strong> {{car.cardata.carcity}}</div>
+        <div><strong>Base Price Local:</strong> ${{ car.cardata.basePrice }}/day </div>
+        <div><strong>Base Price Outstation:</strong> {{ car.cardata.outstationPrice ? '$' + car.cardata.outstationPrice + '/day' : 'NA' }} </div>
+        <div><strong>Address:</strong> {{car.cardata.carAddress}}</div>
+        <div><strong>Extra Charge after each 100 km Local: </strong>$50</div>
+        <div><strong>Extra Charge after each 100 km Outstation :</strong> $100</div>
+        </div>
+        </div>
+
+        <div class="car-image">
+        <div class="carousel-container">
+            <div uib-carousel interval="3000" no-wrap="false">
+                <div uib-slide class="h-50 d-inline-block"  ng-repeat="image in car.cardata.images track by $index" index="$index">
+                    <img ng-src="{{ image }}" class="h-50 d-inline-block object-fit-cover w-100 carousel-image">
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="booking-section">
+            <p><strong>Owner Email:</strong> {{car.owner.ownerEmail}}</p>
+            <h3>Book This Car</h3>
+            
+            <div class="triptype">
+            <label for="trip-type" class="ojk" >Trip Type:</label>
+            <select id="trip-type" class="tripty" ng-model="bidplace.triptype" ng-change="tochange(e)" required>
+                <option value="local" selected>Local</option>
+                <option value="outstation">Outstation</option>
+            </select>
+            </div>
+
+            <div class="date-picker">
+                   
+                
+                <label for="start-date">Start Date:</label>
+                <input  type="date" id="start-date" ng-model="bidplace.startDate" ng-change="checkDate(bidplace.startDate)" min="{{date | date:'yyyy-MM-dd'}}" />
+
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" ng-model="bidplace.endDate" min="{{bidplace.startDate | date:'yyyy-MM-dd'}}" ng-change="checkDate(bidplace.endDate)" />
+
+            </div>
+
+            <div class="bid-input">
+            <label>Your Bid Amount:</label>
+            <input type="number" id="bid-amount" placeholder="Enter your bid" ng-model="bidplace.bidAmount" required>
+            </div>
+
+            <button class="book-btn" ng-click="bookCar()">Book Now</button>
+        </div>
+
+        <div class="chat-box">
+            <h3>Chat with the Owner</h3>
+            <div class="chat-window" id="chat-window">
+                
+                <div ng-repeat="msg in chat.chatMessages">
+                    <img ng-if="msg.isImage" ng-src="{{ msg.chatString }}" ng-class="{'chat-message user': msg.sentBy === 'user', 'chat-message owner': msg.sentBy !== 'user'}">
+                    <div ng-if="!msg.isImage" ng-class="{'chat-message user': msg.sentBy === 'user', 'chat-message owner': msg.sentBy !== 'user'}">
+                        {{ msg.chatString }}
+                    </div>
+                </div>
+            
+            </div>
+            <div  class="chat-input-area">
+            <input type="text" id="chat-message" placeholder="Type a message..." ng-model="chat.chatMessage">
+            <button class="send-btn" ng-click="sendMessage()">Send</button>
+        </div>
+        </div>
+    </div>
+
+    <p ng-if="!car">Car listing not found.</p>
+</div>
+

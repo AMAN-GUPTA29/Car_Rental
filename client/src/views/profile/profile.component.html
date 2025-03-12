@@ -1,0 +1,57 @@
+
+<div ng-controller="profileController">
+
+    <button go-Back class="back-btn">
+        <span class="arrow">&#8592;</span> Back
+    </button>
+
+    <!-- <div class="col-md-6"> -->
+    <div class="profile-container panel panel-success text-center">
+        <div class="opa panel-heading ">
+        <h2 class="opa panel-title">User Profile</h2>
+    </div>
+    <div class="panel-body">
+        
+        <div class="info"><label>Name:</label> <span>{{ user.name || 'N/A' }}</span></div>
+        <div class="info"><label>Email:</label> <span>{{ user.email || 'N/A' }}</span></div>
+        <div class="info"><label>Aadhar:</label> <span>{{ user.aadhar || 'N/A' }}</span></div>
+        <div class="info"><label>Phone:</label> <span>{{ user.mobile || 'N/A' }}</span></div>
+
+        <button  class="edit-btn " ng-click="openEditModal()">Edit Profile</button>
+    </div>
+    <!-- </div> -->
+</div>
+
+    <div id="editModal" class="modal" ng-show="isModalOpen">
+        <div class="modal-content">
+            <h3>Edit Profile</h3>
+            
+            <label>Name:</label>
+            <input type="text" ng-model="editUser.username">
+
+            <label>Email:</label>
+            <input type="email" ng-model="editUser.email" disabled>
+
+            <label>Aadhar:</label>
+            <input type="text" ng-model="editUser.aadhar" disabled>
+
+            <label>Phone:</label>
+            <input type="text" ng-model="editUser.phone" >
+            <small class="warning">{{ warnings.phone }}</small>
+
+            <label>Old Password:</label>
+            <input type="password" ng-model="editUser.oldPassword">
+
+            <label>New Password:</label>
+            <input type="password" ng-model="editUser.newPassword" >
+            <small class="warning">{{ warnings.password }}</small>
+
+            <div class="modal-buttons">
+                <button class="btn btn-default btn-sm" ng-click="saveProfile()">Save</button>
+                <button ng-click="closeEditModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+

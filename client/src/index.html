@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CarRental</title>
+
+    <script src="/bower_components/angular/angular.min.js"></script>
+    <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/bower_components/crypto-js/crypto-js.js"></script>
+    <script src="/bower_components/oclazyload/dist/ocLazyLoad.min.js"></script>
+    <!-- <script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script> -->
+    <!-- <script src="/bower_components/angular-ui-bootstrap/"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/async/3.2.4/async.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-csp.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+    />
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
+    
+    <script src="/src/app.js"></script>
+    <script src="/src/config/route.config.js"></script>
+
+    <script src="/src/directives/emailValidation.directive.js"></script>
+    <script src="/src/directives/phoneValidation.directive.js"></script>
+    <script src="/src/directives/passwordValidation.directive.js"></script>
+    <script src="/src/directives/mileageValidation.directive.js"></script>
+    <script src="/src/directives/notEmptyValidation.directive.js"></script>
+    <script src="/src/directives/priceValidation.directive.js"></script>
+    <script src="/src/directives/yearValidation.directive.js"></script>
+    <script src="/src/directives/fileInput.directive.js"></script>
+    <script src="/src/directives/goBack.directive.js"></script>
+
+    <script src="/src/services/dbservices/db.service.js"></script>
+    <script src="/src/services/db.js"></script>
+    <script src="/src/services/owner.js"></script>
+    <script src="/src/services/utils/sessionservices.js"></script>
+    <script src="/src/factories/validation.service.js"></script>
+    <script src="/src/factories/filters.service.js"></script>
+    <script src="/src/factories/image.service.js"></script>
+    <script src="/src/factories/logout.service.js"></script>
+    <script src="/src/factories/data.service.js"></script>
+    <script src="/src/factories/file.service.js"></script>
+    <script src="/src/factories/pagination.service.js"></script>
+    <script src="/src/factories/auth.factory.js"></script>
+
+    <script src="/src/views/auth/signup/signup.controller.component.js"></script>
+    <script src="/src/views/auth/login/login.controller.component.js"></script>
+    <script src="/src/views/owner/ownerhome/ownerhome.component.controller.js"></script>
+    <script src="/src/views/owner/component/sidebar.owner.controller.js"></script>
+    <script src="/src/views/owner/ownerlisting/ownerlisting.component.controller.js"></script>
+    <script src="/src/views/owner/conversation/conversation.component.controller.js"></script>
+    <script src="/src/services/utils/getcities.js"></script>
+    <script src="/src/views/owner/decidedBids/decidedBids.component.controller.js"></script>
+    <script src="/src/views/owner/startJourney/startJourney.component.controller.js"></script>
+
+    <script src="/src/views/consumer/home/home.component.controller.js"></script>
+    <script src="/src/services/consumer.js"></script>
+    <script src="/src/views/consumer/utils/sidebar/sidebar.component.js"></script>
+    <script src="/src/views/consumer/carDetails/carDetails.component.controller.js"></script>
+    <script src="/src/views/owner/listingDetails/listingdetails.component.controller.js"></script>
+    <script src="/src/views/consumer/conversation/conversation.component.controller.js"></script>
+    <script src="/src/views/owner/startJourney/startJourney.component.controller.js"></script>
+    <script src="/src/views/owner/endJourney/endJourney.component.controller.js"></script>
+    <script src="/src/views/consumer/invoice/invoice.component.controller.js"></script>
+    <script src="/src/views/profile/profile.component.controller.js"></script>
+    <script src="/src/views/consumer/allbids/allbids.component.controller.js"></script>
+
+    <script src="/src/services/admin.js"></script>
+
+    <script src="/src/views/admin/admindashboard/admindashboard.component.controller.js"></script>
+    <script src="/src/views/admin/utils/sidebar/sidebar.component.controller.js"></script>
+    <script src="/src/views/admin/manageUser/manageUser.component.controller.js"></script>
+    <script src="/src/views/admin/adminlisting/adminlisting.component.controller.js"></script>
+
+    <script src="/src/constants/constants.js"></script>
+
+    <script src="/src/services/dbservices/idGeneratorService.js"></script>
+    <script src="/src/services/userSignupService.js"></script>
+  </head>
+  <body ng-app="carRentalApp">
+    <div ui-view></div>
+  </body>
+</html>
