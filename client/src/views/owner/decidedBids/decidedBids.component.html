@@ -10,31 +10,31 @@
             <div class="row">
                 <div class="col-md-2">
                 <label class="form-label">Category:
-                    <select ng-model="filter.category" class="form-control" ng-options="category for category in categories" ng-change="applyFilters()">
+                    <select ng-model="filters.category" class="form-control" ng-options="category for category in categories" ng-change="applyFilters()">
                         <option value="">All</option>
                     </select>
                 </label>
                 </div>
                 <div class="col-md-2">
                 <label class="form-label">Transmission:
-                    <select ng-model="filter.transmission" class="form-control" ng-options="transmission for transmission in transmissions" ng-change="applyFilters()">
+                    <select ng-model="filters.transmission" class="form-control" ng-options="transmission for transmission in transmissions" ng-change="applyFilters()">
                         <option value="">All</option>
                     </select>
                 </label>
             </div>
             <div class="col-md-2">
                 <label class="form-label">Start Date:
-                    <input type="date" class="form-control" ng-model="filter.startDate" ng-change="applyFilters()">
+                    <input type="date" class="form-control" ng-model="filters.startDate" ng-change="applyFilters()">
                 </label>
             </div>
             <div class="col-md-2">
                 <label class="form-label">End Date:
-                    <input type="date" class="form-control" ng-model="filter.endDate" ng-change="applyFilters()">
+                    <input type="date" class="form-control" ng-model="filters.endDate" ng-change="applyFilters()">
                 </label>
             </div>
             <div class="col-md-2">
                 <label class="form-label">Min Bid Price:
-                    <input type="number" class="form-control" ng-model="filter.bidPrice" placeholder="Min Price" ng-change="applyFilters()">
+                    <input type="number" class="form-control" ng-model="filters.minBidPrice" placeholder="Min Price" ng-change="applyFilters()">
                 </label>
             </div>
             </div>
@@ -50,12 +50,12 @@
                     <th>Status</th>
                  
                 </tr>
-                <tr ng-repeat="bid in paginatedBids">
-                    <td>{{ bid.cardata.carMake }} {{ bid.cardata.carModel }}</td>
-                    <td>{{ bid.cardata.carCategory }}</td>
-                    <td>{{ bid.cardata.carTransmission }}</td>
+                <tr ng-repeat="bid in bids">
+                    <td>{{ bid.carData.carMake }} {{ bid.carData.carModel }}</td>
+                    <td>{{ bid.carData.carCategory }}</td>
+                    <td>{{ bid.carData.carTransmission }}</td>
                     <td>{{ bid.startDate | date:'MM/dd/yyyy' }} - {{ bid.endDate | date:'MM/dd/yyyy' }}</td>
-                    <td>${{ bid.BidAmount }}</td>
+                    <td>${{ bid.bidAmount }}</td>
                     <td>{{ bid.status }}</td>
                     
                 </tr>
@@ -63,7 +63,7 @@
         </div>
                
             <div class="text-center">
-            <div  uib-pagination total-items="filteredBids.length" ng-model="currentPage" ng-change="pageChanged()"></div>
+            <div  uib-pagination total-items="bids.length" ng-model="currentPage" ng-change="pageChanged()"></div>
         </div>
         </div>
 

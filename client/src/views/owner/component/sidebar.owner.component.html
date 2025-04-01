@@ -1,3 +1,5 @@
+<button id="sidebarToggle" ng-click="toggleSidebar($event)">☰ Menu</button>
+
 <div id="sidebar">
     <h2>Menu</h2>
     <ul>
@@ -14,3 +16,25 @@
     </ul>
   </div>
   
+
+
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log("kk")
+    var sidebarToggle = document.getElementById('sidebarToggle');
+    var sidebar = document.getElementById('sidebar');
+
+    sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+    });
+
+    // Close sidebar when clicking outside
+    document.addEventListener('click', function(event) {
+        var isClickInside = sidebar.contains(event.target) || sidebarToggle.contains(event.target);
+        if (!isClickInside && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+});
+  </script>

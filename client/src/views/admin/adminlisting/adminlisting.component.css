@@ -13,16 +13,24 @@ header {
     font-size: 24px;
 }
 
+.color-box {
+    display: inline-block;
+    width: 50%;
+    height: 20px;
+    border-radius: 5px; /* Rounded corners */
+    margin-left: 8px;
+    border: 1px solid #ccc; /* Optional border */
+    vertical-align: middle;
+}
+
+
 .listings-container {
-    /* display: grid; */
-    /* grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));  */
-    /* gap: 20px; */
-    padding: 20px;
-    /* max-width: 1200px; */
-    margin: auto;
     display: flex;
-    
-   
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 20px;
+    margin: auto;
+    max-width: 1400px;
 }
 
 .listing-card {
@@ -31,9 +39,10 @@ header {
     padding: 15px;
     margin: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    
     position: relative;
     transition: transform 0.2s ease-in-out;
+    width: calc(25% - 20px); /* 4 cards per row with margins */
+    box-sizing: border-box;
 }
 
 .listing-card:hover {
@@ -121,8 +130,6 @@ header {
     border-left: 4px solid #16404D; 
 }
 
-
-
 .back-btn {
     position: absolute;
     top: 10px;
@@ -134,11 +141,10 @@ header {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    /* display: flex; */
     align-items: center;
     gap: 8px;
     transition: 0.3s;
-    width:5%;
+    width: 5%;
 }
 
 .back-btn .arrow {
@@ -148,7 +154,6 @@ header {
 .back-btn:hover {
     background-color: #52847b; 
 }
-
 
 /* 📌 Search Filter Styling */
 .filter-container {
@@ -184,4 +189,23 @@ header {
 #emailSearch:focus {
     border-color: #DDA853;
     background-color: #F5F5F5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .listing-card {
+        width: calc(33.333% - 20px); /* 3 cards per row */
+    }
+}
+
+@media (max-width: 900px) {
+    .listing-card {
+        width: calc(50% - 20px); /* 2 cards per row */
+    }
+}
+
+@media (max-width: 600px) {
+    .listing-card {
+        width: calc(100% - 20px); /* 1 card per row */
+    }
 }

@@ -23,11 +23,11 @@
             </thead>
             <tbody>
                 <tr ng-repeat="booking in paginatedBids">
-                    <td>{{ booking.cardata.carMake }} {{ booking.cardata.carModel }}</td>
-                    <td>{{ booking.booker.bookerName }}</td>
+                    <td>{{ booking.carData.carMake }} {{ booking.carData.carModel }}</td>
+                    <td>{{ booking.bookerData.bookerName }}</td>
                     <td>{{ booking.startDate | date:'MMM d, yyyy' }}</td>
                     <td>{{ booking.endDate | date:'MMM d, yyyy' }}</td>
-                    <td>${{ booking.BidAmount | number:2 }}</td>
+                    <td>${{ booking.bidAmount | number:2 }}</td>
                     <td>{{ booking.startkm }}</td>
                     <td>
                         <button class="btn btn-sm btn-primary" ng-click="openKmModal(booking)">

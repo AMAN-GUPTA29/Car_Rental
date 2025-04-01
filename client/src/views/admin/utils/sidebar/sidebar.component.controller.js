@@ -13,4 +13,9 @@ carRentalApp.controller("AdminSidebarController", function ($scope, $state) {
         sessionStorage.removeItem("user");
         $state.go("login");
     };
+
+    $scope.toggleSidebar = function() {
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+    };
 });

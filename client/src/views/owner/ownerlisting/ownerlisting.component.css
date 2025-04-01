@@ -66,6 +66,36 @@ body {
     color: #16404D;  /* Darker text on hover */
 }
 
+#sidebarToggle {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: #16404D;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    height: 50px;
+}
+
+@media screen and (max-width: 900px) {
+    #sidebar {
+        transform: translateX(-100%);
+        z-index: 999;
+    }
+
+    #sidebarToggle {
+        display: block;
+    }
+
+    #sidebar.active {
+        transform: translateX(0);
+    }
+}
+
 /* Main Content Styling */
 #main-content {
     margin-left: 280px;

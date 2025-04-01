@@ -1,4 +1,4 @@
-carRentalApp.controller("OwnerCarController", function ($scope,$stateParams,ownerdb,ImageService,SessionService,CAR_COMPANIES,CAR_CATEGORIES,TRANSMISSION_TYPES,) {
+carRentalApp.controller("OwnerCarController", function ($scope,$stateParams,ownerdb,ImageService,SessionService,CAR_COMPANIES,CAR_CATEGORIES,TRANSMISSION_TYPES,ListingFactory,BiddingFactory) {
     /**
      * @type {Number} listingId
      * @type {Object} car
@@ -51,16 +51,20 @@ carRentalApp.controller("OwnerCarController", function ($scope,$stateParams,owne
      * @description This function is used to get car details
      * @returns {Promise}
      */
+
+    
     function getcardetails()
     {   
         const listingID=$scope.listingId;
-        ownerdb.getCarListingById(listingID).then((result) => {
-            $scope.car=result;
-            totalcarimg=result.cardata.images.length;
-
-
-        }).catch((err) => {
-            
+        const listing = new ListingFactory({ _id: listingID });
+        listing.fetch()
+        .then(function(result) {
+          console.log("result", result);
+          $scope.car = result;
+          $scope.totalcarimg = result.images.length;
+        })
+        .catch(function(err) {
+          console.error('Error fetching car details:', err);
         });
             
     }
@@ -75,12 +79,21 @@ carRentalApp.controller("OwnerCarController", function ($scope,$stateParams,owne
 
         const user =SessionService.getUser();
         const listingID=$scope.listingId;
-        ownerdb.getPendingBiddingsOwnerCar(user.id,listingID).then((result) => {
-            console.log( result);
-            $scope.biddings=result;
-        }).catch((err) => {
-            console.log(err);
-        });
+
+
+        const bidding = new BiddingFactory();
+  
+  
+  bidding.getPendingBiddingsOwnerCar(user.id, listingID)
+    .then((result) => {
+      console.log("resdfbdbult", result);
+      $scope.biddings = result.biddings;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    
+        
     }
 
 
@@ -92,11 +105,16 @@ carRentalApp.controller("OwnerCarController", function ($scope,$stateParams,owne
     $scope.acceptBid = function (bid) {
         const car=$scope.car;
         const user =SessionService.getUser();
-        ownerdb.statusbiddings(bid,"accept",user,car).then((result) => {
-            getpendingbiddings();
-        }).catch((err) => {
-            console.log(err);
-        });
+        const bidding = new BiddingFactory();
+  
+  // Call the method on the bidding object
+  bidding.acceptBid(bid, user, car)
+    .then((result) => {
+      getpendingbiddings();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
     };
 
     /**
@@ -104,12 +122,29 @@ carRentalApp.controller("OwnerCarController", function ($scope,$stateParams,owne
      * @param {*} bid 
      * @description This function is used to reject the bid
      */
+
+    
     $scope.rejectBid = function (bid) {
-        ownerdb.statusbiddings(bid,"rejected").then((result) => {
-            getpendingbiddings();
-        }).catch((err) => {
-            console.log(err);
-        });
+
+        const bidding = new BiddingFactory();
+        const car=$scope.car;
+        const user =SessionService.getUser();
+    
+    // Call the rejectBid method on the bidding object
+    bidding.rejectBid(bid,user,car)
+      .then((result) => {
+        getpendingbiddings();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+
+        // ownerdb.statusbiddings(bid,"rejected").then((result) => {
+        //     getpendingbiddings();
+        // }).catch((err) => {
+        //     console.log(err);
+        // });
     };
 
   /**
@@ -118,7 +153,6 @@ carRentalApp.controller("OwnerCarController", function ($scope,$stateParams,owne
   $scope.nextImage = function () {
     $scope.carimgno=ImageService.nextImagecar($scope.carimgno,totalcarimg);
     
-
   };
 
   /**

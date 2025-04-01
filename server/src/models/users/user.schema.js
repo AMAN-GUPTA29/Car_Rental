@@ -42,13 +42,7 @@ const schema = new mongoose.Schema({
     },
 });
 
-// const payload={
-//     email:"test@gmail.com",
-//     password:"test",
-//     phone:1234567890,
-//     userName:"test",
-//     role:"user",
-// }
+
 
 schema.methods.generateAuthToken = function (user) {
     const payload={

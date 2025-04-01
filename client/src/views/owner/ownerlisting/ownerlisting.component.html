@@ -20,33 +20,33 @@
             <div class="panel panel-default">
                 <div class="panel-body">
             <div uib-carousel interval="3000"  no-wrap="false">
-                <div uib-slide ng-repeat="img in listing.cardata.images track by $index" index="$index">
-                    <img ng-src="{{ img || 'placeholder.jpg' }}" class="listing-image" alt="{{ listing.cardata.carMake }} {{ listing.cardata.carModel }}">
+                <div uib-slide ng-repeat="img in listing.images track by $index" index="$index">
+                    <img ng-src="{{ img || 'placeholder.jpg' }}" class="listing-image" alt="{{ listing.carData.carMake }} {{ listing.carData.carModel }}">
                 </div>
             </div>
 
             
 
-            <a ui-sref="carownerlisting({listingID: listing.listingID })" class="listing-link" style="text-decoration: none;">
+            <a ui-sref="carownerlisting({listingID: listing._id })" class="listing-link" style="text-decoration: none;">
                 <div class="listing-header">
-                    <h3 class="text-center">{{ listing.cardata.carMake }} {{ listing.cardata.carModel }}</h3>
-                    <p class="text-center price">${{ listing.cardata.basePrice }}/day</p>
+                    <h3 class="text-center">{{ listing.carData.carMake }} {{ listing.carData.carModel }}</h3>
+                    <p class="text-center price">${{ listing.carData.basePrice }}/day</p>
                 </div>
                 <div class="listing-details">
-                    <p><strong>Location:</strong> {{ listing.cardata.carAddress }}</p>
-                    <p><strong>Category:</strong> {{ listing.cardata.carCategory }}</p>
-                    <p><strong>Transmission:</strong> {{ listing.cardata.carTransmission }}</p>
+                    <p><strong>Location:</strong> {{ listing.carData.carAddress }}</p>
+                    <p><strong>Category:</strong> {{ listing.carData.carCategory }}</p>
+                    <p><strong>Transmission:</strong> {{ listing.carData.carTransmission }}</p>
                     <div>
                         <strong>Color:</strong> 
-                        <span class="color-box" ng-style="{'background-color': listing.cardata.carColor}"></span>
+                        <span class="color-box" ng-style="{'background-color': listing.carData.carColor}"></span>
                     </div>
-                    <p><strong>Year:</strong> {{ listing.cardata.carYear }}</p>
-                    <p><strong>Mileage:</strong> {{ listing.cardata.carMileage }} km</p>
-                    <p ng-if="listing.cardata.isDeleted" style="color: red; font-weight: bold;">
+                    <p><strong>Year:</strong> {{ listing.carData.carYear }}</p>
+                    <p><strong>Mileage:</strong> {{ listing.carData.carMileage }} km</p>
+                    <p ng-if="listing.carData.isDeleted" style="color: red; font-weight: bold;">
                         <strong>Car Blocked:</strong> Yes
                     </p>
                     <p><strong>Listing Date:</strong> {{ listing.listingDate | date:'medium' }}</p>
-                    <p><strong>Car City:</strong> {{ listing.cardata.carcity }}</p>
+                    <p><strong>Car City:</strong> {{ listing.carData.carcity }}</p>
                 </div>
             </a>
         </div>
@@ -55,11 +55,11 @@
     </div>
 </div>
 
-    <div id="listingModal" class="modal" ng-if="isModalOpen">
+    <div id="listingModal" class="modal" ng-show="isModalOpen">
         <div class="modal-content">
             <span class="close" ng-click="closeModal()">&times;</span>
             <h3>Register New Listing</h3>
-            <form id="register-listing-form" ng-submit="registerListing()">
+            <form id="register-listing-form" ng-submit="registerListing()" enctype="multipart/form-data">
                 <label for="car-make">Car Name:</label>
             <input type="text" id="car-make" ng-model="newCar.carMake" placeholder="Enter Car Make" required>
             

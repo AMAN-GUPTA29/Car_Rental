@@ -1,6 +1,13 @@
 {
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.html"
+  },
   "devDependencies": {
     "angular-jsdoc": "^1.5.1",
     "jsdoc": "^4.0.4"
+  },
+  "dependencies": {
+    "nodemon": "^3.1.9"
   }
 }

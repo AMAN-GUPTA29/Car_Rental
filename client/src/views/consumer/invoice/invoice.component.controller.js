@@ -34,7 +34,7 @@ carRentalApp.controller("InvoiceController", function($scope, SessionService,con
         consumerdb.getUnpaidInvoices(user.id).then(function(invoices) {
             $scope.allInvoices = invoices;
             console.log($scope.allInvoices);
-            $scope.updateDisplayedInvoices();
+            $scope.pageChanged();
         }).catch(function (error) {
             console.error("Error loading upcoming bookings:", error);
         });
@@ -97,7 +97,7 @@ carRentalApp.controller("InvoiceController", function($scope, SessionService,con
      * @description This function is used to mark invoice as paid
      */
     $scope.markAsPaid = function() {
-        consumerdb.markInvoicePaid($scope.selectedInvoice.invoiceid, $scope.selectedInvoice.historyID).then(function() {
+        consumerdb.markInvoicePaid($scope.selectedInvoice._id).then(function() {
             $scope.selectedInvoice.paid = true;
             $scope.isModalOpen = false;
             $scope.updateDisplayedInvoices();
@@ -111,11 +111,12 @@ carRentalApp.controller("InvoiceController", function($scope, SessionService,con
         const doc = new jsPDF();
         doc.setFontSize(16);
         doc.text("Invoice", 20, 20);
+        console.log($scope.selectedInvoice);
 
         doc.setFontSize(12);
         doc.text(`Invoice ID: ${$scope.selectedInvoice.invoiceid}`, 20, 30);
-        doc.text(`Car: ${$scope.selectedInvoice.cardata.carMake} ${$scope.selectedInvoice.cardata.carModel}`, 20, 40);
-        doc.text(`Booker: ${$scope.selectedInvoice.booker.bookerName}`, 20, 50);
+        doc.text(`Car: ${$scope.selectedInvoice.carData.carMake} ${$scope.selectedInvoice.carData.carModel}`, 20, 40);
+        doc.text(`Booker: ${$scope.selectedInvoice.bookerData.bookerName}`, 20, 50);
         doc.text(`Amount: $${$scope.selectedInvoice.finalamount}`, 20, 60);
         doc.text(`Status: ${$scope.selectedInvoice.paid ? "Paid" : "Unpaid"}`, 20, 70);
         

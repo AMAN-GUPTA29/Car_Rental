@@ -1,22 +1,42 @@
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import User from "../models/users/user.schema.js"; // Import your Admin model
-
+import User from "../models/users/user.schema.js";
+/**
+ * @type {Object}
+ * @description Configuration options for JWT strategy
+ * @property {Function} jwtFromRequest - Function to extract JWT from request
+ * @property {String} secretOrKey - Secret key to verify JWT signature
+ */
 const options = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Extract token from Authorization header
-  secretOrKey: process.env.JWT_SECRET, // Use the same secret key as in generateAuthToken
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
 };
 
+/**
+ * @description Configure passport with JWT strategy
+ * @param {Object} passport - Passport instance
+ * @returns {void}
+ */
 const jwtStrategy = (passport) => {
   passport.use(
     new JwtStrategy(options, async (jwt_payload, done) => {
       try {
-        const user = await User.findById(jwt_payload._id); // Find admin by ID in payload
+        /**
+         * @type {Object|null}
+         * @description Find user by ID from JWT payload
+         */
+        const user = await User.findById(jwt_payload._id);
+        /**
+         * @description Return user if found
+         */
         if (user) {
-          return done(null, user); // Pass authenticated admin to the next middleware
+          return done(null, user);
         }
-        return done(null, false); // No admin found
+        return done(null, false);
       } catch (err) {
-        return done(err, false); // Handle errors
+         /**
+         * @description Return error if exception occurs
+         */
+        return done(err, false);
       }
     })
   );

@@ -1,40 +1,30 @@
-carRentalApp.service("userSignupService", function ($q,dbService, idGeneratorService) {
+carRentalApp.service("userSignupService", function ($q,dbService, idGeneratorService,ApiService) {
     /**
      * 
      * @param {*} userData 
      * @returns {Promise}
      * @description This function is used to save signup info
      */
+
+
     this.saveSignupInfo = function (userData) {
-
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer()
-            const transaction = db.transaction("user", "readwrite");
-            const store = transaction.objectStore("user");
-
-            userData.userID = idGeneratorService.generateUserID(); 
-            userData.blocked = false;
-            userData.signupDate = new Date().toISOString();
-
-
-            const request = store.add(userData);
-            
-            
-                request.onsuccess = () => {
-                    console.log("User data saved successfully:", userData.userID);
-                    deferred.resolve(userData.userID);
-                };
-
-                request.onerror = (event) => {
-                    console.error("Error saving user data:", event.target.error);
-                    deferred.reject(event.target.error);
-                };
-         
-
-            return deferred.promise;
-        })
-        
+        const deferred = $q.defer();
+    
+        console.log(userData);
+    
+        ApiService.postData('/auth/signup', userData)
+            .then(function(response) {
+                console.log("User data saved successfully:", response.data);
+                deferred.resolve(response.data.userID);
+            })
+            .catch(function(error) {
+                console.error("Error saving user data:", error);
+                deferred.reject(error);
+            });
+    
+        return deferred.promise;
     };
+    
 
     /**
      * 
@@ -44,53 +34,39 @@ carRentalApp.service("userSignupService", function ($q,dbService, idGeneratorSer
      * @description This function is used to login user
      */
     this.loginUser = function (email, password) {
-
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer()
-            const transaction = db.transaction("user", "readonly");
-            const store = transaction.objectStore("user");
-            const index = store.index("email");
-
-            const request = index.get(email);
-
-           
-            request.onsuccess = () => {
-                const user = request.result;
+        const deferred = $q.defer();
+        
+        const loginData = {
+            email: email,
+            password: password
+        };
+   
+        
     
-                    if (!user) {
-                        console.log("User not found:", email);
-                        deferred.resolve({ success: false, message: "User not found" });
-                        return deferred.promise;
-                    }
+        ApiService.postData('/auth/login', loginData)
+            .then(function(response) {
+                console.log("Login successful:", response.data);
+                deferred.resolve({
+                    success: true,
+                    user: response.data,
+                    message: "Login successful"
+                });
+            })
+            .catch(function(error) {
+                console.error("Login error:", error);
+                let errorMessage = "An error occurred during login";
+                if (error.status === 401) {
+                    errorMessage = "Invalid email or password";
+                } else if (error.status === 403) {
+                    errorMessage = "Account is blocked";
+                }
+                deferred.reject({
+                    success: false,
+                    message: errorMessage
+                });
+            });
     
-                    if (user.password !== password) {
-                        console.log("Incorrect password for:", email);
-                        deferred.resolve({ success: false, message: "Incorrect password" });
-                        return deferred.promise;
-                    }
-    
-                    if (user.blocked) {
-                        console.log("Blocked user attempted login:", email);
-                        return deferred.resolve({ success: false, message: "You are blocked" });
-                        return deferred.promise;
-                    }
-    
-                    console.log("Login successful for:", user.userID);
-                    deferred.resolve({ success: true, user, message: "Login successful" });
-                };
-    
-                request.onerror = (event) => {
-                    console.error("Database error during login:", event.target.error);
-                    deferred.reject("Database error");
-                };
-
-            return deferred.promise;
-        })
-
-
-
-
-       
+        return deferred.promise;
     };
     
 });

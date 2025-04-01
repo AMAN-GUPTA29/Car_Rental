@@ -6,22 +6,22 @@
     <div id="car-details" ng-if="car">
         
         <div class="car-card">
-        <h2>{{ car.cardata.carMake }} - {{ car.cardata.carModel }}</h2>
+        <h2>{{ car.carData.carMake }} - {{ car.carData.carModel }}</h2>
         <div class="car-details-grid">
-         <div>  <strong>Year:</strong> {{ car.cardata.carYear }}</div> 
+         <div>  <strong>Year:</strong> {{ car.carData.carYear }}</div> 
         <div>
             
             <strong>Color:</strong>
-            <span class="color-box" ng-style="{'background-color': car.cardata.carColor}"></span>
+            <span class="color-box" ng-style="{'background-color': car.carData.carColor}"></span>
             
         </div>
-        <div><strong>Transmission:</strong> {{ car.cardata.carTransmission }}</div>
-        <div><strong>Mileage:</strong> {{ car.cardata.carMileage }} km </div>
-        <div><strong>Category:</strong> {{car.cardata.carCategory}}</div>
-        <div><strong>City:</strong> {{car.cardata.carcity}}</div>
-        <div><strong>Base Price Local:</strong> ${{ car.cardata.basePrice }}/day </div>
-        <div><strong>Base Price Outstation:</strong> {{ car.cardata.outstationPrice ? '$' + car.cardata.outstationPrice + '/day' : 'NA' }} </div>
-        <div><strong>Address:</strong> {{car.cardata.carAddress}}</div>
+        <div><strong>Transmission:</strong> {{ car.carData.carTransmission }}</div>
+        <div><strong>Mileage:</strong> {{ car.carData.carMileage }} km </div>
+        <div><strong>Category:</strong> {{car.carData.carCategory}}</div>
+        <div><strong>City:</strong> {{car.carData.carcity}}</div>
+        <div><strong>Base Price Local:</strong> ${{ car.carData.basePrice }}/day </div>
+        <div><strong>Base Price Outstation:</strong> {{ car.carData.outstationPrice ? '$' + car.carData.outstationPrice + '/day' : 'NA' }} </div>
+        <div><strong>Address:</strong> {{car.carData.carAddress}}</div>
         <div><strong>Extra Charge after each 100 km Local: </strong>$50</div>
         <div><strong>Extra Charge after each 100 km Outstation :</strong> $100</div>
         </div>
@@ -30,7 +30,7 @@
         <div class="car-image">
         <div class="carousel-container">
             <div uib-carousel interval="3000" no-wrap="false">
-                <div uib-slide class="h-50 d-inline-block"  ng-repeat="image in car.cardata.images track by $index" index="$index">
+                <div uib-slide class="h-50 d-inline-block"  ng-repeat="image in car.images track by $index" index="$index">
                     <img ng-src="{{ image }}" class="h-50 d-inline-block object-fit-cover w-100 carousel-image">
                 </div>
             </div>
@@ -38,7 +38,7 @@
         </div>
 
         <div class="booking-section">
-            <p><strong>Owner Email:</strong> {{car.owner.ownerEmail}}</p>
+            <p><strong>Owner Email:</strong> {{car.ownerDetails.ownerEmail}}</p>
             <h3>Book This Car</h3>
             
             <div class="triptype">
@@ -50,8 +50,6 @@
             </div>
 
             <div class="date-picker">
-                   
-                
                 <label for="start-date">Start Date:</label>
                 <input  type="date" id="start-date" ng-model="bidplace.startDate" ng-change="checkDate(bidplace.startDate)" min="{{date | date:'yyyy-MM-dd'}}" />
 

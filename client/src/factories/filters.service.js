@@ -19,22 +19,23 @@ carRentalApp.factory("FilterService", function () {
         });
       },
 
+      getQueryParams: function(filters) {
+        const params = {};
+        
+        if (filters.category) params.category = filters.category;
+        if (filters.transmission) params.transmission = filters.transmission;
+        if (filters.startDate) params.startDate = filters.startDate;
+        if (filters.endDate) params.endDate = filters.endDate;
+        if (filters.minBidPrice) params.minBidPrice = filters.minBidPrice;
+        
+        return params;
+      },
+
       applyFiltersApproved: function (scope) {
-        let { category, transmission, startDate, endDate, bidPrice } = scope.filter;
-
-        scope.filteredBids = scope.approvedBids.filter((bid) => {
-            return (
-                (!category || bid.cardata.carCategory === category) &&
-                (!transmission || bid.cardata.carTransmission === transmission) &&
-                (!startDate || new Date(bid.startDate) >= new Date(startDate)) &&
-                (!endDate || new Date(bid.endDate) <= new Date(endDate)) &&
-                (!bidPrice || parseFloat(bid.BidAmount) >= parseFloat(bidPrice))
-            );
-        });
-
+        const filterParams = this.getQueryParams(scope.filter);
         scope.currentPage = 1;
-        scope.renderTable();
-    }
+        scope.loadApprovedBids(filterParams);
+      }
     };
   });
   

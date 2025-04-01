@@ -8,8 +8,27 @@ carRentalApp.controller(
      */
     let user = JSON.parse(sessionStorage.getItem("user"));
     $scope.adminName = user.name;
-    
 
+    $scope.startDate = new Date(new Date().setDate(new Date().getDate() - 6));
+    $scope.endDate = new Date();
+    
+    $scope.init=function(){
+        console.log("fdv")
+        console.log($scope.startDate);
+        console.log($scope.endDate);
+        loadlisting();
+    }
+    
+    $scope.torunagain=true;
+
+
+
+    let activeInactiveChart = null;
+    let biddingChart7day=null;
+    let mostBookedCarChart=null;
+    let mostbookedCarCategories=null;
+    let avgBidperCategory=null;
+    let carCountperCategory=null;
 
    /**
      * @function async.parallel
@@ -17,6 +36,14 @@ carRentalApp.controller(
      * @param {Function} callback
      * @returns {Promise}
      */
+
+   function loadlisting(){
+    console.log("sxc")
+    if (window.biddingChartInstance) {
+        window.biddingChartInstance.destroy();
+    }
+
+    
     async.parallel(
         {
           renderBiddingChart: function (callback) {
@@ -33,7 +60,7 @@ carRentalApp.controller(
               });
           },
           getActiveInactiveUser:function (callback) {
-            db.getActiveInactiveUsers().then((result) => {
+            db.getActiveInactiveUsers($scope.startDate,$scope.endDate).then((result) => {
                 console.log(result)
                 console.log("cds")
                 callback(null, {
@@ -48,7 +75,7 @@ carRentalApp.controller(
               });
           },
           renderMostPopularCarsChart:function (callback) {
-            db.getMostPopularCars().then((result) => {
+            db.getMostPopularCars($scope.startDate,$scope.endDate).then((result) => {
                 callback(null, {
                     carNames: result.carNames,
                     bookingCounts: result.bookingCounts,
@@ -61,7 +88,7 @@ carRentalApp.controller(
               });
           },
           renderMostBookedCarCategoriesChart:function (callback) {
-            db.getMostBookedCarCategories().then((result) => {
+            db.getMostBookedCarCategories($scope.startDate,$scope.endDate).then((result) => {
                 callback(null, {
                     categories: result.categories,
                     bookingCounts: result.bookingCounts,
@@ -74,7 +101,7 @@ carRentalApp.controller(
               });
           },
           renderAverageBidPerCategoryChart:function (callback) {
-            db.getAverageBidPerCategory().then((result) => {
+            db.getAverageBidPerCategory($scope.startDate,$scope.endDate).then((result) => {
                 callback(null, {
                     categories: result.categories,
                     avgBids: result.avgBids,
@@ -87,7 +114,7 @@ carRentalApp.controller(
               });
           },
           renderCarsListedByCategoryChart:function (callback) {
-            db.getCarsListedByCategory().then((result) => {
+            db.getCarsListedByCategory($scope.startDate,$scope.endDate).then((result) => {
                 callback(null, {
                     categories: result.categories,
                     carCounts: result.carCounts,
@@ -136,10 +163,18 @@ carRentalApp.controller(
       );
   
 
+    }
 
 
+    $scope.changedate = function() {
+        // Your logic here
+        console.log('Start Date:', $scope.startDate);
+        console.log('End Date:', $scope.endDate);
+        loadlisting();
+        
+    };
 
-
+   
 
       /**
        * 
@@ -148,10 +183,16 @@ carRentalApp.controller(
        * @description This function is used to render the bidding chart 
        */
 function renderBiddingChart(days, bidAmounts) {
-     console.log("adsv ")
+
+    
+     
+  
     
         const ctx = document.getElementById("biddingChart").getContext("2d");
-        new Chart(ctx, {
+        if (biddingChart7day) {
+            biddingChart7day.destroy();
+        }
+        biddingChart7day=new Chart(ctx, {
             type: "bar",
             data: {
                 labels: days,
@@ -180,6 +221,7 @@ function renderBiddingChart(days, bidAmounts) {
                 }
             }
         });
+        
     }
     
 
@@ -190,10 +232,14 @@ function renderBiddingChart(days, bidAmounts) {
      * @description This function is used to render the active and inactive users chart 
      */
 function renderActiveInactiveUsersChart(activeUsers, inactiveUsers ) {
+        
         // const { activeUsers, inactiveUsers } =  getActiveInactiveUsers();
-    
+        console.log("qq",activeUsers,inactiveUsers)
         const ctx = document.getElementById("activeInactiveUsersChart").getContext("2d");
-        new Chart(ctx, {
+        if (activeInactiveChart) {
+            activeInactiveChart.destroy();
+        }
+        activeInactiveChart = new Chart(ctx, {
             type: "pie",
             data: {
                 labels: ["Active Users", "Inactive Users"],
@@ -210,7 +256,7 @@ function renderActiveInactiveUsersChart(activeUsers, inactiveUsers ) {
                 plugins: {
                     title: {
                         display: true,
-                        text: "Active vs. Inactive Users",
+                        text: `Active vs. Inactive Users from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
                         font: { size: 18, weight: "bold" },
                         padding: { top: 10, bottom: 20 }
                     }
@@ -227,10 +273,13 @@ function renderActiveInactiveUsersChart(activeUsers, inactiveUsers ) {
      * @description This function is used to render the most popular cars chart 
      */
     function renderMostPopularCarsChart(carNames, bookingCounts) {
-    
+        
+        if (mostBookedCarChart) {
+            mostBookedCarChart.destroy();
+        }
     
         const ctx = document.getElementById("mostPopularCarsChart").getContext("2d");
-        new Chart(ctx, {
+        mostBookedCarChart=new Chart(ctx, {
             type: "bar",
             data: {
                 labels: carNames, 
@@ -247,7 +296,7 @@ function renderActiveInactiveUsersChart(activeUsers, inactiveUsers ) {
                 plugins: {
                     title: {
                         display: true,
-                        text: "Top 5 Most Popular Cars (Most Booked)",
+                        text: `Top 5 Most Popular Cars (Most Booked) from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
                         font: { size: 18, weight: "bold" },
                         padding: { top: 10, bottom: 20 }
                     }
@@ -273,16 +322,29 @@ function renderActiveInactiveUsersChart(activeUsers, inactiveUsers ) {
      */
 function renderMostBookedCarCategoriesChart(categories, bookingCounts ) {
    
+    if (mostbookedCarCategories) {
+        mostbookedCarCategories.destroy();
+    }
+
 
     const ctx = document.getElementById("mostBookedCarCategoriesChart").getContext("2d");
-    new Chart(ctx, {
+    mostbookedCarCategories=new Chart(ctx, {
         type: "bar",
         data: {
             labels: categories, 
             datasets: [{
                 label: "Total Bookings",
                 data: bookingCounts,
-                backgroundColor: ["#DDA853", "#A6CDC6", "#16404D", "#FBF5DD", "#ff6384"],
+                backgroundColor:[
+                    "#DDA853", 
+                    "#A6CDC6",
+                    "#16404D", 
+                    "#FBF5DD", 
+                    "#ff6384", 
+                    "#8BC34A",
+                    "#455A64"  
+                ]
+                ,
                 borderWidth: 1
             }]
         },
@@ -292,7 +354,7 @@ function renderMostBookedCarCategoriesChart(categories, bookingCounts ) {
             plugins: {
                 title: {
                     display: true,
-                    text: "Top 5 Most Booked Car Categories",
+                    text: `Top 5 Most Booked Car Categories from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
                     font: { size: 18, weight: "bold" },
                     padding: { top: 10, bottom: 20 }
                 }
@@ -318,9 +380,13 @@ function renderMostBookedCarCategoriesChart(categories, bookingCounts ) {
      */
 function renderAverageBidPerCategoryChart(categories, avgBids) {
     
+     
+    if (avgBidperCategory) {
+        avgBidperCategory.destroy();
+    }
 
     const ctx = document.getElementById("averageBidPerCategoryChart").getContext("2d");
-    new Chart(ctx, {
+    avgBidperCategory=new Chart(ctx, {
         type: "bar",
         data: {
             labels: categories, 
@@ -337,7 +403,7 @@ function renderAverageBidPerCategoryChart(categories, avgBids) {
             plugins: {
                 title: {
                     display: true,
-                    text: "Average Bid Amount per Car Category",
+                    text: `Average Bid Amount per Car Category from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
                     font: { size: 18, weight: "bold" },
                     padding: { top: 10, bottom: 20 }
                 }
@@ -357,9 +423,12 @@ function renderAverageBidPerCategoryChart(categories, avgBids) {
  */
 function renderCarsListedByCategoryChart(categories, carCounts) {
 
+    if (carCountperCategory) {
+        carCountperCategory.destroy();
+    }
 
     const ctx = document.getElementById("carsListedByCategoryChart").getContext("2d");
-    new Chart(ctx, {
+    carCountperCategory=new Chart(ctx, {
         type: "bar",
         data: {
             labels: categories,
@@ -376,7 +445,7 @@ function renderCarsListedByCategoryChart(categories, carCounts) {
             plugins: {
                 title: {
                     display: true,
-                    text: "Total Cars Listed by Category",
+                    text: `Total Cars Listed by Category from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
                     font: { size: 18, weight: "bold" },
                     padding: { top: 10, bottom: 20 }
                 }

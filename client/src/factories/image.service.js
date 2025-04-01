@@ -4,14 +4,14 @@
 carRentalApp.factory("ImageService", function () {
     return {
       nextImage: function (car) {
-        if (car.cardata.images && car.cardata.images.length > 0) {
-          car.currentImageIndex = (car.currentImageIndex + 1) % car.cardata.images.length;
+        if (car.images && car.images.length > 0) {
+          car.currentImageIndex = (car.currentImageIndex + 1) % car.images.length;
         }
       },
   
       prevImage: function (car) {
-        if (car.cardata.images && car.cardata.images.length > 0) {
-          car.currentImageIndex = (car.currentImageIndex - 1 + car.cardata.images.length) % car.cardata.images.length;
+        if (car.images && car.images.length > 0) {
+          car.currentImageIndex = (car.currentImageIndex - 1 + car.images.length) % car.images.length;
         }
       },
 

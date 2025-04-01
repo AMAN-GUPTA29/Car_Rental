@@ -14,9 +14,9 @@ carRentalApp.service("consumerdb", [
      * @returns {Promise}
      * @description This function is used to get all car listings
      */
-    this.getAllCarListings = function () {
+    this.getAllCarListings = function (params) {
       const deferred = $q.defer();
-      db.getAllListings()
+      db.getAllListingsConsumer(params)
         .then((result) => {
           deferred.resolve(result);
         })
@@ -34,9 +34,9 @@ carRentalApp.service("consumerdb", [
      */
     this.getCarListingById = function (listingID) {
       const deferred = $q.defer();
-      db.getAllListings()
+      db.getListing(listingID)
         .then((listing) => {
-          const car = listing.find((car) => car.listingID === listingID);
+          const car = listing;
           deferred.resolve(car);
         })
         .catch((err) => {
@@ -54,28 +54,31 @@ carRentalApp.service("consumerdb", [
      * @returns {Promise}
      * @description This function is used to book a car
      */
-    this.bookingServiceConsumer = function (bidplace, car, user) {
+    this.bookingServiceConsumer = function (bookingData) {
       const deferred = $q.defer();
-      if (!validationService.validateBid(bidplace, car, user)) {
-        deferred.reject("Bid not valid");
-        return deferred.promise;
-      }
-      console.log("scaCscs");
-      console.log(bidplace);
-      let bookingData = {
-        owner: { ...car.owner, ownerID: car.ownerID },
-        cardata: { ...car.cardata, listingID: car.listingID },
-        booker: {
-          bookerName: user.name,
-          bookerId: user.id,
-          aadhar: user.aadhar,
-        },
-        startDate: bidplace.startDate,
-        endDate: bidplace.endDate,
-        BidAmount: bidplace.bidAmount,
-        booktype: bidplace.triptype,
-        status: "pending",
-      };
+      // if (!validationService.validateBid(bidplace, car, user)) {
+      //   deferred.reject("Bid not valid");
+      //   return deferred.promise;
+      // }
+      
+      // let bookingData = {
+      //   ownerDetails: { ...car.ownerDetails, ownerId: car.ownerID },
+      //   carData: { ...car.carData, listingId: car._id },
+      //   bookerData: {
+      //     bookerName: user.name,
+      //     bookerId: user.id,
+      //     aadhar: user.aadhar,
+      //   },
+
+      //   images:car.images,
+      //   startDate: bidplace.startDate,
+      //   endDate: bidplace.endDate,
+      //   bidAmount: bidplace.bidAmount,
+      //   bookType: bidplace.triptype,
+      //   startkm:-1,
+      //   endkm:-1,
+      //   status: "pending",
+      // };
 
       db.saveBookingConsumer(bookingData)
         .then((result) => {
@@ -98,22 +101,20 @@ carRentalApp.service("consumerdb", [
      * @returns {Promise}
      * @description This function is used to save conversation
      */
-    this.saveConversation = function (car, user, message, sentBy, isImage) {
+    this.saveConversation = function (owner, user, chatString, sentBy, isImage) {
       const deferred = $q.defer();
-      db.conversationcheck(car, user)
+      let chat = {
+        chatString:chatString,
+        isImage:isImage,
+        sentBy:sentBy   
+      }
+      db.conversationcheck(owner, user,chat)
         .then((result) => {
-          this.saveChatMessage(result, message, sentBy, isImage)
-            .then((result) => {
-              deferred.resolve("saved");
-            })
-            .catch((err) => {
-              deferred.reject(err);
-            });
+              deferred.resolve(result);
         })
         .catch((err) => {
           deferred.reject("convo invalid");
         });
-
       return deferred.promise;
     };
 
@@ -177,11 +178,9 @@ carRentalApp.service("consumerdb", [
      */
     this.loadingconversation = function (bookerID) {
       const deferred = $q.defer();
-      db.getconversation()
+      db.getconversationuser(bookerID)
         .then((result) => {
-          const conversation = result.filter(
-            (convo) => convo.bookerID === bookerID
-          );
+          const conversation = result
           deferred.resolve(conversation);
         })
         .catch((err) => {
@@ -228,16 +227,14 @@ carRentalApp.service("consumerdb", [
     this.getChatMessageConsumer = function (ownerID, userID) {
       const deferred = $q.defer();
       conversationID = `${ownerID}${userID}`;
-      db.getChatMessage()
-        .then((result) => {
-          const chat = result.filter(
-            (chat) => chat.conversationID === conversationID
-          );
-          deferred.resolve(chat);
-        })
-        .catch((err) => {
-          deferred.reject(err);
-        });
+      console.log(conversationID)
+      db.getchatmessages(conversationID)
+      .then((result) => {
+        deferred.resolve(result);
+      })
+      .catch((err) => {
+        deferred.reject(err);
+      });
 
       return deferred.promise;
     };
@@ -284,30 +281,11 @@ carRentalApp.service("consumerdb", [
      */
     this.getBookedDates = function (listingId) {
       const deferred = $q.defer();
-      db.getAllBiddings(listingId)
+      db.getBookedDate(listingId)
         .then((result) => {
           const bookings = result;
-          const bookedDates = [];
-          console.log(bookings);
-          console.log(listingId);
-          bookings
-            .filter(
-              (b) =>
-                b.cardata.listingID === listingId &&
-                (b.status === "accepted" || b.status === "accept")
-            )
-            .forEach((b) => {
-              const start = new Date(b.startDate);
-              const end = new Date(b.endDate);
-              let current = new Date(start);
-
-              while (current <= end) {
-                bookedDates.push(current.toISOString().split("T")[0]);
-                current.setDate(current.getDate() + 1);
-              }
-            });
-
-          deferred.resolve(bookedDates);
+         console.log("qsw",bookings)
+          deferred.resolve(bookings);
         })
         .catch((err) => {
           deferred.reject(err);
@@ -325,11 +303,10 @@ carRentalApp.service("consumerdb", [
     this.getUnpaidInvoices = function (userID) {
       const deferred = $q.defer();
 
-      db.getInvoices()
+      db.getInvoices(userID)
         .then((result) => {
-          const invoice = result.filter(
-            (invo) => invo.booker.bookerId === userID 
-          );
+          console.log("qqq",result);
+          const invoice = result.invoices
           const sortedInvoices = invoice.sort((a, b) => a.paid - b.paid);
           console.log(sortedInvoices)
           deferred.resolve(sortedInvoices);
@@ -348,25 +325,14 @@ carRentalApp.service("consumerdb", [
      * @returns {Promise}
      * @description This function is used to mark invoice as paid
      */
-    this.markInvoicePaid = function (invoiceID, historyid) {
+    this.markInvoicePaid = function ( historyid) {
       const deferred = $q.defer();
 
-      db.markInvoicePaid(invoiceID)
+      db.markInvoicePaidHistory(historyid)
         .then((result) => {
-          return Promise.resolve(result);
+          deferred.resolve(result);
         })
-        .then((result1) => {
-        db.markInvoicePaidHistory(result1.historyID).then((result) => {
-            deferred.resolve(result);
-          }).catch((err)=>{
-            db.markInvoicePaidFalse(result1.invoiceid).then((result) => {
-                console.log("rollback")
-                deferred.resolve("rolledback");
-            }).catch((err) => {
-                deferred.reject(err)
-            });
-          });
-        })
+        
         .catch((err) => {
           deferred.reject(err);
         });

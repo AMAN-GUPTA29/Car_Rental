@@ -3,21 +3,24 @@ carRentalApp.controller("LoginController", ["$scope", "$state", "userSignupServi
     /**
      * @description This function is used to initialize the controller
      */
-    let storedUser = sessionStorage.getItem("user");
-    if (storedUser) {
-        let user = JSON.parse(storedUser);
-        redirectToHome(user.role);
-    }
+    // let storedUser = sessionStorage.getItem("user");
+    // if (storedUser) {
+    //     let user = JSON.parse(storedUser);
+    //     redirectToHome(user.role);
+    // }
    
    /**
     * @description This function is used to login
     */
     $scope.login = function () {
         let email = $scope.user.email;
-        let password = CryptoJS.SHA256($scope.user.password).toString();
-        console.log(email,password)
-        userSignupService.loginUser(email, password) //
+        let password = $scope.user.password
+       
+        userSignupService.loginUser(email, password) 
+
             .then((response) => {
+                console.log("wedrfvdfv",response);
+                console.log(response.user)
                 if (!response.success) {
                     alert(response.message);
                     return;
@@ -28,18 +31,20 @@ carRentalApp.controller("LoginController", ["$scope", "$state", "userSignupServi
                     return;
                 }
 
-                
+                console.log("sd",response);
+                 
                 sessionStorage.setItem("user", JSON.stringify({
                     email: email,
-                    role: response.user.role,
-                    id: response.user.userID,
-                    name: response.user.username,
-                    aadhar: response.user.aadhar,
-                    mobile:response.user.phone
+                    role: response.user.user.role,
+                    id: response.user.user.id,
+                    name: response.user.user.username,
+                    aadhar: response.user.user.aadhar,
+                    mobile:response.user.user.phone,
+                    token:response.user.token
                 }));
             
                 
-                redirectToHome(response.user.role);
+                redirectToHome(response.user.user.role);
             })
             .catch((error) => {
                 console.error(error);

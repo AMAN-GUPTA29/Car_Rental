@@ -9,11 +9,13 @@
  * @imports cors
  */
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import passport from "passport";
 import { jwtStrategy } from "./config/passport.config.js";
+import * as fs from 'fs'; 
+const accessLogStream = fs.createWriteStream('./access.log', { flags: 'a' });
+
 
 
 
@@ -27,7 +29,13 @@ import authRoute from './routes/auth.route.js';
 
 
 
-import createListing from './routes/ownerroutes/addListing.route.js'
+import ownerRoutes from './routes/ownerroutes/ownerListing.route.js'
+
+
+import consumerRoutes from './routes/consumerroutes/consumerroutes.js'
+
+
+import adminRoutes from './routes/adminroutes/adminroutes.js'
 
 
  /**
@@ -39,22 +47,27 @@ const app = express();
 
 app.use(
     cors({
-      origin: true,
+      origin: "http://127.0.0.1:5500",
       credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization']
     })
   );
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
-app.use(express.json());   // This is a middleware that parses incoming requests with JSON payloads
-app.use(bodyParser.urlencoded({extended:false}))  // This is a middleware that parses incoming requests with urlencoded payloads
+app.use(morgan('combined', { stream: accessLogStream }));
+app.use(express.json());   
 jwtStrategy(passport);
 app.use(passport.initialize());
 
 
 app.use('/api/v1/auth', authRoute);
 
-app.use('/api/v1/owner',createListing);
+app.use('/api/v1/owner',ownerRoutes);
+
+app.use('/api/v1/consumer',consumerRoutes)
+
+app.use('/api/v1/admin',adminRoutes);
 
 
 
-export default app;  // This exports the app object to be used in other files
+
+export default app;  

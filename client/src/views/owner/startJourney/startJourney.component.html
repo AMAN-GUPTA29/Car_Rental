@@ -34,12 +34,12 @@
                     <!-- Bookings List -->
                     <tr ng-repeat="booking in bookings">
                         <td>
-                            <span class="fw-bold">{{ booking.cardata.carMake }} {{ booking.cardata.carModel }}</span>
+                            <span class="fw-bold">{{ booking.carData.carMake }} {{ booking.carData.carModel }}</span>
                         </td>
-                        <td>{{ booking.booker.bookerName }}</td>
+                        <td>{{ booking.bookerData.bookerName }}</td>
                         <td>{{ booking.startDate | date:'MMM d, yyyy' }}</td>
                         <td>{{ booking.endDate | date:'MMM d, yyyy' }}</td>
-                        <td class="text-success fw-bold">${{ booking.BidAmount | number:2 }}</td>
+                        <td class="text-success fw-bold">$ {{ booking.bidAmount | number:2 }}</td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-primary px-3" ng-click="openLogKmModal(booking)">
                                 <i class="fa fa-road"></i> Log KM

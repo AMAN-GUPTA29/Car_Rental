@@ -24,10 +24,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="invoice in displayedInvoices ">
-                    <td>{{ invoice.invoiceid }}</td>
-                    <td>{{ invoice.cardata.carMake }} {{ invoice.cardata.carModel }}</td>
-                    <td>{{ invoice.booker.bookerName }}</td>
-                    <td>${{ invoice.finalamount }}</td>
+                    <td>{{ invoice._id }}</td>
+                    <td>{{ invoice.carData.carMake }} {{ invoice.carData.carModel }}</td>
+                    <td>{{ invoice.bookerData.bookerName }}</td>
+                    <td>${{ invoice.bidAmount }}</td>
                     <td>{{ invoice.paid ? "Paid" : "Unpaid" }}</td>
                     <td><button ng-click="openInvoiceModal(invoice)">View</button></td>
                 </tr>
@@ -64,10 +64,10 @@
             <h3 class="modal-title">Invoice</h3>
         </div>
         <div class="modal-body">
-            <p><strong>Invoice ID:</strong> {{ selectedInvoice.invoiceid }}</p>
-            <p><strong>Car:</strong> {{ selectedInvoice.cardata.carMake }} {{ selectedInvoice.cardata.carModel }}</p>
-            <p><strong>Booker:</strong> {{ selectedInvoice.booker.bookerName }}</p>
-            <p><strong>Amount:</strong> ${{ selectedInvoice.finalamount }}</p>
+            <p><strong>Invoice ID:</strong> {{ selectedInvoice._id }}</p>
+            <p><strong>Car:</strong> {{ selectedInvoice.carData.carMake }} {{ selectedInvoice.carData.carModel }}</p>
+            <p><strong>Booker:</strong> {{ selectedInvoice.bookerData.bookerName }}</p>
+            <p><strong>Amount:</strong> ${{ selectedInvoice.bidAmount }}</p>
             <p><strong>Status:</strong> 
                 <span class="label" ng-class="{'label-success': selectedInvoice.paid, 'label-danger': !selectedInvoice.paid}">
                     {{ selectedInvoice.paid ? "Paid" : "Unpaid" }}
@@ -84,8 +84,18 @@
     </uib-modal>
     
     <div class="text-center">
-    <ul uib-pagination items-per-page="5"  class="justify-content-center" total-items="allInvoices.length" ng-model="currentPage" ng-change="pageChanged()"></ul>
+        <ul uib-pagination 
+            total-items="allInvoices.length"
+            ng-model="currentPage"
+            items-per-page="INVOICES_PER_PAGE"
+            max-size="5"
+            class="pagination-sm justify-content-center"
+            boundary-links="true"
+            force-ellipses="true"
+            ng-change="pageChanged()">
+        </ul>
     </div>
+    
 
 </div>
 

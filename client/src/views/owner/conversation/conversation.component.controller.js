@@ -1,4 +1,4 @@
-carRentalApp.controller("ChatControllerOwner", ["$scope","ownerdb","SessionService","FileService","DateService", function($scope,ownerdb,SessionService,FileService,DateService) {
+carRentalApp.controller("ChatControllerOwner", ['$timeout',"$scope","ownerdb","SessionService","FileService","DateService", function($timeout,$scope,ownerdb,SessionService,FileService,DateService) {
     
     
     /**
@@ -11,6 +11,7 @@ carRentalApp.controller("ChatControllerOwner", ["$scope","ownerdb","SessionServi
     $scope.chatTitle = "";
     $scope.showBookingDetails = false;
     $scope.bookingDetails = {};
+    $scope.conversationId = null;
     let selectedConvo;
 
     /**
@@ -28,7 +29,6 @@ carRentalApp.controller("ChatControllerOwner", ["$scope","ownerdb","SessionServi
     function loadConversations() {
         const user =SessionService.getUser();
         ownerdb.loadingconversation(user.id).then((result) => {
-            
             $scope.conversations=result;
         }).catch((err) => {
             console.log(err)
@@ -46,6 +46,18 @@ $scope.loadChatMessages =  function (convo) {
     $scope.chatTitle = convo.bookerName;
     $scope.messages = [];
     selectedConvo = convo;
+    $scope.conversationId = convo.ownerId + convo.bookerId;
+    
+    socket = io("http://127.0.0.1:8080");
+
+    console.log("Socket :: " , socket);
+    socket.emit("joinChat", $scope.conversationId);
+    socket.on("newMessage", (message) => {
+      if(message.conversationId === $scope.conversationId){
+          $scope.messages.push(message);
+          $timeout();
+      }
+    });
 
     /**
      * @function getBid
@@ -54,25 +66,25 @@ $scope.loadChatMessages =  function (convo) {
      * @param {string} bookerID
      * @returns {Promise}
      */
-    ownerdb.getBid(convo.ownerID,convo.bookerID).then((result) => {
-        console.log(result);
-        const biddingDetails=result[result.length-1];
-        console.log(biddingDetails);
-        if (biddingDetails ) {
-            $scope.bookingDetails = {
-                carName: `${biddingDetails.cardata.carMake} ${biddingDetails.cardata.carModel}`,
-                carCategory: biddingDetails.cardata.carCategory,
-                startDate: new Date(biddingDetails.startDate).toLocaleDateString(),
-                endDate: new Date(biddingDetails.endDate).toLocaleDateString(),
-                bidAmount: `$${biddingDetails.BidAmount}`,
-                status: biddingDetails.status
-            };
-            $scope.statusColor = DateService.getStatusColor(biddingDetails.status);
-            $scope.showBookingDetails = true;    
-        }
-    }).catch((err) => {
-        console.log(err)
-    });
+    // ownerdb.getBid(convo.ownerID,convo.bookerID).then((result) => {
+    //     console.log(result);
+    //     const biddingDetails=result[result.length-1];
+    //     console.log(biddingDetails);
+    //     if (biddingDetails ) {
+    //         $scope.bookingDetails = {
+    //             carName: `${biddingDetails.cardata.carMake} ${biddingDetails.cardata.carModel}`,
+    //             carCategory: biddingDetails.cardata.carCategory,
+    //             startDate: new Date(biddingDetails.startDate).toLocaleDateString(),
+    //             endDate: new Date(biddingDetails.endDate).toLocaleDateString(),
+    //             bidAmount: `$${biddingDetails.BidAmount}`,
+    //             status: biddingDetails.status
+    //         };
+    //         $scope.statusColor = DateService.getStatusColor(biddingDetails.status);
+    //         $scope.showBookingDetails = true;    
+    //     }
+    // }).catch((err) => {
+    //     console.log(err)
+    // });
 
     /**
      * @function getChatMessageOwner
@@ -81,7 +93,7 @@ $scope.loadChatMessages =  function (convo) {
      * @param {string} bookerID
      * @returns {Promise}
      */
-    ownerdb.getChatMessageOwner(convo.ownerID,convo.bookerID).then((result) => {
+    ownerdb.getChatMessageOwner(convo.ownerId,convo.bookerId).then((result) => {
         $scope.messages=result;
     }).catch((err) => {
         console.log(err);
@@ -105,24 +117,36 @@ $scope.sendMessage =  function () {
 
     console.log(file)
     let base64Image = null;
-    if (file) {
-        FileService.convertToBase64(file).then((result) => {
-            ownerdb.saveChatMessage(result,"owner",true,selectedConvo).then((result) => {
-                $scope.messages.push(result)
-            }).catch((err) => {
-                console.log(err)
-            });
-        }).catch((err) => {
-            console.log(err)
-        });
-    } else {
-        ownerdb.saveChatMessage(message,"owner",false,selectedConvo).then((result) => {
-            $scope.messages.push(result)
+    const usern =SessionService.getUser();
+    const owner={
+        ownerId:selectedConvo.ownerId,
+        ownerName:selectedConvo.ownerName,
+    }
+
+    const user={
+        id:selectedConvo.bookerId,
+        bookerName:selectedConvo.bookerName,
+        token:usern.token,
+    }
+    // if (file) {
+    //     FileService.convertToBase64(file).then((result) => {
+    //         ownerdb.saveChatMessage(result,"owner",true,selectedConvo).then((result) => {
+    //             $scope.messages.push(result)
+    //         }).catch((err) => {
+    //             console.log(err)
+    //         });
+    //     }).catch((err) => {
+    //         console.log(err)
+    //     });
+    // } else {
+        ownerdb.saveConversation(owner,user,message,"owner",false).then((result) => {
+            console.log("cscssd",result)
+            // $scope.messages.push(result.chat)
         }).catch((err) => {
             console.log(err)
         });
         
-    }
+    // }
 
 
 };

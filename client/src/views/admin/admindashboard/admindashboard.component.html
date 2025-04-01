@@ -1,12 +1,22 @@
-<body ng-controller="AdminHomeController">
+<body ng-controller="AdminHomeController" >
     
     <admin-sidebar></admin-sidebar>
     
     <header class="admin-header text-center">
         <h1>Hello, Admin {{ adminName }}</h1>
     </header>
+
+    <div class="filter-container">
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" ng-model="startDate">
     
-    <div class="container">
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" ng-model="endDate">
+    
+        <button id="filter-button4" ng-click="changedate()">Show Data</button>
+    </div>
+    
+    <div class="container" ng-init="init()">
         <div class="col-md-offset-2 row">
             <div class="col-md-6" style="padding: 5px; height: 300px;">
                 <div class="chart-container" style="height: 100%;">

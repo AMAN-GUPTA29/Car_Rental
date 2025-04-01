@@ -1,4 +1,4 @@
-carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$timeout,FilterService,ImageService, AuthService) {
+carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$timeout,FilterService,ImageService, AuthService,CAR_CATEGORIES,CityService,CAR_COMPANIES,ListingFactory) {
  
     
   $scope.user = JSON.parse(sessionStorage.getItem("user")); 
@@ -15,13 +15,16 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
   $scope.cars = [];
   $scope.filteredCars = [];
   $scope.uniqueCities = [];
-  $scope.uniqueCategories = [];
+  $scope.uniqueCategories = CAR_CATEGORIES;
+  $scope.uniqueModal=CAR_COMPANIES;
+  $scope.totalPages;
+  $scope.currentPage;
 
   $scope.filters = {
-    city: "all",
+    city: "",
     minPrice: "",
     maxPrice: "",
-    category: "all",
+    category: "",
     minMileage: "",
     model: "",
     transmission: "all",
@@ -40,14 +43,45 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
    */
   $scope.init = function () {
     getallcars();
+    getCities();
   };
+
+
+  function getCities()
+  {
+      CityService.getCities("India")
+      .then(function (cities) {
+          $scope.uniqueCities = cities;
+      })
+      .catch(function (error) {
+          console.error(error);
+      });
+  }
  
   /**
    * @description This function is used to get all cars listed on palatform
    */
    function getallcars(){
-    consumerdb.getAllCarListings().then((cars) => {
-      cars= cars.filter(car => car.cardata.isDeleted === false);
+    console.log($scope.filters);
+    if($scope.filters.city=="all")
+    {
+      $scope.filters.city="";
+    }
+    if($scope.filters.model=="all")
+      {
+        $scope.filters.model="";
+      }
+    const params = {
+      page: 1,
+      ...$scope.filters
+    };
+    // ListingFactory.fetchAll(user.id)
+    ListingFactory.getAllCarListing(params).then((response) => {
+      console.log("res",response)
+      let cars=response.listings;
+     
+      // cars= cars.filter(car => car.isDeleted === false);
+      console.log(cars)
       $scope.cars = cars.map((car) => ({
         ...car,
         currentImageIndex: 0,   
@@ -56,24 +90,9 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
       console.log($scope.cars);
 
       $scope.filteredCars = [...$scope.cars];
-
-      $scope.uniqueCities = $scope.filteredCars
-        .filter(
-          (value, index, self) =>
-            index ===
-            self.findIndex((t) => t.cardata.carcity === value.cardata.carcity)
-        )
-        .map((car) => car.cardata.carcity);
-
-      $scope.uniqueCategories = $scope.filteredCars
-        .filter(
-          (value, index, self) =>
-            index ===
-            self.findIndex(
-              (t) => t.cardata.carCategory === value.cardata.carCategory
-            )
-        )
-        .map((car) => car.cardata.carCategory);
+      console.log("caaa",$scope.filteredCars)
+      $scope.totalPages = response.totalPages;
+      $scope.currentPage = response.page;
 
       
 
@@ -119,7 +138,7 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
    * @description This function is used to apply filters
    */
   $scope.applyFilters= function applyFilters() {
-    $scope.filteredCars =  FilterService.applyFilters($scope.cars, $scope.filters);  
+    getallcars();
 }
 
   /**

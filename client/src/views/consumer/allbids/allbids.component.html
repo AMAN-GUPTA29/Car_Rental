@@ -18,22 +18,22 @@
         </div>
         <div class="col-md-3">
             <label class="form-label fw-bold">City</label>
-            <select class="form-select" ng-model="filters.city" ng-change="applyFilters()" ng-options="city for city in cities">
+            <select class="form-select" style="width: 50%;" ng-model="filters.city" ng-change="applyFilters()" ng-options="city for city in cities">
                 <option value="">All</option>
             </select>
         </div>
-        <div class="col-md-3">
+        <!-- <div class="col-md-3">
             <label class="form-label fw-bold">Owner Email</label>
             <select class="form-select" ng-model="filters.ownerEmail" ng-change="applyFilters()" ng-options="email for email in ownerEmails">
                 <option value="">All</option>
             </select>
-        </div>
+        </div> -->
         <div class="col-md-3">
             <label class="form-label fw-bold">Status</label>
             <select class="form-select" ng-model="filters.status" ng-change="applyFilters()">
                 <option value="">All</option>
                 <option value="pending">Pending</option>
-                <option value="accept">Approved</option>
+                <option value="accepted">Approved</option>
                 <option value="rejected">Rejected</option>
             </select>
         </div>
@@ -56,13 +56,13 @@
             </thead>
             <tbody>
                 <tr ng-repeat="bid in bids">
-                    <td class="text-center text-primary">{{ bid.cardata.carMake }} - {{ bid.cardata.carModel }}</td>
-                    <td class="text-center" >{{ bid.cardata.carCategory }}</td>
-                    <td class="text-center ">{{ bid.cardata.carcity }}</td>
-                    <td class="text-success text-center fw-bold">${{ bid.BidAmount }}</td>
+                    <td class="text-center text-primary">{{ bid.carData.carMake }} - {{ bid.carData.carModel }}</td>
+                    <td class="text-center" >{{ bid.carData.carCategory }}</td>
+                    <td class="text-center ">{{ bid.carData.carcity }}</td>
+                    <td class="text-success text-center fw-bold">${{ bid.bidAmount }}</td>
                     <td class="text-center ">{{ bid.biddingDate | date:'yyyy-MM-dd' }}</td>
-                    <td class="text-center">{{ bid.owner.ownerName }}</td>
-                    <td class="text-center ">{{ bid.owner.ownerEmail }}</td>
+                    <td class="text-center">{{ bid.ownerDetails.ownerName }}</td>
+                    <td class="text-center ">{{ bid.ownerDetails.ownerEmail }}</td>
                     <td class="text-center">
                         <span class="badge text-center"
 

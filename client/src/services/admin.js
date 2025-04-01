@@ -8,9 +8,9 @@ carRentalApp.service("admindb", ["db","validationService","$q","idGeneratorServi
      * @returns {Promise}
      * @description This function is used to get all users
      */
-    this.getUsers = function () {
+    this.getUsers = function (params) {
         let deferred = $q.defer();
-        db.getAllUser().then((result) => {
+        db.getAllUser(params).then((result) => {
             deferred.resolve(result)
         }).catch((err) => {
             deferred.reject(err)
@@ -25,14 +25,15 @@ carRentalApp.service("admindb", ["db","validationService","$q","idGeneratorServi
      * @returns {Promise}
      * @description This function is used to block the user 
      */
-    this.blockUser = function (userID) {
-        
+    this.updateuser = function (params,blocked) {
+        const blockedd={
+            blocked:blocked
+        }
         let deferred = $q.defer();
-        db.blockUser(userID).then((result) => {
+        db.updateuser(params,blockedd).then((result) => {
             deferred.resolve(result)
         }).catch((err) => {
             deferred.reject(err)
-            
         });
         return deferred.promise;
     };
@@ -61,9 +62,9 @@ carRentalApp.service("admindb", ["db","validationService","$q","idGeneratorServi
      * @description This function is used to get all car listings
      */
     
-    this.getAllCarListings = function () {
+    this.loadListings = function (params) {
         const deferred=$q.defer();
-        db.getAllListings().then((result) => {
+        db.getAllListingsAdmin(params).then((result) => {
          
             deferred.resolve(result);
         }).catch((err) => {
@@ -87,6 +88,20 @@ carRentalApp.service("admindb", ["db","validationService","$q","idGeneratorServi
         });
         return deferred.promise;
     }
+
+    this.updatelisting = function (params,blocked) {
+        const blockedd={
+            blocked:blocked
+        }
+        
+        let deferred = $q.defer();
+        db.updatelisting(params,blockedd).then((result) => {
+            deferred.resolve(result)
+        }).catch((err) => {
+            deferred.reject(err)
+        });
+        return deferred.promise;
+    };
 
 }
 ]

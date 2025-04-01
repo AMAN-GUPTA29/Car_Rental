@@ -1,128 +1,218 @@
-carRentalApp.service("db", function ($q,dbService,idGeneratorService) {
+carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService) {
     
     this.saveListing = function (carData) {
         const deferred = $q.defer();
-        return dbService.openDB().then((db) => {
-            const transaction = db.transaction("listing", "readwrite");
-            const store = transaction.objectStore("listing");
+        const user= JSON.parse(sessionStorage.getItem("user"));
+        console.log("dbc",carData);
+      
+        const formData=new FormData();
+            formData.append('ownerDetails', JSON.stringify(carData.ownerDetails));
+            formData.append('carData',JSON.stringify( carData.carData));
+            // formData.append("images",carData.images);
+            for(let i in carData.images)
+            {
+                formData.append('images',carData.images[i]);
+            }
 
-            carData.listingID = idGeneratorService.generateListingID(); 
-            carData.listingDate = new Date().toISOString();
-
-            const request = store.add(carData);
-    
+            console.log("formData",formData);
+        ApiService.postDataInternalimage(`/owner/createlisting`,formData,user.token)
+        .then(function(response){
+            console.log("API Listings:", response.data);
+            deferred.resolve(response.data);
+        })
+        .catch(function(error) {
+            console.error("API Error:", error);
+            let errorMessage = "Failed to fetch listings";
             
-                request.onsuccess = () => {
-                    console.log("Listing saved successfully:", carData.listingID);
-                    deferred.resolve(carData.listingID);
-                };
-                request.onerror = (event) => {
-                    console.error("Error saving listing:", event.target.error);
-                    deferred.reject(event.target.error);
-                };
-
-                return deferred.promise;
-           
-        })  
+         
+            if (error.status === 401) {
+                errorMessage = "Session expired - please login again";
+            } else if (error.status === 500) {
+                errorMessage = "Server error - try again later";
+            }
+            
+            deferred.reject(errorMessage);
+        });
+        return deferred.promise;
     };
 
-    this.getAllListings = function () {
+    this.getAllListings = function() {
         const deferred = $q.defer();
-
-        return dbService.openDB().then((db) => {
-            const transaction = db.transaction("listing", "readonly");
-            const store = transaction.objectStore("listing");
-            const request = store.getAll(); 
-    
-            request.onsuccess = function () {
-                console.log("Listings:", request.result);
-                deferred.resolve(request.result);
-            };
-    
-            request.onerror = function (event) {
-                console.error("Error fetching listings:", event.target.error);
-                deferred.reject("Error fetching listings: " + event.target.error);
-            };
-    
-            return deferred.promise;
+        
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        
+        console.log("dcsdc",user)
+        console.log(user.token)
+        ApiService.getDataInternal(`/owner/alllisting/${user.id}`,user.token)
+        .then(function(response) {
+            console.log("API Listings:", response.data);
+            deferred.resolve(response.data.listings);
+        })
+        .catch(function(error) {
+            console.error("API Error:", error);
+            let errorMessage = "Failed to fetch listings";
+            
+         
+            if (error.status === 401) {
+                errorMessage = "Session expired - please login again";
+            } else if (error.status === 500) {
+                errorMessage = "Server error - try again later";
+            }
+            
+            deferred.reject(errorMessage);
         });
+    
+        return deferred.promise;
+    };
+    
+    this.getAllListingsConsumer = function(params) {
+        const deferred = $q.defer();
+        
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        
+        console.log("dcsfdc",user)
+        console.log(user.token)
+        ApiService.getDataInternaln(`/consumer/alllisting`,params,user.token)
+        .then(function(response) {
+            console.log("API Listings:", response.data);
+            deferred.resolve(response.data);
+        })
+        .catch(function(error) {
+            console.error("API Error:", error);
+            let errorMessage = "Failed to fetch listings";
+            
+         
+            if (error.status === 401) {
+                errorMessage = "Session expired - please login again";
+            } else if (error.status === 500) {
+                errorMessage = "Server error - try again later";
+            }
+            
+            deferred.reject(errorMessage);
+        });
+    
+        return deferred.promise;
+    };
+
+    this.getListing = function(lisitngID) {
+        const deferred = $q.defer();
+        
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        
+        console.log("dcsfdc",user)
+        console.log(user.token)
+        ApiService.getDataInternal(`/consumer/listing/${lisitngID}`,user.token)
+        .then(function(response) {
+            console.log("API Listings:", response.data.listings);
+            deferred.resolve(response.data.listings);
+        })
+        .catch(function(error) {
+            console.error("API Error:", error);
+            let errorMessage = "Failed to fetch listings";
+            
+         
+            if (error.status === 401) {
+                errorMessage = "Session expired - please login again";
+            } else if (error.status === 500) {
+                errorMessage = "Server error - try again later";
+            }
+            
+            deferred.reject(errorMessage);
+        });
+    
+        return deferred.promise;
+    };
+
+    this.getListingOwner = function(lisitngID) {
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        
+        console.log("dcsfdc",user)
+        console.log(user.token)
+        ApiService.getDataInternal(`/owner/listing/${lisitngID}`,user.token)
+        .then(function(response) {
+            console.log("API Listings:", response.data.listings);
+            deferred.resolve(response.data.listings);
+        })
+        .catch(function(error) {
+            console.error("API Error:", error);
+            let errorMessage = "Failed to fetch listings";
+            
+         
+            if (error.status === 401) {
+                errorMessage = "Session expired - please login again";
+            } else if (error.status === 500) {
+                errorMessage = "Server error - try again later";
+            }
+            
+            deferred.reject(errorMessage);
+        });
+    
+        return deferred.promise;
     };
     
 
     
     this.saveBookingConsumer= function(bookingData){
-        return dbService.openDB().then((db)=>{
+        const user = JSON.parse(sessionStorage.getItem("user"));  
             const deferred=$q.defer()
-            const transaction = db.transaction("biddings", "readwrite");
-            const store = transaction.objectStore("biddings");
-
-            bookingData.biddingID=idGeneratorService.generateBookingID();
-            bookingData.biddingDate = new Date().toISOString();
-
-
-            const request = store.add(bookingData);
-
-            request.onsuccess = () => {
-                console.log("Bid saved successfully:", bookingData.biddingID);
-                deferred.resolve(bookingData.biddingID);
-            };
-            request.onerror = (event) => {
-                console.error("Error saving listing:", event.target.error);
-                deferred.reject(event.target.error);
-            };
-
+            console.log(bookingData);
+            ApiService.postDataInternal('/consumer/bidding', bookingData,user.token)
+            .then(response => {
+              console.log("Bid saved successfully:", bookingData._id);
+              deferred.resolve(response);
+            })
+            .catch(error => {
+              console.error("Error saving listing:", error);
+              deferred.reject(error.data?.message || "Server error");
+            });
             return deferred.promise;
-        }).catch((err) => {
-            console.error(err)
-         });
-
-
     }
 
-    this.conversationcheck= function(car,user)
+    this.conversationcheck= function(owner,user,chat)
     {   
-       
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer()
-            const transaction = db.transaction("conversation", "readwrite");
-            const store = transaction.objectStore("conversation");
-            const conversationID = `${car.ownerID}${user.id}`;
-            const existingConvoRequest = store.get(conversationID);
-            
-            existingConvoRequest.onsuccess = () => {
-            let conversation = existingConvoRequest.result;
-
-
-                if (!conversation) {
-                    console.log("No existing conversation. Creating a new one...");
-                    const newConversation = {
-                        conversationID,
-                        bookerID: user.id,
-                        ownerID: car.ownerID,
-                        bookerName: user.name,
-                        ownerName: car.owner.ownerName,
-                    };
-    
-                    store.add(newConversation);
-                    console.log("New conversation created:", newConversation);
-                } else {
-                    console.log("Existing conversation found:", conversationID);
-                }
-                deferred.resolve(conversationID);
-            }
-            existingConvoRequest.onerror = (event) => {
-                console.error("Error saving listing:", event.target.error);
-                deferred.reject(event.target.error);
-            };
-            
-
-            return deferred.promise;
-        
-        }).catch((err)=>{
-
-            console.error(err)
-        
+        // const user = JSON.parse(sessionStorage.getItem("user"));  
+       const chatData={
+        owner:owner,
+        user:user,
+        chat:chat
+       }
+        const deferred=$q.defer()
+        console.log(chatData);
+        ApiService.postDataInternal('/consumer/chats', chatData,user.token)
+        .then(response => {
+          console.log("Chat:", response.data);
+          deferred.resolve(response.data);
         })
+        .catch(error => {
+          console.error("Error saving listing:", error);
+          deferred.reject(error.data?.message || "Server error");
+        });
+        return deferred.promise;
+      
+    }
+
+    this.conversationcheckowner= function(owner,user,chat)
+    {   
+        // const user = JSON.parse(sessionStorage.getItem("user"));  
+       const chatData={
+        owner:owner,
+        user:user,
+        chat:chat
+       }
+        const deferred=$q.defer()
+        console.log(chatData);
+        ApiService.postDataInternal('/owner/chats', chatData,user.token)
+        .then(response => {
+          console.log("Chat:", response.data);
+          deferred.resolve(response.data);
+        })
+        .catch(error => {
+          console.error("Error saving listing:", error);
+          deferred.reject(error.data?.message || "Server error");
+        });
+        return deferred.promise;
+      
     }
 
     this.chatMessagesave=function(chat)
@@ -156,59 +246,39 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService) {
     }
 
 
-    this.getchatmessages=function (conversationID)
+    this.getchatmessages=function (conversationId)
     {
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("chat", "readonly");
-            const store = transaction.objectStore("chat");
-
-            const request=store.getAll();
-
-            request.onsuccess=()=>{
-                chats=request.result;
-                const filteredchat=chats.filter(chat => chat.conversationID === conversationID);
-                deferred.resolve(filteredchat);
-            }
-
-            request.onerror=(event)=>{
-                console.error("Error saving listing:", event.target.error);
-                deferred.reject(event.target.error);
-            }
-
+        const user = JSON.parse(sessionStorage.getItem("user"));
+            const deferred=$q.defer()
+            console.log(conversationId);
+            ApiService.getDataInternal(`/consumer/getchats/${conversationId}`, user.token)
+            .then(response => {
+              console.log("Chat:", response.data);
+              deferred.resolve(response.data);
+            })
+            .catch(error => {
+              console.error("Error saving listing:", error);
+              deferred.reject(error.data?.message || "Server error");
+            });
             return deferred.promise;
-            
-        }
-    ).catch((err)=>{
-
-        console.error(err)
-    
-    })
     }
 
 
-    this.getAllBiddings=function() {
-
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("biddings", "readonly");
-            const store = transaction.objectStore("biddings");
-
-            const request=store.getAll();
-
-            request.onsuccess=()=>{
-                biddings=request.result;
-                deferred.resolve(biddings);
-            }
-
-            request.onerror=(event)=>{
-                console.error("Error saving listing:", event.target.error);
-                deferred.reject(event.target.error);
-            }
-
-            return deferred.promise;
+    this.getBiddingsOwner = function(listingId) {
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));  
+        ApiService.getDataInternal(`/owner/allbidding/${listingId}`,user.token)
+        .then(response => {
+          deferred.resolve(response.data);
         })
-    }
+        .catch(error => {
+          console.error("Error fetching biddings:", error);
+          deferred.reject(error.data?.message || "Server error");
+        });
+      
+        return deferred.promise;
+      };
+      
 
     this.statusrejectbooking=function(currbid)
     {
@@ -250,164 +320,169 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService) {
         
     }
 
-    this.statuschangebooking=function(bidid,status)
+    this.statuschangebooking = function(statusobj) {
+        console.log("Dsv",statusobj);
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));  
+        ApiService.postDataInternal(`/owner/decidebid`,statusobj,user.token)
+          .then(response => {
+            deferred.resolve(response.data.updatedBid);
+          })
+          .catch(error => {
+            console.error("Error updating status:", error);
+            deferred.reject(error.data?.message || "Server error");
+          });
+      
+        return deferred.promise;
+      };
+      
+
+   
+
+    this.getconversationuser=function(bookerId)
     {
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction(["biddings","history"], "readwrite");
-            const store = transaction.objectStore("biddings");
-            const historyStore = transaction.objectStore("history");
+        // console.log("Dsv",statusobj);
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));  
+        ApiService.getDataInternal(`/consumer/getconversation/${bookerId}`,user.token)
+          .then(response => {
+            console.log(response.data);
+            deferred.resolve(response.data);
+          })
+          .catch(error => {
+            console.error("Error updating status:", error);
+            deferred.reject(error.data?.message || "Server error");
+          });
+      
+        return deferred.promise;
+    }
 
+    this.getconversationowner=function(ownerId)
+    {
+        
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));  
+        ApiService.getDataInternal(`/owner/getconversation/${ownerId}`,user.token)
+          .then(response => {
+            console.log(response.data);
+            deferred.resolve(response.data);
+          })
+          .catch(error => {
+            console.error("Error updating status:", error);
+            deferred.reject(error.data?.message || "Server error");
+          });
+      
+        return deferred.promise;
+    }
 
-            const request  = store.get(bidid);
-
-            request.onsuccess=()=>{
-                const currentbid=request.result;
-                currentbid.status=status;
-                store.put(currentbid);
-
-                const history=currentbid;
-
-                if(status==="accepted" || status==="accept")
-                {
-                    history.historyID = idGeneratorService.generateHistoryID();
-                    history.startkm="NA";
-                    history.endkm="NA";
-                    history.paid = "no";
-                    historyStore.add(history);
-                }
-
-                
-
-                deferred.resolve(currentbid);
-            }
-            request.onerror=(error)=>
-            {
-                deferred.reject(error);
-            }
-
-            return deferred.promise;
-
+    this.getChatMessageOwner=function()
+    {
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        const deferred=$q.defer()
+        console.log(conversationId);
+        ApiService.getDataInternal(`/owner/getchats/${conversationId}`, user.token)
+        .then(response => {
+          console.log("Chat:", response.data);
+          deferred.resolve(response.data);
         })
+        .catch(error => {
+          console.error("Error saving listing:", error);
+          deferred.reject(error.data?.message || "Server error");
+        });
+        return deferred.promise;
     }
 
-    this.getconversation=function()
+    this.getUpcomingBiddings = function(ownerId) {
+        console.log("Dsv",ownerId);
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));  
+        ApiService.getDataInternal(`/owner/startkm/${ownerId}`,user.token)
+          .then(response => {
+            console.log("response",response.data);
+            deferred.resolve(response.data);
+          })
+          .catch(error => {
+            console.error("Error updating status:", error);
+            deferred.reject(error.data?.message || "Server error");
+          });
+      
+        return deferred.promise;
+      };
+
+    // this.getAllBiddingsHistory=function()
+    // {
+    //     return dbService.openDB().then((db)=>{
+    //         const deferred=$q.defer();
+    //         const transaction = db.transaction("history", "readonly");
+    //         const store = transaction.objectStore("history");
+
+    //         const request=store.getAll();
+
+    //         request.onsuccess=()=>{
+    //             const history=request.result;
+    //             deferred.resolve(history);
+    //         }
+    //         request.onerror=(error)=>
+    //         {
+    //             deferred.reject(error);
+    //         }
+
+    //         return deferred.promise;
+    //     }
+    // )
+    // }
+
+    this.updateStartKm = function(listingId, startKm) { // Changed param from listingId → historyId
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        
+        ApiService.patchDataInternal(`/owner/updatestartkm/${listingId}`, { startKm }, user.token)
+          .then(response => {
+            console.log("response", response.data);
+            deferred.resolve(response.data.updatedHistory);
+          })
+          .catch(error => {
+            console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+          });
+      
+        return deferred.promise;
+      };
+
+      this.getEndingBiddings = function(ownerId) {
+        console.log("Dsv",ownerId);
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));  
+        ApiService.getDataInternal(`/owner/endkm/${ownerId}`,user.token)
+          .then(response => {
+            
+            deferred.resolve(response.data);
+          })
+          .catch(error => {
+            console.error("Error updating status:", error);
+            deferred.reject(error.data?.message || "Server error");
+          });
+      
+        return deferred.promise;
+      };
+     
+
+    this.updateEndKm=function(listingId,endKm)
     {
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("conversation", "readonly");
-            const store = transaction.objectStore("conversation");
-
-            const request=store.getAll();
-
-            request.onsuccess=()=>{
-                const conversation=request.result;
-                deferred.resolve(conversation);
-            }
-            request.onerror=(error)=>
-            {
-                deferred.reject(error);
-            }
-
-            return deferred.promise;
-        })
-    }
-
-    this.getChatMessage=function()
-    {
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("chat", "readonly");
-            const store = transaction.objectStore("chat");
-
-            const request=store.getAll();
-
-            request.onsuccess=()=>{
-                const conversation=request.result;
-                deferred.resolve(conversation);
-            }
-            request.onerror=(error)=>
-            {
-                deferred.reject(error);
-            }
-
-            return deferred.promise;
-
-        }
-    )
-    }
-
-    this.getAllBiddingsHistory=function()
-    {
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("history", "readonly");
-            const store = transaction.objectStore("history");
-
-            const request=store.getAll();
-
-            request.onsuccess=()=>{
-                const history=request.result;
-                deferred.resolve(history);
-            }
-            request.onerror=(error)=>
-            {
-                deferred.reject(error);
-            }
-
-            return deferred.promise;
-        }
-    )
-    }
-
-    this.updateStartKm=function(historyID,startKm)
-    {
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("history", "readwrite");
-            const store = transaction.objectStore("history");
-
-            const request=store.get(historyID);
-
-            request.onsuccess=()=>{
-                const history=request.result;
-                history.startkm=startKm;
-                store.put(history);
-                deferred.resolve(history);
-            }
-            request.onerror=(error)=>
-            {
-                deferred.reject(error);
-            }
-
-            return deferred.promise;
-        }
-    )
-    }
-
-    this.updateEndKm=function(historyID,endKm)
-    {
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("history", "readwrite");
-            const store = transaction.objectStore("history");
-
-            const request=store.get(historyID);
-
-            request.onsuccess=()=>{
-                const history=request.result;
-                history.endkm=endKm;
-                store.put(history);
-                deferred.resolve(history);
-            }
-            request.onerror=(error)=>
-            {
-                deferred.reject(error);
-            }
-
-            return deferred.promise;
-        }
-    )
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        
+        ApiService.patchDataInternal(`/owner/updateendkm/${listingId}`, { endKm }, user.token)
+          .then(response => {
+            console.log("response", response.data);
+            deferred.resolve(response.data.updatedHistory);
+          })
+          .catch(error => {
+            console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+          });
+      
+        return deferred.promise;
     }
 
     this.genrateInvoice=function(invoice)
@@ -446,29 +521,23 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService) {
     }
 )}
 
-this.getInvoices=function()
+this.getInvoices=function(userId)
 {
-    
-        return dbService.openDB().then((db)=>{
-            const deferred=$q.defer();
-            const transaction = db.transaction("invoice", "readonly");
-            const store = transaction.objectStore("invoice");
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+        
+    const deferred=$q.defer();
+    ApiService.getDataInternaln(`/consumer/getinvoice/${userId}`, { filter:"all" }, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-            const request=store.getAll();
+           return deferred.promise;
 
-            request.onsuccess=()=>{
-                const invoice=request.result;
-                deferred.resolve(invoice);
-            }
-            request.onerror=(error)=>
-            {
-                deferred.reject(error);
-            }
-
-            return deferred.promise;
-
-        }
-    )
+        
 }
 
 this.markInvoicePaid=function(invoiceid)
@@ -497,29 +566,21 @@ this.markInvoicePaid=function(invoiceid)
 )
 }
 
-this.markInvoicePaidHistory=function(historyID)
-{           console.log(historyID);
+this.markInvoicePaidHistory=function(historyId)
+{     const user = JSON.parse(sessionStorage.getItem("user"));  
+        
+    const deferred=$q.defer();
+    ApiService.getDataInternal(`/consumer/markaspaid/${historyId}`, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-    return dbService.openDB().then((db)=>{
-        const deferred=$q.defer();
-        const transaction = db.transaction("history", "readwrite");
-        const store = transaction.objectStore("history");
-        const request=store.get(historyID);
+           return deferred.promise;
 
-        request.onsuccess=()=>{
-            const invoice=request.result;
-            invoice.paid=true;
-            store.put(invoice);
-            deferred.resolve(invoice);
-        }
-        request.onerror=(error)=>
-        {
-            deferred.reject(error);
-        }
-
-        return deferred.promise;
-
-    })
 }
 
 this.markInvoicePaidFalse=function(invoiceid)
@@ -611,147 +672,77 @@ this.editUserProfile=function(id,name,phone,password,newpassword)
 this.getUserBiddingHistory = function (userId, filters, page, rowsPerPage) {
     console.log("Fetching bids for:", userId, JSON.stringify(filters), "Page:", page, "Rows per page:", rowsPerPage);
 
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("biddings", "readonly");
-        const store = transaction.objectStore("biddings");
 
-        let filteredBids = []; // Store only matching bids
-        let allUserBids = []; // Store all user bids (for fallback)
-
-        let categoriesSet = new Set();
-        let citiesSet = new Set();
-        let ownerEmailsSet = new Set();
-
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        // Convert empty filters to null for easier comparison
-        Object.keys(filters).forEach(key => {
-            if (filters[key] === "") filters[key] = null;
-        });
-
-        const hasFilters = Object.values(filters).some(val => val !== null && val !== undefined);
-
-        // Convert date filters correctly
-        const startDate = filters.startDate ? new Date(filters.startDate).setHours(0, 0, 0, 0) : null;
-        const endDate = filters.endDate ? new Date(filters.endDate).setHours(23, 59, 59, 999) : null;
-
-        const request = store.openCursor();
-        request.onsuccess = function (event) {
-            const cursor = event.target.result;
-            if (cursor) {
-                const bid = cursor.value;
-
-                if (bid.booker.bookerId === userId) {
-                    allUserBids.push(bid); // Store all user bids for fallback
-
-                    // Collect unique categories, cities, and owner emails
-                    if (bid.cardata.carCategory) categoriesSet.add(bid.cardata.carCategory);
-                    if (bid.cardata.carcity) citiesSet.add(bid.cardata.carcity);
-                    if (bid.owner && bid.owner.owneremail) ownerEmailsSet.add(bid.owner.owneremail.toLowerCase()); // Normalize case
-
-                    let isMatch = true;
-                    const bidDate = new Date(bid.biddingDate).setHours(0, 0, 0, 0);
-
-                    console.log("Checking bid:", bid);
-
-                    // Apply filters one by one
-                    if (filters.category && bid.cardata.carCategory !== filters.category) isMatch = false;
-                    if (filters.city && bid.cardata.carcity !== filters.city) isMatch = false;
-                    if (filters.ownerEmail && bid.owner && bid.owner.owneremail.toLowerCase() !== filters.ownerEmail.toLowerCase()) isMatch = false;
-                    if (filters.status && bid.status !== filters.status) isMatch = false;
-                    if (startDate && bidDate < startDate) isMatch = false;
-                    if (endDate && bidDate > endDate) isMatch = false;
-
-                    if (isMatch) {
-                        console.log("✔ Bid matched filters:", bid);
-                        filteredBids.push(bid);
-                    } else {
-                        console.log("✖ Bid did not match filters:", bid);
-                    }
-                }
-
-                cursor.continue();
-            } else {
-                console.log("Filtering done. Total matching bids:", filteredBids.length, " | All user bids:", allUserBids.length);
-
-                // Apply pagination AFTER filtering
-                let paginatedBids = filteredBids.slice(start, end);
-
-                // If no filtered results are found, return unfiltered paginated results
-                if (paginatedBids.length === 0 && hasFilters) {
-                    console.log("No filtered results found, returning unfiltered paginated results");
-                    paginatedBids = allUserBids.slice(start, end);
-                }
-
-                // Convert sets to sorted arrays
-                const categories = Array.from(categoriesSet).sort();
-                const cities = Array.from(citiesSet).sort();
-                const ownerEmails = Array.from(ownerEmailsSet).sort();
-
-                deferred.resolve({
-                    bids: paginatedBids,
-                    categories: categories,
-                    cities: cities,
-                    ownerEmails: ownerEmails
-                });
-            }
-        };
-
-        request.onerror = function () {
-            console.error("Error fetching user bidding history");
-            deferred.reject("Error fetching user bidding history");
-        };
-
-        return deferred.promise;
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+        
+    const deferred=$q.defer();
+    ApiService.getDataInternalne(`/consumer/history/${userId}`, filters,page, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
     });
+
+           return deferred.promise;
+       
 };
 
-this.getAllUser=function()
+this.getAllUser=function(params)
 {
-    
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("user", "readonly");
-        const store = transaction.objectStore("user");
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+        
+    const deferred=$q.defer();
+    ApiService.getDataInternaln(`/admin/getusers`, params, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-        const request=store.getAll();
+    return deferred.promise;
 
-        request.onsuccess=()=>{
-            const user= request.result;
-            deferred.resolve(user);
-        }
-        request.onerror=()=>{
-            deferred.reject("Error fetching user");
-            }
-            return deferred.promise;
-
-    })
+        
+  
 }
 
-this.blockUser=function(userID)
+this.updateuser=function(params,blocked)
 {
+    const user = JSON.parse(sessionStorage.getItem("user"));  
     
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("user", "readwrite");
-        const store = transaction.objectStore("user");
+    const deferred=$q.defer();
+    ApiService.patchDataInternalne(`/admin/users/${params.id}`,blocked, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-        const request=store.get(userID);
+    return deferred.promise;
+ 
+}
 
-        request.onsuccess=()=>{
-            const user= request.result;
-            user.blocked=true;
-            store.put(user);
-            deferred.resolve(user);
-        }
-        request.onerror=()=>{
-            deferred.reject("Error fetching user");
-            }
-            return deferred.promise;
+this.updatelisting=function(params,blocked)
+{
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    
+    const deferred=$q.defer();
+    ApiService.patchDataInternalne(`/admin/updatelisting/${params.id}`,blocked, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-    })
+    return deferred.promise;
+ 
 }
 
 this.unBlockUser=function(userID)
@@ -776,6 +767,25 @@ this.unBlockUser=function(userID)
             return deferred.promise;
 
     })
+}
+
+
+this.getAllListingsAdmin=function(params)
+{
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+        
+    const deferred=$q.defer();
+    ApiService.getDataInternaln(`/admin/getlistings`, params, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
+
+    return deferred.promise;
+
 }
 
 this.deleteListings=function(listingID)
@@ -803,300 +813,173 @@ this.deleteListings=function(listingID)
 }
 
 
-this.getBidsPerDayOwner=function(ownerID) {
-    return dbService.openDB().then((db) => {
-    const deferred = $q.defer();
-    const transaction = db.transaction("history", "readonly");
-    const store = transaction.objectStore("history");
+this.getBidsPerDayOwner=function() {
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+        console.log("plplplplqaaq")
+    const deferred=$q.defer();
+    ApiService.getDataInternal(`/owner/stats/ownerbidlastweek/${user.id}`, user.token)
+    .then((response) => {
+            deferred.resolve(response.data.statistics);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-    const request = store.getAll();
-    
-    
-    request.onsuccess = () => {
-          
-    const allBids = request.result.filter(item => item.owner.ownerID === ownerID);
-           
-        
-          
-            const days = [...Array(7)].map((_, i) => {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                return date.toISOString().split("T")[0]; 
-            }).reverse();
-
-           
-            const bidCounts = days.map(day => 
-                allBids.filter(bid => bid.biddingDate.startsWith(day)).length
-            );
-            
-            deferred.resolve({ days, bidCounts });
-        };
-        
-        request.onerror = () => {deferred.reject};
     return deferred.promise;
-})
 }
 
 
 
 
-this.getBidsPerDayOfWeek=function() {
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-    const usern= JSON.parse(sessionStorage.getItem("user"));
-    const transaction = db.transaction("history", "readonly");
-    const store = transaction.objectStore("history");
-
-   
-        const request = store.getAll();
-
-        request.onsuccess = () => {
-            const bids = request.result;
-            const bidsn = bids.filter(user => user.owner.ownerID === usern.id);
-            const weeklyData = {
-                Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0,
-                Friday: 0, Saturday: 0, Sunday: 0
-            };
-        
-            bidsn.forEach(bid => {
-                const date = new Date(bid.biddingDate);
-                if (!isNaN(date)) {
-                    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }); 
-                    console.log(dayName)
-                    weeklyData[dayName] += parseFloat(bid.BidAmount) || 0; 
-                }
-            }); 
-
-
-           
-            deferred.resolve ({
-                labels: Object.keys(weeklyData), 
-                bidAmounts: Object.values(weeklyData) 
-            });
-        }; 
-        request.onerror = () => deferred.reject("Error fetching bidding history.");
-        
-        return deferred.promise
-})
-}
-
-
-this.getUserAndAvgBids=function(userId) {
-
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("history", "readonly");
-        const store = transaction.objectStore("history");
-
-        const request = store.getAll();
-
-        request.onsuccess=()=>{
-            const bids=request.result;
-            const days = [...Array(7)].map((_, i) => {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                return date.toISOString().split("T")[0]; 
-            }).reverse();
-
-            const userBids = {};
-            const totalBidsPerDay = {};
-            const uniqueUsersPerDay = {}; 
-
-            days.forEach(day => {
-                userBids[day] = 0;
-                totalBidsPerDay[day] = 0;
-                uniqueUsersPerDay[day] = new Set(); 
-            });
-
-            bids.forEach(bid => {
-                const bidDate = bid.biddingDate.split("T")[0]; 
-                if (days.includes(bidDate)) {
-                    totalBidsPerDay[bidDate] += parseFloat(bid.BidAmount) || 0;
-                    uniqueUsersPerDay[bidDate].add(bid.owner.ownerID); 
-        
-                    if (bid.owner.ownerID === userId) {
-                        userBids[bidDate] += parseFloat(bid.BidAmount) || 0;
-                    }
-                }
-            });
-
-            const avgBids = days.map(day => 
-                uniqueUsersPerDay[day].size > 0 ? totalBidsPerDay[day] / uniqueUsersPerDay[day].size : 0
-            );
-
-            deferred.resolve({days:days,
-                userBidAmounts: days.map(day => userBids[day]),
-                avgBidAmounts: avgBids})
-
-        }
-
-        request.onerror = () => deferred.reject("Error fetching bidding history.");
-    
-        return deferred.promise;
+this.getBidsPerDayOfWeek=function(startDate,endDate) {
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
     }
-    )   
-  
-    
-}
-
-
- this.getListingWiseEarnings=function(userId) {
-
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("history", "readonly");
-        const store = transaction.objectStore("history");
-
-        const request = store.getAll();
-
-        request.onsuccess=()=>
-        {
-
-            const allBids = request.result || [];
-            const bids = allBids.filter(bid => bid.owner.ownerID === userId);
-            const earningsPerListing = {};
-            bids.forEach(bid => {
-                const carName = `${bid.cardata.carMake} ${bid.cardata.carModel}`; 
-                
-                if (!earningsPerListing[carName]) {
-                    earningsPerListing[carName] = 0;
-                }
-                earningsPerListing[carName] += parseFloat(bid.BidAmount) || 0;
-            });
-
-           deferred.resolve( {
-                listingNames: Object.keys(earningsPerListing), 
-                earnings: Object.values(earningsPerListing) 
-            });
-
-        }
-
-        
-            request.onerror = () => deferred.reject("Error fetching bidding history.");
-
-        return deferred.promise;
-
-    }
-)
-}
-
-
- this.getTopCarModels=function(ownerId) {
-
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("history", "readonly");
-        const store = transaction.objectStore("history");
-
-        const request = store.getAll();
-
-        request.onsuccess=()=>{
-            const ownerModelBids = {};
-            const platformModelBids = {};
-            const platformModelCounts = {};
-
-            bids=request.result;
-
-            bids.forEach(bid => {
-                if(bid.status==="rejected"){
-                    return;
-                }
-                const carName = `${bid.cardata.carMake} ${bid.cardata.carModel}`; 
-        
-                if (bid.owner.ownerID === ownerId) {
-                    ownerModelBids[carName] = (ownerModelBids[carName] || 0) + 1;
-                }
-        
-                platformModelBids[carName] = (platformModelBids[carName] || 0) + 1;
-                platformModelCounts[carName] = (platformModelCounts[carName] || 0) + 1;
-            });
-
-            const sortedOwnerModels = Object.entries(ownerModelBids)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5); 
-
-        const totalBids = Object.values(platformModelBids).reduce((sum, val) => sum + val, 0);
-        const totalModels = Object.keys(platformModelBids).length;
-        const avgBidPerModel = totalModels > 0 ? totalBids / totalModels : 0;
-
-        const avgPlatformBids = new Array(sortedOwnerModels.length).fill(avgBidPerModel);
-
-        deferred.resolve(  {
-            carModels: sortedOwnerModels.map(item => item[0]),
-            ownerBidCounts: sortedOwnerModels.map(item => item[1]), 
-            avgPlatformBids: avgPlatformBids
-        })
-        }
-
-        request.onerror = () => deferred.reject("Error fetching bidding history.");
-
-        return deferred.promise;
-
-        
-    })
-
-
-  
-  
-}
-
-
-this.getCategoryBookingCounts=function(ownerId) {
-
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("history", "readonly");
-        const store = transaction.objectStore("history");
-
-        const request = store.getAll();
-        request.onsuccess = () => {
-            const allBids = request.result || [];
-            const bookings = allBids.filter(bid => bid.owner.ownerID === ownerId);
-
-            const categoryCounts = {};
-
-    bookings.forEach(booking => {
-        const category = booking.cardata.carCategory; 
-
-        if (!categoryCounts[category]) {
-            categoryCounts[category] = 0;
-        }
-        categoryCounts[category]++;
+    ApiService.getDataInternaln(`/owner/stats/ownerearningdaywise/${user.id}`,params, user.token)
+    .then((response) => {
+            deferred.resolve(response.data.statistics);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
     });
 
-    deferred.resolve( {
-        categories: Object.keys(categoryCounts),
-        bookings: Object.values(categoryCounts) 
+    return deferred.promise;
+}
+
+
+this.getUserAndAvgBids=function(startDate,endDate) {
+
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    ApiService.getDataInternaln(`/owner/stats/getearningandplateformavg/${user.id}`,params, user.token)
+    .then((response) => {
+            deferred.resolve(response.data.statistics);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
     });
-        }
 
-        request.onerror = () => deferred.reject("Error fetching bidding history.");
-
-        return deferred.promise;
-    })
+    return deferred.promise;
     
 }
 
 
-this.getOwnerEarnings=function(ownerID) {
-    return dbService.openDB().then((db) => {
-        const deferred = $q.defer();
-        const transaction = db.transaction("invoice", "readonly");
-        const store = transaction.objectStore("invoice");
+ this.getListingWiseEarnings=function(startDate,endDate) {
 
-        const request = store.getAll();
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    ApiService.getDataInternaln(`/owner/stats/topearningcars/${user.id}`,params, user.token)
+    .then((response) => {
+            deferred.resolve(response.data.statistics);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-        request.onsuccess=()=>{
-            allHistory=request.result.filter(entry => entry.owner.ownerID === ownerID && entry.status === "accept");
-            console.log("dcvs")
-            console.log(allHistory);
-            deferred.resolve(allHistory);
-        }
+    return deferred.promise;
 
-        request.onerror = () => deferred.reject("Error fetching bidding history.");
+}
 
-        return deferred.promise;
-    })
+
+ this.getTopCarModels=function(startDate,endDate) {
+
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    ApiService.getDataInternaln(`/owner/stats/gettopearningcarmodal/${user.id}`,params, user.token)
+    .then((response) => {
+            deferred.resolve(response.data.statistics);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
+
+    return deferred.promise;
+  
+}
+
+
+this.getCategoryBookingCounts=function(startDate,endDate) {
+
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    ApiService.getDataInternaln(`/owner/stats/gettopearningcarcategories/${user.id}`,params, user.token)
+    .then((response) => {
+            deferred.resolve(response.data.statistics);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
+
+    return deferred.promise;
+    
+}
+
+this.getAcceptedBidOwner=function(param){
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    const params=param
+    console.log(params)
+    console.log(user)
+    ApiService.getDataInternaln(`/owner/approvedbidsowner/${user.id}`,params, user.token)
+    .then((response) => {
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
+
+    return deferred.promise;
+}
+
+this.getBookedDate=function(listingId)
+{
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    console.log(user)
+    ApiService.getDataInternal(`/consumer/getbookeddate/${listingId}`, user.token)
+    .then((response) => {
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
+
+    return deferred.promise;
+}
+
+
+this.getOwnerEarnings=function() {
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    const deferred=$q.defer();
+    
+    ApiService.getDataInternal(`/owner/stats/ownerlastweeksearning/${user.id}`, user.token)
+    .then((response) => {
+            deferred.resolve(response.data.statistics);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
+
+    return deferred.promise;
     
 }
 
@@ -1123,164 +1006,92 @@ this.getBiddingData=function() {
 
 this.getBidsPerDay=function() {
     const deferred=$q.defer();
-   this.getBiddingData().then((result) => {
-        bids=result;
-        console.log("Csc")
-        console.log(bids);
-        const days = [...Array(7)].map((_, i) => {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            return date.toISOString().split("T")[0]; 
-        }).reverse();
-        const bidAmounts = days.map(day =>
-            bids
-                .filter(bid => bid.biddingDate.startsWith(day))
-                .reduce((sum, bid) => sum + (parseFloat(bid.BidAmount) || 0), 0) 
-        );
-        console.log(days,bidAmounts)
-        deferred.resolve({days,bidAmounts});
-        }).catch((err) => {
-           deferred.reject(err);
-        });
  
-        return deferred.promise;
-        
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    ApiService.getDataInternal(`/admin/stats/bidlast7days`,user.token)
+      .then(response => {
+        console.log(response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+  
+    return deferred.promise;
    
 }
 
 
-this.getActiveInactiveUsers=function() {
+this.getActiveInactiveUsers=function(startDate,endDate) {
   
-    return dbService.openDB().then((db) => {
-        const deferred=$q.defer();
-        const userTransaction = db.transaction("user", "readonly");
-        const bidTransaction = db.transaction("history", "readonly");
-
-        const userStore = userTransaction.objectStore("user"); 
-        const bidStore = bidTransaction.objectStore("history");
-
-        userRequest=userStore.getAll();
-        bidRequest=bidStore.getAll();
-        
-        userRequest.onsuccess=()=>{
-            
-            bidRequest.onsuccess = () => {
-                
-                const users = userRequest.result || [];
-                const bids = bidRequest.result || [];
-
-                const activeUserIds = new Set(bids.map(bid => bid.booker.bookerId));
-
-                
-                let activeUsers = 0;
-                let inactiveUsers = 0;
-
-                users.forEach(user => {
-                    if (user.role === "user") {
-                        console.log(user);
-                        if (activeUserIds.has(user.userID)) {
-                            activeUsers++;
-                        } else {
-                            inactiveUsers++;
-                        }
-                    }
-                });
-                console.log(activeUsers.inactiveUsers)
-                deferred.resolve({activeUsers, inactiveUsers});
-
-            }
-            bidRequest.onerror=(err)=>{
-                console.log("scvdvb")
-                deferred.reject(err);
-            }
-        }
-        userRequest.onerror=(err)=>{
-            console.log("scvdvb")
-            deferred.reject(err);
-        }
-
-        return deferred.promise;
-    });
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    ApiService.getDataInternaln(`/admin/stats/getactiveinactiveuser`,params,user.token)
+      .then(response => {
+        console.log(response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+  
+    return deferred.promise;
+   
+       
  
 }
 
 
 
-this.getMostPopularCars=function() {
-    return dbService.openDB().then((db) => {
-        const deferred=$q.defer();
-        const transaction = db.transaction("history", "readonly"); 
-        const store = transaction.objectStore("history");
-        const request = store.getAll();
-
-        request.onsuccess = () => {
-            const allBookings = request.result || [];
-            const carBookings = {};
-
-            allBookings.forEach(booking => {
-                const carName = `${booking.cardata.carMake} ${booking.cardata.carModel}`; 
-
-                if (!carBookings[carName]) {
-                    carBookings[carName] = 0;
-                }
-                carBookings[carName]++;
-            });
-
-            const sortedCars = Object.entries(carBookings)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-
-            deferred.resolve({
-                carNames: sortedCars.map(item => item[0]), 
-                bookingCounts: sortedCars.map(item => item[1]) 
-            });
-        };
-
-        request.onerror = () => deferred.reject("Error fetching booking history.");
-
-        return deferred.promise;
-
-    })
+this.getMostPopularCars=function(startDate,endDate) {
+    
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    ApiService.getDataInternaln(`/admin/stats/getmostbookedcars`,params,user.token)
+      .then(response => {
+        console.log(response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+  
+    return deferred.promise;
 }   
 
 
 
 
-this.getMostBookedCarCategories=function() {
+this.getMostBookedCarCategories=function(startDate,endDate) {
 
-    return dbService.openDB().then((db) => {
-        const deferred=$q.defer();
-        const transaction = db.transaction("history", "readonly"); 
-        const store = transaction.objectStore("history");
-        const request = store.getAll();
-        request.onsuccess = () => {
-            const allBookings = request.result || [];
-            const categoryBookings = {};
-
-            allBookings.forEach(booking => {
-                const category = booking.cardata.carCategory; 
-
-                if (!categoryBookings[category]) {
-                    categoryBookings[category] = 0;
-                }
-                categoryBookings[category]++;
-            });
-
-            const sortedCategories = Object.entries(categoryBookings)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-
-            deferred.resolve({
-                categories: sortedCategories.map(item => item[0]), 
-                bookingCounts: sortedCategories.map(item => item[1]) 
-            });
-        };
-        request.onerror = () => deferred.reject("Error fetching booking history.");
-
-        return deferred.promise;
-
-    })
-
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    ApiService.getDataInternaln(`/admin/stats/mostbookedcarcategories`,params,user.token)
+      .then(response => {
+        console.log(response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+  
+    return deferred.promise;
    
 }
 
@@ -1288,103 +1099,49 @@ this.getMostBookedCarCategories=function() {
 
 
 
-this.getAverageBidPerCategory=function() {
-    return dbService.openDB().then((db) => {
-        const deferred=$q.defer();
-        const transaction = db.transaction("history", "readonly"); 
-        const store = transaction.objectStore("history");
-        const request = store.getAll();
-        request.onsuccess = () => {
-            const allBids = request.result || [];
-
-            const carCategories = ["Sedan",
-    "SUV",
-    "Hatchback",
-    "Convertible",
-    "Coupe",
-    "Minivan",
-    "Pickup Truck"];
-            const categoryBids = {};
-
-            carCategories.forEach(category => {
-                categoryBids[category] = { totalAmount: 0, count: 0 };
-            });
-
-            allBids.forEach(bid => {
-                const category = bid.cardata.carCategory; 
-
-                if (categoryBids[category]) { 
-                    categoryBids[category].totalAmount += parseFloat(bid.BidAmount) || 0;
-                    categoryBids[category].count++;
-                }
-            });
-
-            const avgBidPerCategory = carCategories.map(category => ({
-                category,
-                avgBid: categoryBids[category].count ? (categoryBids[category].totalAmount / categoryBids[category].count).toFixed(2) : 0
-            }));
-
-            deferred.resolve({
-                categories: avgBidPerCategory.map(item => item.category),
-                avgBids: avgBidPerCategory.map(item => item.avgBid) 
-            });
-        };
-        request.onerror = () => deferred.reject("Error fetching booking history.");
-
-        return deferred.promise;
-
-    
-    
-    
-    })
-
-   
-
-
+this.getAverageBidPerCategory=function(startDate,endDate) {
+  
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    ApiService.getDataInternaln(`/admin/stats/avgbidamountpercarcategories`,params,user.token)
+      .then(response => {
+        console.log(response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+  
+    return deferred.promise;
  
 }
 
 
 
 
-this.getCarsListedByCategory=function (){
-    return dbService.openDB().then((db) => {
-        const deferred=$q.defer();
-        const transaction = db.transaction("listing", "readonly"); 
-        const store = transaction.objectStore("listing");
-        const request = store.getAll();
-        request.onsuccess = () => {
-            const allCars = request.result || [];
-
-            const carCategories = ["Sedan",
-                "SUV",
-                "Hatchback",
-                "Convertible",
-                "Coupe",
-                "Minivan",
-                "Pickup Truck"];
-            const categoryCounts = {};
-
-            carCategories.forEach(category => {
-                categoryCounts[category] = 0;
-            });
-
-            allCars.forEach(car => {
-                if (categoryCounts[car.cardata.carCategory] !== undefined) {
-                    categoryCounts[car.cardata.carCategory]++;
-                }
-            });
-
-            deferred.resolve({
-                categories: carCategories,
-                carCounts: carCategories.map(category => categoryCounts[category])
-            });
-        };
-        request.onerror = () => deferred.reject("Error fetching booking history.");
-
-        return deferred.promise;
-
-    })
+this.getCarsListedByCategory=function (startDate,endDate){
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    ApiService.getDataInternaln(`/admin/stats/carcountpercategory`,params,user.token)
+      .then(response => {
+        console.log(response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+  
+    return deferred.promise;
 }
 
 

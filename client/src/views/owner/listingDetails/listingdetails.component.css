@@ -148,6 +148,35 @@ body {
 #sidebar ul li a:hover {
     color: #1c3b4b;
 }
+#sidebarToggle {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: #16404D;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    height: 50px;
+}
+
+@media screen and (max-width: 900px) {
+    #sidebar {
+        transform: translateX(-100%);
+        z-index: 999;
+    }
+
+    #sidebarToggle {
+        display: block;
+    }
+
+    #sidebar.active {
+        transform: translateX(0);
+    }
+}
 
 /* Responsive Design */
 @media (max-width: 992px) {
@@ -167,9 +196,9 @@ body {
         max-width: 100%;
     }
 
-    #sidebar {
+    /* #sidebar {
         width: 220px;
-    }
+    } */
 }
 
 @media (max-width: 768px) {
@@ -177,7 +206,7 @@ body {
         flex-direction: column;
         align-items: stretch;
     }
-
+/* 
     #sidebar {
         width: 100%;
         position: relative;
@@ -189,7 +218,7 @@ body {
         display: inline-block;
         width: auto;
         margin: 0 15px;
-    }
+    } */
 
     .car-details-container {
         padding: 20px;

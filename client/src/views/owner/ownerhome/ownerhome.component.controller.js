@@ -9,10 +9,25 @@ carRentalApp.controller(
      * @description Chart instance for the bidding chart
      */
     let biddingChartInstance = null;
+    let renderWeeklyBid=null;
+    let ownercomperisonchart=null;
+    let topearningcarchart=null;
+    let topmodalchart=null;
+    let topcarcatagories=null;
+    let weekearingcomperison=null;
 
 
 
-   
+    $scope.startDate = new Date(new Date().setDate(new Date().getDate() - 6));
+    $scope.endDate = new Date();
+
+    $scope.init=function(){
+      console.log("fdv")
+      console.log($scope.startDate);
+      console.log($scope.endDate);
+      loadlisting();
+  }
+  
 
 
     /**
@@ -21,10 +36,12 @@ carRentalApp.controller(
      * @param {Function} callback
      * @returns {Promise}
      */
+
+    function loadlisting(){
     async.parallel(
       {
         biddingChart: function (callback) {
-          db.getBidsPerDayOwner($scope.user.id)
+          db.getBidsPerDayOwner()
             .then((result) => {
               callback(null, {
                 days: result.days,
@@ -39,11 +56,8 @@ carRentalApp.controller(
         },
 
         renderWeeklyBiddingChart: function (callback) {
-          db.getBidsPerDayOfWeek()
+          db.getBidsPerDayOfWeek($scope.startDate,$scope.endDate)
             .then((result) => {
-              console.log("SC");
-              console.log(result);
-              console.log("sc");
               callback(null, {
                 labels: result.labels,
                 bidAmounts: result.bidAmounts,
@@ -56,7 +70,7 @@ carRentalApp.controller(
         },
 
         renderUserComparisonChart: function (callback) {
-          db.getUserAndAvgBids($scope.user.id)
+          db.getUserAndAvgBids($scope.startDate,$scope.endDate)
             .then((result) => {
               callback(null, {
                 days: result.days,
@@ -74,7 +88,7 @@ carRentalApp.controller(
 
 
         renderUserEarningsChart:function(callback){
-          db.getListingWiseEarnings($scope.user.id)
+          db.getListingWiseEarnings($scope.startDate,$scope.endDate)
           .then((result)=>{
             callback(null,{
               listingNames:result.listingNames,
@@ -86,7 +100,7 @@ carRentalApp.controller(
           })
         },
         renderPopularCarModelsChart:function(callback){
-          db.getTopCarModels($scope.user.id)
+          db.getTopCarModels($scope.startDate,$scope.endDate)
           .then((result)=>{
             callback(null,{
               carModels:result.carModels,
@@ -101,7 +115,7 @@ carRentalApp.controller(
         
 
         renderCategoryBookingsChart:function(callback){
-          db.getCategoryBookingCounts($scope.user.id)
+          db.getCategoryBookingCounts($scope.startDate,$scope.endDate)
           .then((result)=>{
             callback(null,{
               categories:result.categories,
@@ -114,10 +128,9 @@ carRentalApp.controller(
         },
 
         earningsComparisonChart:function(callback){
-          db.getOwnerEarnings($scope.user.id)
+          db.getOwnerEarnings()
           .then((result)=>{
             callback(null,{
-              
               earningsData:result,
             });
           })
@@ -163,7 +176,14 @@ carRentalApp.controller(
         }
       }
     );
+  }
 
+    $scope.changedate = function() {
+      // Your logic here
+      console.log('Start Date:', $scope.startDate);
+      console.log('End Date:', $scope.endDate);
+      loadlisting();  
+  };
 
 
     /**
@@ -232,10 +252,16 @@ carRentalApp.controller(
      * @description This function is used to render the weekly bidding chart
      */
     function renderWeeklyBiddingChart(labels, bidAmounts) {
+
+      if (renderWeeklyBid) {
+        renderWeeklyBid.destroy();
+      }
+
+
       const ctx = document
         .getElementById("weeklyBiddingChart")
         .getContext("2d");
-      new Chart(ctx, {
+      renderWeeklyBid= new Chart(ctx, {
         type: "bar",
         data: {
           labels: labels,
@@ -255,7 +281,7 @@ carRentalApp.controller(
           plugins: {
             title: {
               display: true,
-              text: "Total revenue day wise",
+              text: `Total revenue day wise from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
               font: {
                 size: 18,
                 weight: "bold",
@@ -283,10 +309,16 @@ carRentalApp.controller(
      * @description This function is used to render the user comparison chart user to avg bid amounts
      */
     function renderUserComparisonChart(days, userBidAmounts, avgBidAmounts) {
+
+      if (ownercomperisonchart) {
+        ownercomperisonchart.destroy();
+      }
+
+
       const ctx = document
         .getElementById("userComparisonChart")
         .getContext("2d");
-      new Chart(ctx, {
+      ownercomperisonchart =new Chart(ctx, {
         type: "line",
         data: {
           labels: days,
@@ -317,7 +349,7 @@ carRentalApp.controller(
           plugins: {
             title: {
               display: true,
-              text: "Your Earnings vs. Car Owners' Average Earnings",
+              text: `Your Earnings vs. Car Owners' Average Earnings  from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
               font: {
                 size: 18,
                 weight: "bold",
@@ -344,8 +376,13 @@ carRentalApp.controller(
     */
  function renderUserEarningsChart(listingNames, earnings) {
 
+  if (topearningcarchart) {
+    topearningcarchart.destroy();
+  }
+
+
   const ctx = document.getElementById("userEarningsChart").getContext("2d");
-  new Chart(ctx, {
+  topearningcarchart=new Chart(ctx, {
     type: "pie",
     data: {
       labels: listingNames, 
@@ -372,7 +409,7 @@ carRentalApp.controller(
       plugins: {
         title: {
           display: true,
-          text: "Top Most Earing Car Models",
+          text: `Top Most Earing Cars from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')} `,
           font: {
             size: 18,
             weight: "bold",
@@ -397,11 +434,13 @@ carRentalApp.controller(
    */
 function renderPopularCarModelsChart(carModels, ownerBidCounts, avgPlatformBids) {
   
-
+  if (topmodalchart) {
+    topmodalchart.destroy();
+  }
   const colors = ["#DDA853", "#A6CDF6", "#16404D", "#FBF5DD", "#ff6384"];
 
   const ctx = document.getElementById("popularCarModelsChart").getContext("2d");
-  new Chart(ctx, {
+  topmodalchart=new Chart(ctx, {
     type: "bar",
     data: {
       labels: carModels,
@@ -426,7 +465,7 @@ function renderPopularCarModelsChart(carModels, ownerBidCounts, avgPlatformBids)
       plugins: {
         title: {
           display: true,
-          text: "Top 5 Most Popular Car Models (Your Bids vs. Platform Average)",
+          text: `Top 5 Most Popular Car Models (Your Bids vs. Platform Average) from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
           font: {
             size: 18,
             weight: "bold",
@@ -461,9 +500,12 @@ function renderPopularCarModelsChart(carModels, ownerBidCounts, avgPlatformBids)
  */
  function renderCategoryBookingsChart(categories, bookings) {
 
+  if (topcarcatagories) {
+    topcarcatagories.destroy();
+  }
 
   const ctx = document.getElementById("categoryBookingsChart").getContext("2d");
-  new Chart(ctx, {
+  topcarcatagories=new Chart(ctx, {
     type: "bar",
     data: {
       labels: categories, 
@@ -488,7 +530,7 @@ function renderPopularCarModelsChart(carModels, ownerBidCounts, avgPlatformBids)
       plugins: {
         title: {
           display: true,
-          text: "Most Booked Car Categories",
+          text: `Most Booked Car Categories from ${$scope.startDate.toLocaleDateString('en-GB')} to ${$scope.endDate.toLocaleDateString('en-GB')}`,
           font: { size: 18, weight: "bold" },
           padding: { top: 10, bottom: 20 },
         },
@@ -511,49 +553,56 @@ function renderPopularCarModelsChart(carModels, ownerBidCounts, avgPlatformBids)
  * @description This function is used to render the earnings comparison chart 
  */
 function earningsComparisonChart(earningsData){
+  console.log("dcsd",earningsData)
+  const { days, earnings } = earningsData;
+
+
   const lastWeek = Array(7).fill(0);
   const thisWeek = Array(7).fill(0);
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   
 
-  console.log("sdcazsxc")
-  
- console.log(earningsData)
-  
-  const today = new Date();
+  const today = new Date(days[days.length - 1]);
   const lastWeekStart = new Date(today);
-  lastWeekStart.setDate(today.getDate() - 13);  
+  lastWeekStart.setDate(today.getDate() - 13);
+  lastWeekStart.setHours(0, 0, 0, 0);
   
   const thisWeekStart = new Date(today);
-  thisWeekStart.setDate(today.getDate() - 6);  
-   
-  console.log(lastWeekStart, thisWeekStart);
-  earningsData.forEach(entry => {
-    const dateTime = entry.biddingDate;
-    const date = dateTime.split("T")[0];
-    const bidDate = new Date(date);
-    let dayIndex = bidDate.getDay()-1 ; 
-    if(dayIndex==-1)
-    {
-      dayIndex=6;
-    }
-    console.log("zzxx")
-    console.log(dayIndex)
+thisWeekStart.setDate(today.getDate() - 6); // 7 days ago
+thisWeekStart.setHours(0, 0, 0, 0);
+ 
   
-    if (bidDate >= lastWeekStart && bidDate < thisWeekStart) {
-      lastWeek[dayIndex] += parseFloat(entry.BidAmount);
-    } else if (bidDate >= thisWeekStart && bidDate <= today) { 
-      console.log("c scsx") 
-      thisWeek[dayIndex] += parseFloat(entry.BidAmount);
-    }
-  });
+days.forEach((dateStr, index) => {
+  const earningsAmount = earnings[index];
+  const bidDate = new Date(dateStr);
+  
+  // Adjust day index for Mon-Sun (0-6)
+  let dayIndex = bidDate.getDay() - 1;
+  if (dayIndex === -1) dayIndex = 6; // Handle Sunday
+  
+  // Determine which week to populate
+  if (bidDate >= lastWeekStart && bidDate < thisWeekStart) {
+      lastWeek[dayIndex] += earningsAmount;
+  } else if (bidDate >= thisWeekStart && bidDate <= today) {
+      thisWeek[dayIndex] += earningsAmount;
+  }
+});
+  
+  
+   
+ 
   const ctx = document.getElementById("earningsComparisonChart").getContext("2d");
 
 
   console.log(lastWeek)
   console.log(thisWeek)
 
-  new Chart(ctx, {
+
+  if (weekearingcomperison) {
+    weekearingcomperison.destroy();
+  }
+
+  weekearingcomperison=new Chart(ctx, {
     type: "line",
     data: {
         labels: daysOfWeek,

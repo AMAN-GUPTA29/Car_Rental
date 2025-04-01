@@ -1,4 +1,4 @@
-carRentalApp.controller("BookingController", function ($scope,$stateParams,consumerdb,ImageService,DateService,SessionService,$timeout) {
+carRentalApp.controller("BookingController", function ($scope,$stateParams,consumerdb,ImageService,DateService,SessionService,$timeout,ListingFactory,BiddingFactory) {
 
     
     $scope.listingId = $stateParams.listingID;
@@ -83,9 +83,9 @@ $scope.tochange=function()
  */
   function getchatwithowner(){
     const user = SessionService.getUser(); 
-    conversationID = `${$scope.car.ownerID}${user.id}`;
+    conversationID = `${$scope.car.ownerDetails.ownerID}${user.id}`;
     consumerdb.getchatmessages(conversationID).then((result) => {
-        $scope.chat.chatMessages.push(...result);// pusing the messages in chatMessages
+        $scope.chat.chatMessages.push(...result.chats);
     }).catch((err) => {
         console.log(err);
     });
@@ -95,23 +95,38 @@ $scope.tochange=function()
 /**
  * @description This function is used to get car listing by ID
  */
- function getcarListingID(){ 
-    consumerdb.getCarListingById($scope.listingId).then((car) => {
-            $scope.car = car;
-            $scope.currentIndex=0;
-            $scope.totalImages = car.cardata.images.length;
 
-            getchatwithowner();
-            consumerdb.getBookedDates($scope.listingId).then((result) => {
-            bookedDates=result;
-            console.log(bookedDates);
-            }).catch((err) => {
-                console.log(err);
-            });
-    }).catch((err) => {
-        console.error(err);
+
+
+ function getcarListingID(){ 
+    const listing = new ListingFactory({ _id: $scope.listingId });
+
+
+    listing.fetchConsumer($scope.listingId)
+    .then(function(car) {
+      console.log("car", car);
+      $scope.car = car;
+      $scope.currentIndex = 0;
+      $scope.totalImages = car.images.length;
+      
+      
+      getchatwithowner();
+      
+      
+      consumerdb.getBookedDates($scope.listingId).then((result) => {
+
+        bookedDates=result.bookedDates;
+        console.log("sc",bookedDates)
+        }).catch((err) => {
+            console.log(err);
+        });
+    })
+    .catch(function(err) {
+      console.error(err);
     });
-  }
+}
+
+    
   
  /**
   * @description This function is used to get the next image
@@ -131,22 +146,46 @@ $scope.tochange=function()
  * @description This function is used to book the car
  */
 $scope.bookCar = function () {
-    $scope.user=JSON.parse(sessionStorage.getItem("user")); 
-    
-    
-    consumerdb.bookingServiceConsumer($scope.bidplace, $scope.car, $scope.user).then((result) => {
-        console.log($scope.bidplace);
+    $scope.user=JSON.parse(sessionStorage.getItem("user"));
+        console.log("qwe",$scope.car);
+    let bookingData = {
 
-        $scope.bidplace = {
-            endDate:null,
-            startDate:null,
-            bidAmount:null,
-            triptype:null
-        };
-        
-    }).catch((err) => {
-        console.log(err)
-    });  
+        ownerDetails: { ...$scope.car.ownerDetails, ownerId: $scope.car.ownerID },
+        carData: { ...$scope.car.carData, listingId: $scope.car.id },
+        bookerData: {
+          bookerName: $scope.user.name,
+          bookerId: $scope.user.id,
+          aadhar: $scope.user.aadhar,
+        },
+
+        images:$scope.car.images,
+        startDate: $scope.bidplace.startDate,
+        endDate: $scope.bidplace.endDate,
+        bidAmount: $scope.bidplace.bidAmount,
+        bookType: $scope.bidplace.triptype,
+        startkm:-1,
+        endkm:-1,
+        status: "pending",
+      };
+
+      
+    const bidding = new BiddingFactory(bookingData);
+    
+    bidding.create()
+    .then(function(result) {
+      console.log("Bidding created successfully:", result);
+      
+      // Reset the form
+      $scope.bidplace = {
+        endDate: null,
+        startDate: null,
+        bidAmount: null,
+        triptype: null
+      };
+    })
+    .catch(function(error) {
+      console.error("Error creating bidding:", error.message);
+    });
     
 };
 
@@ -158,7 +197,12 @@ $scope.bookCar = function () {
  */
 $scope.sendMessage = function () {
         $scope.user = SessionService.getUser();
-        consumerdb.saveConversation($scope.car,$scope.user,$scope.chat.chatMessage,"user", false).then((result) => {
+        const owner={
+            ownerId:$scope.car.ownerDetails.ownerID,
+            ownerName:$scope.car.ownerDetails.ownerName,
+        }
+      
+        consumerdb.saveConversation(owner,$scope.user,$scope.chat.chatMessage,"user", false).then((result) => {
             console.log($scope.chat.chatMessage);
             $scope.chat.chatMessages.push({ chatString: $scope.chat.chatMessage, sentBy: "user" });
             $scope.chat.chatMessage = "";

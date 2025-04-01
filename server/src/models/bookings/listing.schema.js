@@ -20,59 +20,57 @@ const carSchema = new mongoose.Schema({
     },
     carCategory: {
       type: String,
-      required: true, // Example values: Hatchback, Sedan, SUV
+      required: true, 
     },
     carColor: {
       type: String,
-      required: true, // Example value: Hex color code like "#ff0000"
+      required: true, 
     },
     carDescription: {
       type: String,
-      required: false, // Optional description
+      required: false, 
     },
-    carName: {
+    carMake: {
       type: String,
-      required: true, // Example values like "New", "Used"
+      required: true, 
     },
     carMileage: {
       type: Number,
-      required: true, // In kilometers per liter (or other units)
+      required: true, 
     },
     carModel: {
       type: String,
-      required: true, // Example value like "Honda"
+      required: true, 
     },
     carTransmission: {
-      type: String, // Restrict to valid options
+      type: String,
       required: true,
     },
     carYear: {
       type: Number,
-      required: true, // Example value like 2012
+      required: true, 
     },
     carcity: {
       type: String,
-      required: true, // City where the car is listed
+      required: true, 
     },
   },
-  images: [
-    {
-      type: String, // Base64 encoded image or image URL
-      required: false,
-    },
-  ],
+  images: [{
+    type: String, // Directly store URLs as strings
+    required: false,
+  }],
   isDeleted: {
     type: Boolean,
-    default: false, // Default to `false` if not provided
+    default: false, 
   },
   isBlocked: {
     type: Boolean,
-    default: false, // Default to `false` if not provided
+    default: false, 
   },
   ownerDetails: {
     ownerID: {
-      type: String,
-      required: true, // Unique identifier for the owner
+      type: mongoose.SchemaTypes.ObjectId,
+      required: true, 
     },
     ownerName: {
       type: String,

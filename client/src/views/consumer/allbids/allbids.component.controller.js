@@ -1,4 +1,4 @@
-carRentalApp.controller("BiddingController", function ($scope,db,SessionService) {
+carRentalApp.controller("BiddingController", function ($scope,db,SessionService,CAR_CATEGORIES,CityService,BiddingFactory) {
 
     /**
      * @type {Array} bids
@@ -9,7 +9,7 @@ carRentalApp.controller("BiddingController", function ($scope,db,SessionService)
      * @type {Number} rowsPerPage
      */
     $scope.bids = [];   
-    $scope.categories = [];
+    $scope.categories =CAR_CATEGORIES;
     $scope.cities = [];
     $scope.ownerEmails = [];
     $scope.currentPage = 1;
@@ -30,8 +30,6 @@ carRentalApp.controller("BiddingController", function ($scope,db,SessionService)
         city: "",
         ownerEmail: "",
         status: "",
-        startDate: "",
-        endDate: ""
     };
 
     /**
@@ -39,6 +37,18 @@ carRentalApp.controller("BiddingController", function ($scope,db,SessionService)
      */
     $scope.init= function (){
         loadBids();
+        getCities();
+    }
+
+    function getCities()
+    {
+        CityService.getCities("India")
+        .then(function (cities) {
+            $scope.cities = cities;
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
     }
 
     /**
@@ -46,18 +56,24 @@ carRentalApp.controller("BiddingController", function ($scope,db,SessionService)
      * @returns {Promise}
      */
     function loadBids() {
+        console.log($scope.filters);
+        if($scope.filters.category==null)
+        {
+            $scope.filters.category="";
+        }
+        if($scope.filters.city==null)
+        {
+                $scope.filters.city="";
+        }
         $scope.user =SessionService.getUser();
-        db.getUserBiddingHistory($scope.user.id, $scope.filters, $scope.currentPage, $scope.rowsPerPage)
-            .then(function (response) {
-                console.log("resssss",response)
-                $scope.bids = response.bids; // setting bids
-                $scope.categories = response.categories; //setting categories
-                $scope.cities = response.cities; // setting cities
-                $scope.ownerEmails = response.ownerEmails; // setting emails
-            })
-            .catch(function (error) {
-                console.error("Error fetching bidding history:", error);
-            });
+        BiddingFactory.getUserBiddingHistory($scope.user.id, $scope.filters, $scope.currentPage, $scope.rowsPerPage)
+        .then(function(response) {
+          console.log("resssss", response);
+          $scope.bids = response.records; // setting bids
+        })
+        .catch(function(error) {
+          console.error("Error fetching bidding history:", error);
+        });
     }
     /**
      * @description This function is used to apply filters

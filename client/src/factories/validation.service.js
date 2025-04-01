@@ -43,6 +43,7 @@ carRentalApp.factory("validationService", function (DateService) {
        
 
         validateBid: function (bidplace, car) {
+            console.log("sdd",bidplace,car);
             if (!bidplace.startDate || !bidplace.endDate || !bidplace.bidAmount) {
               alert("Please fill all the required fields.");
               return false;
@@ -53,10 +54,10 @@ carRentalApp.factory("validationService", function (DateService) {
               return false;
             }
       
-            let minPrice = car.cardata.basePrice * DateService.calculateDateDifference(bidplace.startDate, bidplace.endDate);
+            let minPrice = car.carData.basePrice * DateService.calculateDateDifference(bidplace.startDate, bidplace.endDate);
       
-            if (bidplace.triptype === "outstation" && car.cardata.outstationPrice) {
-              minPrice = car.cardata.outstationPrice * DateService.calculateDateDifference(bidplace.startDate, bidplace.endDate);
+            if (bidplace.tripType === "outstation" && car.cardata.outstationPrice) {
+              minPrice = car.carData.outstationPrice * DateService.calculateDateDifference(bidplace.startDate, bidplace.endDate);
               
             }
       

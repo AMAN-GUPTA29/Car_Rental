@@ -8,7 +8,7 @@
 
     <div class="filter-container form-group text-center">
         <label for="emailFilter" class="form-label fw-bold">Filter by Email:</label>
-        <input type="text" class="form-select" id="emailFilter" ng-model="emailFilter" ng-change="applyFilters()" placeholder="Enter email">
+        <input type="text" class="form-select" id="emailFilter" ng-model="searchEmail" ng-change="searchUsers()" placeholder="Enter email">
     </div>
 
     <main class="w-50 table-responsive table-responsive">
@@ -22,8 +22,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="user in paginatedUsers">
-                    <td class="text-center">{{ user.username }}</td>
+                <tr ng-repeat="user in users">
+                    <td class="text-center">{{ user.userName }}</td>
                     <td class="text-center">{{ user.email }}</td>
                     <td class="text-center">{{ user.role }} <span ng-if="user.blocked">(Blocked)</span></td>
                     <td class="text-center">

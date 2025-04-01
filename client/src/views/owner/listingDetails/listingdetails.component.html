@@ -12,17 +12,17 @@
         <div class="row pull-right">
             <div class=" text-center col-md-6">
             <ul class="">
-            <h2 class="text-center">{{car.cardata.carMake}} {{car.cardata.carModel}}</h2>
-            <p class="text-center"><strong>Base Price:</strong> ${{car.cardata.basePrice}}/day</p>
-            <p class="text-center"><strong>Outstation Price:</strong> {{car.cardata.outstationPrice ? '$' + car.cardata.outstationPrice + '/day' : 'NA'}}</p>
-            <p class="text-center"><strong>Location:</strong> {{car.cardata.carAddress}}</p>
-            <p class="text-center"><strong>Category:</strong> {{car.cardata.carCategory}}</p>
-            <p class="text-center"><strong>Transmission:</strong> {{car.cardata.carTransmission}}</p>
-            <p class="text-center"><strong>Color:</strong><span class="color-box" ng-style="{'background-color': car.cardata.carColor}"></span>
+            <h2 class="text-center">{{car.carData.carMake}} {{car.carData.carModel}}</h2>
+            <p class="text-center"><strong>Base Price:</strong> ${{car.carData.basePrice}}/day</p>
+            <p class="text-center"><strong>Outstation Price:</strong> {{car.carData.outstationPrice ? '$' + car.carData.outstationPrice + '/day' : 'NA'}}</p>
+            <p class="text-center"><strong>Location:</strong> {{car.carData.carAddress}}</p>
+            <p class="text-center"><strong>Category:</strong> {{car.carData.carCategory}}</p>
+            <p class="text-center"><strong>Transmission:</strong> {{car.carData.carTransmission}}</p>
+            <p class="text-center"><strong>Color:</strong><span class="color-box" ng-style="{'background-color': car.carData.carColor}"></span>
             </p>
                 
-            <p class="text-center"><strong>Year:</strong> {{car.cardata.carYear}}</p>
-            <p class="text-center"><strong>Mileage:</strong> {{car.cardata.carMileage}} km</p>
+            <p class="text-center"><strong>Year:</strong> {{car.carData.carYear}}</p>
+            <p class="text-center"><strong>Mileage:</strong> {{car.carData.carMileage}} km</p>
             </ul>
         </div>
 
@@ -32,7 +32,7 @@
                 <div class="carousel">
                     <button class="prev" ng-click="prevImage(car)">&#10094;</button>
                     <div class="carousel-inner">
-                        <img ng-src="{{car.cardata.images[carimgno]}}" class="carousel-image active" alt="Car Image">
+                        <img ng-src="{{car.images[carimgno]}}" class="carousel-image active" alt="Car Image">
                     </div>
                     <button class="next" ng-click="nextImage(car)">&#10095;</button>
                 </div>
@@ -41,32 +41,34 @@
         </div>
         </div>
 
-        <table id="biddingsTable" border="1">
-            <thead>
-                <tr>
-                    <th>Bidding Date</th>
-                    <th>Price</th>
-                    <th>Bidder Name</th>
-                    <th>Aadhar</th>
-                    <th>Booking Type</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="bid in biddings">
-                    <td>{{bid.startDate | date:'shortDate'}} - {{bid.endDate | date:'shortDate'}}</td>
-                    <td>${{bid.BidAmount || 'N/A'}}</td>
-                    <td>{{bid.booker.bookerName || 'Unknown'}}</td>
-                    <td>{{bid.booker.aadhar || 'Unknown'}}</td>
-                    <td>{{bid.booktype}}</td>
-                    <td>
-                        <button class="accept-btn" ng-click="acceptBid(bid)">✅ Accept</button>
-                        <button class="reject-btn" ng-click="rejectBid(bid)">❌ Reject</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
+        <!-- <div class="table-responsive"> -->
+            <table id="biddingsTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Bidding Date</th>
+                        <th>Price</th>
+                        <th>Bidder Name</th>
+                        <th>Aadhar</th>
+                        <th>Booking Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="bid in biddings">
+                        <td>{{bid.startDate | date:'shortDate'}} - {{bid.endDate | date:'shortDate'}}</td>
+                        <td>${{bid.bidAmount || 'N/A'}}</td>
+                        <td>{{bid.bookerData.bookerName || 'Unknown'}}</td>
+                        <td>{{bid.bookerData.aadhar || 'Unknown'}}</td>
+                        <td>{{bid.bookType}}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm" ng-click="acceptBid(bid)">✅ Accept</button>
+                            <button class="btn btn-danger btn-sm" ng-click="rejectBid(bid)">❌ Reject</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        <!-- </div> -->
+        
         <div uib-modal id="editCarModal" class="car-modal" ng-show="isEditModalOpen">
             <div class="car-modal-content">
                 <div class="modal-header">

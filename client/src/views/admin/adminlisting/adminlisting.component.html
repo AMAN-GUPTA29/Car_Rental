@@ -12,34 +12,33 @@
     </div>
     
     <div class="listings-container">
-        <div class="listing-card col-md-3" ng-repeat="listing in filteredListings">
+        <div class="listing-card col-md-3" ng-repeat="listing in listings">
             <div class="panel text-center panel-default">
            
                 <div class="panel-heading">
-                    <h3 class="panel-title">{{ listing.cardata.carMake }} - {{ listing.cardata.carModel }}</h3>
+                    <h3 class="panel-title">{{ listing.carData.carMake }} - {{ listing.carData.carModel }}</h3>
                 </div>
 
                <div class="carousel-container">
                 <button class="carousel-btn prev-btn" ng-click="prevImage(listing)">&#10094;</button>
-                <img ng-src="{{ listing.cardata.images[listing.currentImageIndex] }}" class="carousel-image">
+                <img ng-src="{{ listing.images[listing.currentImageIndex] }}" class="carousel-image">
                 <button class="carousel-btn next-btn" ng-click="nextImage(listing)">&#10095;</button>
             </div>
 
             <ul class="list-group">
-                <li class="list-group-item"><strong>Category:</strong> {{ listing.cardata.carCategory }}</li>
-                <li class="list-group-item"><strong>Year:</strong> {{ listing.cardata.carYear }}</li>
-                <li class="list-group-item"><strong>Color:</strong> {{ listing.cardata.carColor }}</li>
-                <li class="list-group-item"><strong>Transmission:</strong> {{ listing.cardata.carTransmission }}</li>
-                <li class="list-group-item"><strong>Mileage:</strong> {{ listing.cardata.carMileage }} km</li>
-                <li class="list-group-item"><strong>City:</strong> {{ listing.cardata.carcity }}</li>
-                <li class="list-group-item"><strong>Address:</strong> {{ listing.cardata.carAddress }}</li>
-                <li class="list-group-item"><strong>Base Price:</strong> ₹{{ listing.cardata.basePrice }}/day</li>
-                <li class="list-group-item"><strong>Listing Date:</strong> {{ listing.listingDate }}</li>
-                <li class="list-group-item"><strong>Owner Email:</strong> {{ listing.owner.ownerEmail }}</li>
-                <li class="list-group-item"><strong>Deleted:</strong> {{ listing.cardata.isDeleted ? "Yes" : "No" }}</li>
+                <li class="list-group-item"><strong>Category:</strong> {{ listing.carData.carCategory }}</li>
+                <li class="list-group-item"><strong>Year:</strong> {{ listing.carData.carYear }}</li>
+                <li class="list-group-item"><strong>Color:</strong><span class="color-box" ng-style="{'background-color': listing.carData.carColor}"></span></li>
+                <li class="list-group-item"><strong>Transmission:</strong> {{ listing.carData.carTransmission }}</li>
+                <li class="list-group-item"><strong>Mileage:</strong> {{ listing.carData.carMileage }} km</li>
+                <li class="list-group-item"><strong>City:</strong> {{ listing.carData.carcity }}</li>
+                <li class="list-group-item"><strong>Address:</strong> {{ listing.carData.carAddress }}</li>
+                <li class="list-group-item"><strong>Base Price:</strong> ₹{{ listing.carData.basePrice }}/day</li>
+                <li class="list-group-item"><strong>Owner Email:</strong> {{ listing.ownerDetails.ownerEmail }}</li>
+                <li class="list-group-item"><strong>Deleted:</strong> {{ listing.isDeleted ? "Yes" : "No" }}</li>
             </ul>
 
-            <button class="btn btn-danger btn-block" ng-if="!listing.cardata.isdeleted" ng-click="deleteListing(listing.listingID)">
+            <button class="btn btn-danger btn-block" ng-if="!listing.isDeleted" ng-click="deleteListing(listing._id)">
                 Delete Listing
             </button>
         </div>
