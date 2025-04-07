@@ -4,6 +4,7 @@ carRentalApp.controller("ManageUsersController", function ($scope, admindb, $sta
     $scope.searchEmail = "";
     $scope.users = [];
     $scope.pagination = {};
+    $scope.totaluser=0;
 
     $scope.init = function() {
         $scope.loadUsers();
@@ -18,6 +19,9 @@ carRentalApp.controller("ManageUsersController", function ($scope, admindb, $sta
 
         admindb.getUsers(params).then((result) => {
             $scope.users = result.data.users;
+            $scope.totaluser = result.data.totalItems;
+            $scope.currentPage=result.data.currentPage;
+            console.log("scswe",$scope.totaluser)
             $scope.pagination = result.data.pagination || {};
            console.log($scope.users); 
         }).catch((err) => {
@@ -47,14 +51,20 @@ carRentalApp.controller("ManageUsersController", function ($scope, admindb, $sta
                 console.error('Error blocking user:', error);
               });
 
-            // const params={
-            //     id:user._id,
-            // }
-            // admindb.updateuser(params , true).then((result) => {
-            //     user.blocked = true;
-            // }).catch((err) => {
-            //     console.error(err);
-            // });
+        }
+    };
+
+    $scope.authoriseUser = function(user) {
+        if (confirm(`Are you sure you want to block ${user.email}?`)) {
+
+            const userToAuth = new UserFactory({ _id: user._id });
+            console.log("wd")
+            userToAuth.authoriseUser().then(function() {
+                user.authorise = true;
+              }).catch(function(error) {
+                console.error('Error blocking user:', error);
+              });
+
         }
     };
 

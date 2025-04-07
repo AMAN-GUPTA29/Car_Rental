@@ -89,7 +89,7 @@ tr:hover td {
     align-items: center;
     gap: 8px;
     transition: 0.3s;
-    width:5%;
+    /* width:5%; */
 }
 
 .back-btn .arrow {

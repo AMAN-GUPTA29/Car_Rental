@@ -15,6 +15,7 @@ carRentalApp.controller(
     let topmodalchart=null;
     let topcarcatagories=null;
     let weekearingcomperison=null;
+    let biddingperHourChartInstance=null;
 
 
 
@@ -84,9 +85,6 @@ carRentalApp.controller(
             });
         },
 
-       
-
-
         renderUserEarningsChart:function(callback){
           db.getListingWiseEarnings($scope.startDate,$scope.endDate)
           .then((result)=>{
@@ -138,6 +136,20 @@ carRentalApp.controller(
             console.error("Error fetching earnings:",err);
           })
         },
+
+        activeBiddingPerHour:function (callback) {
+          db.getActiveBiddingPerHourOwner($scope.startDate,$scope.endDate).then((result) => {
+              callback(null, {
+                  bidsPerHour: result,
+              });
+              
+            })
+            .catch((err) => {
+              console.error("Error fetching bids:", err);
+              
+            });
+        },
+
       },
       function (err, results) {
         if (err) {
@@ -173,6 +185,10 @@ carRentalApp.controller(
           earningsComparisonChart(
             results.earningsComparisonChart.earningsData
           )
+          activeBiddingPerHour(
+            results.activeBiddingPerHour.bidsPerHour
+        )
+       
         }
       }
     );
@@ -648,6 +664,73 @@ days.forEach((dateStr, index) => {
 });
 }
 
+
+function activeBiddingPerHour(bidsPerHour)
+{
+   console.log("qwerrtt",bidsPerHour)
+    const ctx = document.getElementById("biddingHoursChart").getContext("2d");
+    
+    if (biddingperHourChartInstance) {
+        biddingperHourChartInstance.destroy();
+    }
+
+
+    const maxBids = Math.max(...bidsPerHour) || 1; 
+
+    biddingperHourChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: [...Array(24).keys()].map(h => `${h}:00 - ${h + 1}:00`), 
+            datasets: [{
+                label: "Bids per Hour",
+                data: bidsPerHour,
+                backgroundColor: "#DDA853",
+                borderColor: "#16404D",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Hours of the Day",
+                        font: { size: 14, weight: "bold" }
+                    },
+                    ticks: {
+                        maxRotation: 45, 
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "Number of Bids",
+                        font: { size: 14, weight: "bold" }
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            return Number.isInteger(value) ? value : null; 
+                        }
+                    },
+                    max: maxBids + 2 
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Most Active Bidding Hours (${$scope.startDate.toLocaleDateString('en-GB')} - ${$scope.endDate.toLocaleDateString('en-GB')})`,
+                    font: { size: 18, weight: "bold" },
+                    padding: { top: 10, bottom: 20 }
+                }
+            }
+        }
+    });
+}
 
   }
 );

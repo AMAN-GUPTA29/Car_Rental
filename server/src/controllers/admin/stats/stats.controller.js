@@ -580,5 +580,157 @@ const getMostBookedCarCategoriesController = async (req, res) => {
 };
 
 
+const getNewUserOverTimeController = async (req, res) => {
 
-export { getAverageBidPerCategoryController ,getBidsPerDayController,getCarsListedByCategoryController,getActiveInactiveUsersController,getMostPopularCarsController,getMostBookedCarCategoriesController};
+  try {
+    const { startDate, endDate } = req.query;
+    
+    // Validate input
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: 'Both startDate and endDate are required' });
+    }
+
+    // Date handling
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // Include entire end day
+
+    // Aggregation pipeline
+    const pipeline = [
+      {
+        $match: {
+          signupDate: {
+            $gte: start,
+            $lte: end
+          }
+        }
+      },
+      {
+        $addFields: {
+          dateStr: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$signupDate"
+            }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: "$dateStr",
+          users: {
+            $sum: { $cond: [{ $eq: ["$role", "user"] }, 1, 0] }
+          },
+          owners: {
+            $sum: { $cond: [{ $eq: ["$role", "owner"] }, 1, 0] }
+          }
+        }
+      },
+      {
+        $sort: {
+          _id: 1
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          dates: { $push: "$_id" },
+          userCounts: { $push: "$users" },
+          ownerCounts: { $push: "$owners" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          dates: 1,
+          userCounts: 1,
+          ownerCounts: 1
+        }
+      }
+    ];
+
+    const result = await User.aggregate(pipeline);
+
+    const response = result[0] || { dates: [], userCounts: [], ownerCounts: [] };
+ 
+    res.status(200).json({
+      message: "Owner and user over time",
+      statistics: response
+  });
+
+    
+
+   
+    
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Failed to fetch user data',
+      details: error.message 
+    });
+  }
+}
+
+const activeBiddingPerHourController = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    console.log("startDate",startDate)
+    // Validate input
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: 'Both startDate and endDate are required' });
+    }
+
+    // Date handling
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // Include entire end day
+
+    // Aggregation pipeline
+    const pipeline = [
+      {
+        $match: {
+          biddingDate: {
+            $gte: start,
+            $lte: end
+          }
+        }
+      },
+      {
+        $project: {
+          hour: { $hour: "$biddingDate" }
+        }
+      },
+      {
+        $group: {
+          _id: "$hour",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ];
+
+    const rawResults = await History.aggregate(pipeline);
+
+    // Initialize 24-hour array with zeros
+    const bidsPerHour = Array(24).fill(0);
+
+    // Map MongoDB results to the array
+    rawResults.forEach(result => {
+      bidsPerHour[result._id] = result.count;
+    });
+    console.log("bidsPerHour",bidsPerHour)
+    res.status(200).json({
+      message: "Bids per hour retrieved successfully",
+      statistics: bidsPerHour
+  });
+
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Failed to fetch bidding data',
+      details: error.message 
+    });
+  }
+}
+
+export { getAverageBidPerCategoryController ,getBidsPerDayController,getCarsListedByCategoryController,getActiveInactiveUsersController,getMostPopularCarsController,getMostBookedCarCategoriesController,getNewUserOverTimeController,activeBiddingPerHourController};

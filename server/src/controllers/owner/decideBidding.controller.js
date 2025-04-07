@@ -2,7 +2,7 @@ import Bidding from "../../models/bookings/booking.schema.js";
 import History from "../../models/bookings/history.schema.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
-import sendMail from "../../utils/nodemailer.js";
+import {sendMail} from "../../utils/nodemailer.js";
 
 /**
  * @description Controller function to update bid status (accept/reject)

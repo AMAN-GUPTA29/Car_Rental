@@ -19,6 +19,7 @@
                     <th class="text-center">Email</th>
                     <th class="text-center">Role</th>
                     <th class="text-center">Action</th>
+                    <th class="text-center">Authorise</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,10 @@
                         <button ng-if="!user.blocked" ng-click="blockUser(user)" class="block-btn btn btn-danger btn-sm">Block</button>
                         <button ng-if="user.blocked" ng-click="unblockUser(user)" class="unblock-btn btn btn-success btn-sm">Unblock</button>
                     </td>
+                    <td class="text-center">
+                        <button ng-if="!user.authorise" ng-click="authoriseUser(user)" class="unblock-btn btn btn-success btn-sm">Authorise</button>
+                        <div ng-if="user.authorise"  class="" disabled>Already Authorise</div>
+                    </td>
                 </tr>
                 <tr ng-if="paginatedUsers.length === 0">
                     <td colspan="4">No users found.</td>
@@ -38,8 +43,9 @@
         </table>
     </main>
     <div class="text-center">
-    <ul uib-pagination total-items="users.length" ng-model="currentPage" ng-change="pageChanged()"></ul>
+        
+    <ul uib-pagination items-per-page="itemsPerPage"  total-items="totaluser" ng-model="currentPage" ng-change="pageChanged()"></ul>
 
 </div>
-    
+       
 </div>

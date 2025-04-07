@@ -1,4 +1,4 @@
-carRentalApp.controller("BookingController", function ($scope,$stateParams,consumerdb,ImageService,DateService,SessionService,$timeout,ListingFactory,BiddingFactory) {
+carRentalApp.controller("BookingController", function ($scope,$stateParams,consumerdb,ImageService,DateService,SessionService,$timeout,ListingFactory,BiddingFactory,toastifyService) {
 
     
     $scope.listingId = $stateParams.listingID;
@@ -102,7 +102,7 @@ $scope.tochange=function()
     const listing = new ListingFactory({ _id: $scope.listingId });
 
 
-    listing.fetchConsumer($scope.listingId)
+    listing.fetchConsumer()
     .then(function(car) {
       console.log("car", car);
       $scope.car = car;
@@ -182,6 +182,9 @@ $scope.bookCar = function () {
         bidAmount: null,
         triptype: null
       };
+
+      toastifyService.success("Booked Successfully");
+
     })
     .catch(function(error) {
       console.error("Error creating bidding:", error.message);
@@ -224,7 +227,8 @@ $scope.checkDate = function (selectedDate) {
     selectedDate=selectedDate.toISOString().split("T")[0];
     console.log(selectedDate)
         if (selectedDate && bookedDates.includes(selectedDate)) {
-            alert("Date is already booked!");
+          toastifyService.error("Date is already booked!");
+            // alert("Date is already booked!");
             $timeout(function () {
 
                 $scope.bidplace.startDate = "";

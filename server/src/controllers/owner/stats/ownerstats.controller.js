@@ -35,55 +35,115 @@ const getOwnerRecentEarningsController = async (req, res) => {
 
         const aggregationPipeline = [
             {
-                $match: {
-                    "ownerDetails.ownerID": new mongoose.Types.ObjectId(String(ownerId)),
-                    biddingDate: { $gte: startDate, $lte: endDate },
-                    status: "accepted"
-                }
-            },
-            {
-                $group: {
-                    _id: {
-                        $dateToString: {
-                            format: "%Y-%m-%d",
-                            date: "$biddingDate"
+                $facet: {
+                    // Generate all dates in the 14-day range
+                    "allDates": [
+                        { $match: { _id: { $exists: true } } }, // Just to have a document to start with
+                        { $limit: 1 },
+                        { $project: { _id: 0 } },
+                        {
+                            $addFields: {
+                                dayNumbers: { $range: [0, 14] } // Generate array with numbers 0-13
+                            }
+                        },
+                        { $unwind: "$dayNumbers" },
+                        {
+                            $addFields: {
+                                date: {
+                                    $dateToString: {
+                                        format: "%Y-%m-%d",
+                                        date: {
+                                            $dateAdd: {
+                                                startDate: startDate,
+                                                unit: "day",
+                                                amount: "$dayNumbers"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        { $project: { date: 1, _id: 0 } }
+                    ],
+                    // Get actual earnings data
+                    "earnings": [
+                        {
+                            $match: {
+                                "ownerDetails.ownerID": new mongoose.Types.ObjectId(String(ownerId)),
+                                biddingDate: { $gte: startDate, $lte: endDate },
+                                status: "accepted"
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {
+                                    $dateToString: {
+                                        format: "%Y-%m-%d",
+                                        date: "$biddingDate"
+                                    }
+                                },
+                                earnings: { $sum: { $toDouble: "$bidAmount" } }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                date: "$_id",
+                                earnings: { $round: ["$earnings", 2] }
+                            }
                         }
-                    },
-                    totalEarnings: { $sum: { $toDouble: "$bidAmount" } }
+                    ]
                 }
             },
+            // Join the dates with earnings data
+            {
+                $project: {
+                    result: {
+                        $map: {
+                            input: "$allDates",
+                            as: "dateObj",
+                            in: {
+                                date: "$$dateObj.date",
+                                earnings: {
+                                    $let: {
+                                        vars: {
+                                            matchedEarning: {
+                                                $filter: {
+                                                    input: "$earnings",
+                                                    as: "earning",
+                                                    cond: { $eq: ["$$earning.date", "$$dateObj.date"] }
+                                                }
+                                            }
+                                        },
+                                        in: {
+                                            $cond: {
+                                                if: { $gt: [{ $size: "$$matchedEarning" }, 0] },
+                                                then: { $arrayElemAt: ["$$matchedEarning.earnings", 0] },
+                                                else: 0
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            // Separate days and earnings into separate arrays
             {
                 $project: {
                     _id: 0,
-                    date: "$_id",
-                    earnings: { $round: ["$totalEarnings", 2] }
+                    days: { $map: { input: "$result", as: "item", in: "$$item.date" } },
+                    earnings: { $map: { input: "$result", as: "item", in: "$$item.earnings" } }
                 }
             }
         ];
 
-        const aggregationResult = await History.aggregate(aggregationPipeline);
-
-        // Generate 14-day date range
-        const days = Array.from({ length: 14 }, (_, i) => {
-            const date = new Date(startDate);
-            date.setDate(date.getDate() + i);
-            return date.toISOString().split("T")[0];
-        });
-
-        // Create earnings map
-        const earningsMap = new Map(
-            aggregationResult.map(item => [item.date, item.earnings])
-        );
-
-        // Fill earnings array with 0 for missing days
-        const earnings = days.map(date => earningsMap.get(date) || 0);
+        const [result] = await History.aggregate(aggregationPipeline);
 
         res.status(200).json({
             message: "14-day earnings retrieved successfully",
-            statistics: {
-                days,
-                earnings
-            }
+            statistics: result || { days: [], earnings: [] }
         });
 
     } catch (error) {
@@ -114,13 +174,12 @@ const getUserAndAvgBidsController = async (req, res) => {
             return res.status(400).json({ message: "Invalid date format" });
         }
 
-      
         // Generate 7-day date range
-        const days = Array.from({ length: end.getDate()-start.getDate()+1 }, (_, i) => {
-            const date = new Date(end);
-            date.setDate(date.getDate() - i);
+        const days = Array.from({ length: Math.floor((end - start) / (24 * 60 * 60 * 1000)) + 1 }, (_, i) => {
+            const date = new Date(start);
+            date.setDate(start.getDate() + i);
             return date.toISOString().split("T")[0];
-        }).reverse();
+        });
 
         const aggregationPipeline = [
             {
@@ -164,6 +223,7 @@ const getUserAndAvgBidsController = async (req, res) => {
 
         const aggregationResult = await History.aggregate(aggregationPipeline);
         
+        // console.log("check",aggregationResult);
 
         // Create maps for fast lookup
         const totalBidsMap = new Map();
@@ -178,7 +238,8 @@ const getUserAndAvgBidsController = async (req, res) => {
             userCountMap.set(item.date, item.userCount);
         });
 
-        
+       
+        // console.log(days)
 
         // Generate results for all days
         const result = days.map(date => ({
@@ -187,6 +248,8 @@ const getUserAndAvgBidsController = async (req, res) => {
             avgBidAmount: (totalBidsMap.get(date) || 0) / (userCountMap.get(date) || 1)
         }));
 
+        
+        // console.log("res",result);
      
         res.status(200).json({
             message: "User and average bids retrieved successfully",
@@ -524,7 +587,6 @@ const getTopCarModelsController = async (req, res) => {
         ];
 
         const [result] = await Bidding.aggregate(aggregationPipeline);
-        console.log(result);
         // Calculate platform average
         const platformStats = result.platformStats || {};
         const avgBidPerModel = platformStats.modelCount > 0 
@@ -627,6 +689,73 @@ const getListingWiseEarningsController = async (req, res) => {
 };
 
 
+const activeBiddingPerHourController = async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const { ownerId } = req.params;
+      console.log("startDate",startDate)
+      // Validate input
+      if (!startDate || !endDate) {
+        return res.status(400).json({ error: 'Both startDate and endDate are required' });
+      }
+  
+      // Date handling
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999); // Include entire end day
+  
+      // Aggregation pipeline
+      const pipeline = [
+        {
+          $match: {
+            "ownerDetails.ownerID": new mongoose.Types.ObjectId(String(ownerId)),
+            biddingDate: {
+              $gte: start,
+              $lte: end
+            }
+          }
+        },
+        {
+          $project: {
+            hour: { $hour: "$biddingDate" }
+          }
+        },
+        {
+          $group: {
+            _id: "$hour",
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $sort: { _id: 1 }
+        }
+      ];
+  
+      const rawResults = await History.aggregate(pipeline);
+  
+      // Initialize 24-hour array with zeros
+      const bidsPerHour = Array(24).fill(0);
+  
+      // Map MongoDB results to the array
+      rawResults.forEach(result => {
+        bidsPerHour[result._id] = result.count;
+      });
+      console.log("bidsPerHour",bidsPerHour)
+      res.status(200).json({
+        message: "Bids per hour retrieved successfully",
+        statistics: bidsPerHour
+    });
+  
+    } catch (error) {
+      res.status(500).json({ 
+        error: 'Failed to fetch bidding data',
+        details: error.message 
+      });
+    }
+  }
+  
+
+
 
 /**
  * @description Additional controller functions for various statistics
@@ -639,4 +768,4 @@ const getListingWiseEarningsController = async (req, res) => {
  */
 
 
-export { getOwnerRecentEarningsController ,getUserAndAvgBidsController,getBidsPerDayOfWeekController,getBidsPerDayOwnerController, getCategoryBookingCountsController,getTopCarModelsController,getListingWiseEarningsController};
+export { getOwnerRecentEarningsController ,getUserAndAvgBidsController,getBidsPerDayOfWeekController,getBidsPerDayOwnerController, getCategoryBookingCountsController,getTopCarModelsController,getListingWiseEarningsController,activeBiddingPerHourController};

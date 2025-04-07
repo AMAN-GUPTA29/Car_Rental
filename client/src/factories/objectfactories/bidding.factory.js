@@ -1,3 +1,8 @@
+
+
+
+
+
 carRentalApp.factory("BiddingFactory", [
   "validationService",
   "consumerdb",
@@ -6,7 +11,10 @@ carRentalApp.factory("BiddingFactory", [
   "ownerdb",
   function (validationService, consumerdb, $q,db,ownerdb) {
     function Bidding(initialData = {}) {
-      // Core properties with defaults
+       /**
+     * @constructor
+     * @param {Object} initialData - Initial data for the Bidding object
+     */
       this.ownerDetails = initialData.ownerDetails || {
         ownerId: "",
         ownerEmail: "",
@@ -47,6 +55,11 @@ carRentalApp.factory("BiddingFactory", [
     }
 
     Bidding.prototype = {
+       /**
+       * @method verify
+       * @description Validates the Bidding object data
+       * @returns {Promise} A promise that resolves if validation passes, rejects with errors otherwise
+       */
       verify: function () {
         const deferred = $q.defer();
         const errors = [];
@@ -156,7 +169,11 @@ carRentalApp.factory("BiddingFactory", [
 
         return deferred.promise;
       },
-
+       /**
+       * @method create
+       * @description Creates a new bidding after verification
+       * @returns {Promise} A promise that resolves with the created Bidding object
+       */
       create: function () {
         const deferred = $q.defer();
 
@@ -177,7 +194,11 @@ carRentalApp.factory("BiddingFactory", [
 
         return deferred.promise;
       },
-
+      /**
+       * @method getAcceptedBidOwner
+       * @param {Object} params - Parameters for fetching accepted bids
+       * @returns {Promise} A promise that resolves with accepted bids for the owner
+       */
       getAcceptedBidOwner: function(params) {
         const deferred = $q.defer();
         
@@ -192,7 +213,12 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
-
+       /**
+       * @method getPendingBiddingsOwnerCar
+       * @param {string} ownerId - The ID of the owner
+       * @param {string} listingId - The ID of the car listing
+       * @returns {Promise} A promise that resolves with pending biddings for the owner's car
+       */
       getPendingBiddingsOwnerCar : function(ownerId, listingId) {
         const deferred = $q.defer();
         ownerdb.getPendingBiddingsOwnerCar(ownerId, listingId)
@@ -205,7 +231,13 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
-
+      /**
+       * @method acceptBid
+       * @param {Object} bid - The bid to accept
+       * @param {Object} user - The user accepting the bid
+       * @param {Object} car - The car associated with the bid
+       * @returns {Promise} A promise that resolves when the bid is accepted
+       */
       acceptBid : function(bid, user, car) {
         
         const deferred = $q.defer();
@@ -219,6 +251,13 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
+       /**
+       * @method rejectBid
+       * @param {Object} bid - The bid to reject
+       * @param {Object} user - The user rejecting the bid
+       * @param {Object} car - The car associated with the bid
+       * @returns {Promise} A promise that resolves when the bid is rejected
+       */
       rejectBid: function(bid,user,car) {
         const deferred = $q.defer();
         ownerdb.statusbiddings(bid, "rejected",user,car)
@@ -231,6 +270,11 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
+      /**
+       * @method getUpcomingBookings
+       * @param {string} userId - The ID of the user
+       * @returns {Promise} A promise that resolves with upcoming bookings for the user
+       */
       getUpcomingBookings: function(userId) {
         const deferred = $q.defer();
          ownerdb.getUpcomingBookings(userId)
@@ -243,6 +287,12 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
+       /**
+       * @method updateStartKm
+       * @param {string} bookingId - The ID of the booking
+       * @param {number} kmValue - The starting kilometer value
+       * @returns {Promise} A promise that resolves when the start km is updated
+       */
       updateStartKm : function(bookingId, kmValue) {
         const deferred = $q.defer();
         ownerdb.updateStartKm(bookingId, kmValue)
@@ -255,6 +305,11 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
+       /**
+       * @method getUpcomingBookingsEnd
+       * @param {string} userId - The ID of the user
+       * @returns {Promise} A promise that resolves with upcoming bookings ending for the user
+       */
       getUpcomingBookingsEnd : function(userId) {
         const deferred = $q.defer();
          ownerdb.getUpcomingBookingsend(userId)
@@ -267,6 +322,12 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
+      /**
+       * @method updateEndKm
+       * @param {string} bookingId - The ID of the booking
+       * @param {number} kmValue - The ending kilometer value
+       * @returns {Promise} A promise that resolves when the end km is updated
+       */
       updateEndKm : function(bookingId, kmValue) {
         const deferred = $q.defer();
          ownerdb.carEndKm(bookingId, kmValue)
@@ -279,32 +340,29 @@ carRentalApp.factory("BiddingFactory", [
         return deferred.promise;
       },
 
-      
-
-      update: function () {
-        if (!this.id) throw new Error("Bidding ID required for update");
-        //   return dataService.updateBidding(this);
-      },
-
-      fetch: function () {
-        if (!this.id) throw new Error("Bidding ID required for fetch");
-        //   return dataService.getBidding(this.id)
-        //     .then(response => Object.assign(this, response.data));
-      },
-
-      cancel: function () {
-        if (!this.id) throw new Error("Bidding ID required for cancellation");
-        //   return dataService.updateBiddingStatus(this.id, 'cancelled')
-        //     .then(() => this.status = 'cancelled');
-      },
 
      
     };
 
+     /**
+     * @static
+     * @method getUserBiddingHistory
+     * @param {string} userId - The ID of the user
+     * @param {Object} filters - Filters for the bidding history
+     * @param {number} page - The page number
+     * @param {number} rowsPerPage - The number of rows per page
+     * @returns {Promise} A promise that resolves with the user's bidding history
+     */
     Bidding.getUserBiddingHistory = function(userId, filters, page, rowsPerPage) {
       return consumerdb.getUserBiddingHistory(userId, filters, page, rowsPerPage);
     };
 
+    /**
+     * @function getDaysDifference
+     * @param {Date} startDate - The start date
+     * @param {Date} endDate - The end date
+     * @returns {number} The number of days between the start and end dates
+     */
     Bidding.getUserBiddingHistory=function(userId, filters, page, rowsPerPage)
     {
       const deferred = $q.defer();
@@ -318,6 +376,13 @@ carRentalApp.factory("BiddingFactory", [
       });
       return deferred.promise;
     }
+
+        /**
+     * @function getDaysDifference
+     * @param {Date} startDate - The start date
+     * @param {Date} endDate - The end date
+     * @returns {number} The number of days between the start and end dates
+     */
 
     function getDaysDifference(startDate, endDate) {
       console.log(typeof(startDate));

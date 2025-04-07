@@ -15,6 +15,7 @@ import { getChatMessages } from "../../controllers/consumer/getChats.controller.
 import { getAllConversations } from "../../controllers/consumer/getConversation.controller.js";
 import { getBookedDatesController } from "../../controllers/consumer/bookedDates.controller.js";
 import { markBookingAsPaidController } from "../../controllers/consumer/markaspaid.controller.js";
+import { getUserRecommendation } from "../../controllers/consumer/userrecommendation.controller.js";
 
 /**
  * @type {express.Router}
@@ -72,5 +73,10 @@ router.get("/getbookeddate/:listingId",authenticateJwtUser,getBookedDatesControl
  */
 router.get("/markaspaid/:historyId",authenticateJwtUser,markBookingAsPaidController)
 
+
+/**
+ * @description Route to get recommended car listings for a specific user
+*/
+router.get("/getrecommendedcarlistings/:userId",authenticateJwtUser,getUserRecommendation)
 
 export default router;

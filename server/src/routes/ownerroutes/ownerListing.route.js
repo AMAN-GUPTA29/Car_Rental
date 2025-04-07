@@ -21,7 +21,7 @@ import { getAllConversations } from "../../controllers/owner/getConversation.con
 import { getChatMessages } from "../../controllers/owner/getChats.controller.js";
 import { conversationController } from "../../controllers/owner/chats.controller.js";
 import { getApprovedBidsOwner } from "../../controllers/owner/approvedBidsTable.controller.js";
-import {getBidsPerDayOwnerController,getBidsPerDayOfWeekController,getUserAndAvgBidsController,getListingWiseEarningsController,getTopCarModelsController,getCategoryBookingCountsController,getOwnerRecentEarningsController} from "../../controllers/owner/stats/ownerstats.controller.js"
+import {getBidsPerDayOwnerController,getBidsPerDayOfWeekController,getUserAndAvgBidsController,getListingWiseEarningsController,getTopCarModelsController,getCategoryBookingCountsController,getOwnerRecentEarningsController, activeBiddingPerHourController} from "../../controllers/owner/stats/ownerstats.controller.js"
 
 /**
  * @type {express.Router}
@@ -130,6 +130,9 @@ router.get('/stats/gettopearningcarcategories/:ownerId',authenticateJwtOwner,get
  * @description Route to get owner's earnings for the last week
  */
 router.get('/stats/ownerlastweeksearning/:ownerId',authenticateJwtOwner,getOwnerRecentEarningsController)
+
+
+router.get('/stats/activeBiddingPerHour/:ownerId',authenticateJwtOwner,activeBiddingPerHourController)
 
 
 

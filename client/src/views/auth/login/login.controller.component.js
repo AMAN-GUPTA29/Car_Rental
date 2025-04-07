@@ -1,4 +1,4 @@
-carRentalApp.controller("LoginController", ["$scope", "$state", "userSignupService", function ($scope, $state, userSignupService) {
+carRentalApp.controller("LoginController", ["$scope", "$state", "userSignupService", function ($scope, $state, userSignupService,toastifyService) {
     $scope.user = {};
     /**
      * @description This function is used to initialize the controller
@@ -19,19 +19,17 @@ carRentalApp.controller("LoginController", ["$scope", "$state", "userSignupServi
         userSignupService.loginUser(email, password) 
 
             .then((response) => {
-                console.log("wedrfvdfv",response);
-                console.log(response.user)
                 if (!response.success) {
-                    alert(response.message);
+                    toastifyService.error(response.message);
                     return;
                 }
                 
                 if (response.user.blocked) {
-                    alert("Cannot log in. Your account is blocked.");
+                    toastifyService.error("your account is blocked");
                     return;
                 }
 
-                console.log("sd",response);
+                // console.log("sd",response);
                  
                 sessionStorage.setItem("user", JSON.stringify({
                     email: email,
@@ -47,8 +45,11 @@ carRentalApp.controller("LoginController", ["$scope", "$state", "userSignupServi
                 redirectToHome(response.user.user.role);
             })
             .catch((error) => {
+                console.log("error");
                 console.error(error);
-                alert("Login failed. Please try again.");
+                toastifyService.error("Login failed. Please try again.");
+
+                // alert();
             });
     };
     /**

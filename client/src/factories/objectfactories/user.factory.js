@@ -1,7 +1,7 @@
-carRentalApp.factory('UserFactory', ['userSignupService', '$q', 'admindb', function(userSignupService, $q, admindb) {
+carRentalApp.factory('UserFactory', ['userSignupService', '$q', 'admindb','db', function(userSignupService, $q, admindb,db) {
   function User(initialData = {}) {
     this.email = initialData.email || '';
-    this.role = initialData.role || 'user';
+    this.role = initialData.role || '';
     this.aadhar = initialData.aadhar || null;
     this.userName = initialData.userName || '';
     this.phone = initialData.phone || null;
@@ -92,10 +92,11 @@ carRentalApp.factory('UserFactory', ['userSignupService', '$q', 'admindb', funct
   
     edit: function() {
       const deferred = $q.defer();
+      console.log(this)
       if (!this.id) {
         return deferred.reject(new Error('User ID is required to edit a user.'));
       }
-      return dataService.updateUser(this)
+      return db.editUserProfile(this)
         .then(response => {
           angular.extend(this, response.data);
           return response;
@@ -131,6 +132,27 @@ carRentalApp.factory('UserFactory', ['userSignupService', '$q', 'admindb', funct
       }
 
       admindb.updateuser(params, false)
+        .then((response) => {
+          deferred.resolve(response);
+        }).catch((err) => {
+          deferred.reject(err)
+        });
+
+      return deferred.promise;
+    },
+
+    authoriseUser:function(){
+      const deferred = $q.defer();
+
+      if (!this.id) {
+        return deferred.reject(new Error('User ID is required to unblock a user.'));
+      }
+     
+      const params = {
+        id: this.id,
+      }
+
+      admindb.updateuserAuth(params, true)
         .then((response) => {
           deferred.resolve(response);
         }).catch((err) => {

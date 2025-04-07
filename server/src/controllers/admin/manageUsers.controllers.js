@@ -4,6 +4,7 @@
  */
 import User from '../../models/users/user.schema.js';
 import mongoose from 'mongoose';
+import { sendUserStatusMail,sendAuthorizationMail } from '../../utils/nodemailer.js';
 
 /**
  * 
@@ -29,6 +30,9 @@ import mongoose from 'mongoose';
                         email: { $regex: email, $options: 'i' }
                     })
                 }
+            },
+            {
+                $sort: { signupDate: -1 }  // Add this stage to sort by newest first
             },
             {
                 $facet: {
@@ -61,7 +65,7 @@ import mongoose from 'mongoose';
 
         const result = await User.aggregate(pipeline);
         const response = result[0] || { users: [], totalItems: 0 };
-
+        
         /**
          * @response returns the paginated result Users with total count
          */
@@ -113,6 +117,7 @@ import mongoose from 'mongoose';
             return res.status(404).json({ message: 'User not found' });
         }
 
+        sendUserStatusMail(updatedUser,blocked);
         /**
          * Returning message for updated data
          */
@@ -132,5 +137,52 @@ import mongoose from 'mongoose';
     }
 };
 
+const updateUserAuthStatus = async (req, res) => {
+    try {
+        console.log("scs")
+        const { id } = req.params;
+        const { authorise } = req.body;
 
-export {getUsers,updateUserBlockStatus}
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid user ID' });
+        }
+
+        /**
+         * @param {ObjectId} id - user id
+         * update the block status of the user and while returning updated document removes password
+         */
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { $set: { authorise } },
+            { 
+                new: true,         // Return the modified document
+            }
+        ).select('-password');
+        
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        sendAuthorizationMail(updatedUser);
+        /**
+         * Returning message for updated data
+         */
+        res.status(200).json({
+            success: true,
+            message: `User authorised successfully`,
+            user: updatedUser
+        });
+
+    } catch (error) {
+        console.error('Error in updateUserBlockStatus:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating user status',
+            error: error.message
+        });
+    }
+};
+
+
+
+export {getUsers,updateUserBlockStatus,updateUserAuthStatus}

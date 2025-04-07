@@ -5,13 +5,15 @@ carRentalApp.controller("ChatControllerConsumer", [
   "SessionService",
   "FileService",
   "DateService",
+  "db",
   function (
     $timeout,
     $scope,
     consumerdb,
     SessionService,
     FileService,
-    DateService
+    DateService,
+    db,
   ) {
     /**
      * @type {Array} conversations
@@ -80,24 +82,7 @@ carRentalApp.controller("ChatControllerConsumer", [
             $timeout();
         }
       });
-      // consumerdb.getBid(convo.ownerID,convo.bookerID).then((result) => {
-      //     const biddingDetails=result[result.length-1];
-      //     console.log(biddingDetails);
-      //     if (biddingDetails ) {
-      //         $scope.bookingDetails = {
-      //             carName: `${biddingDetails.cardata.carMake} ${biddingDetails.cardata.carModel}`,
-      //             carCategory: biddingDetails.cardata.carCategory,
-      //             startDate: new Date(biddingDetails.startDate).toLocaleDateString(),
-      //             endDate: new Date(biddingDetails.endDate).toLocaleDateString(),
-      //             bidAmount: `$${biddingDetails.BidAmount}`,
-      //             status: biddingDetails.status
-      //         };
-      //         $scope.statusColor = DateService.getStatusColor(biddingDetails.status);
-      //         $scope.showBookingDetails = true;
-      //     }
-      // }).catch((err) => {
-      //     console.log(err)
-      // });
+      
 
       consumerdb
         .getChatMessageConsumer(convo.ownerId, convo.bookerId)
@@ -133,18 +118,20 @@ carRentalApp.controller("ChatControllerConsumer", [
       };
 
       console.log(file);
-      // let base64Image = null;
-      // if (file) {
-      //     FileService.convertToBase64(file).then((result) => {
-      //         consumerdb.saveChatMessage(result,"user",true,selectedConvo).then((result) => {
-      //             $scope.messages.push(result)
-      //         }).catch((err) => {
-      //             console.log(err)
-      //         });
-      //     }).catch((err) => {
-      //         console.log(err)
-      //     });
-      // } else {
+      let base64Image = null;
+      console.log("file",file)
+      if (file) {
+          db.imageUpload(file).then((result) => {
+            // console.log("poi",result.data.images[0])
+              consumerdb.saveConversation(owner,user,String(result.data.images[0]),"user",true).then((result) => {
+                  // $scope.messages.push(result)
+              }).catch((err) => {
+                  console.log(err)
+              });
+          }).catch((err) => {
+              console.log(err)
+          });
+      } else {
       consumerdb
         .saveConversation(owner, user, message, "user", false)
         .then((result) => {
@@ -154,7 +141,7 @@ carRentalApp.controller("ChatControllerConsumer", [
           console.log(err);
         });
 
-      // }
+      }
       ///
     };
   },

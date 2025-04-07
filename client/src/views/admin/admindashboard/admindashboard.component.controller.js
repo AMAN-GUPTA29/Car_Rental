@@ -29,6 +29,8 @@ carRentalApp.controller(
     let mostbookedCarCategories=null;
     let avgBidperCategory=null;
     let carCountperCategory=null;
+    let usersChartInstance=null;
+    let biddingperHourChartInstance=null;
 
    /**
      * @function async.parallel
@@ -126,6 +128,33 @@ carRentalApp.controller(
                 
               });
           },
+          renderChartgetNewUserOverTimeController:function (callback) {
+            db.getNewUserOverTime($scope.startDate,$scope.endDate).then((result) => {
+                console.log("www",result)
+                callback(null, {
+                    days: result.dates,
+                    userCounts: result.userCounts,
+                    ownerCounts: result.ownerCounts,
+                });
+                
+              })
+              .catch((err) => {
+                console.error("Error fetching bids:", err);
+                
+              });
+          },
+          activeBiddingPerHour:function (callback) {
+            db.getActiveBiddingPerHour($scope.startDate,$scope.endDate).then((result) => {
+                callback(null, {
+                    bidsPerHour: result,
+                });
+                
+              })
+              .catch((err) => {
+                console.error("Error fetching bids:", err);
+                
+              });
+          },
 
         },
         function (err, results) {
@@ -156,6 +185,15 @@ carRentalApp.controller(
                 results.renderCarsListedByCategoryChart.categories,
                 results.renderCarsListedByCategoryChart.carCounts
             )
+            renderChartgetNewUserOverTimeController(
+                results.renderChartgetNewUserOverTimeController.days,
+                results.renderChartgetNewUserOverTimeController.userCounts,
+                results.renderChartgetNewUserOverTimeController.ownerCounts
+            )
+            activeBiddingPerHour(
+                results.activeBiddingPerHour.bidsPerHour
+            )
+           
 
           
           }
@@ -463,6 +501,127 @@ function renderCarsListedByCategoryChart(categories, carCounts) {
 }
 
 
+function renderChartgetNewUserOverTimeController(dates, userCounts, ownerCounts){
+
+    if (usersChartInstance) {
+        usersChartInstance.destroy();
+    }
+    const ctx = document.getElementById("newUsersChart").getContext("2d");
+
+
+    usersChartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: dates, 
+            datasets: [
+                {
+                    label: "Users",
+                    data: userCounts,
+                    borderColor: "#36a2eb",
+                    backgroundColor: "rgba(54, 162, 235, 0.2)", 
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: "Owners",
+                    data: ownerCounts,
+                    borderColor: "#ff6384", 
+                    backgroundColor: "rgba(255, 99, 132, 0.2)", 
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `New Users Over Time (${$scope.startDate.toLocaleDateString('en-GB')} - ${$scope.endDate.toLocaleDateString('en-GB')})`,
+                    font: { size: 18, weight: "bold" },
+                    padding: { top: 10, bottom: 20 }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true,ticks: {
+                    stepSize: 1, 
+                    callback: function (value) {
+                      return Number.isInteger(value) ? value : null;
+                    },
+                  }, }
+            }
+        }
+    });
+}
+
+function activeBiddingPerHour(bidsPerHour)
+{
+   
+    const ctx = document.getElementById("biddingHoursChart").getContext("2d");
     
+    if (biddingperHourChartInstance) {
+        biddingperHourChartInstance.destroy();
+    }
+
+
+    const maxBids = Math.max(...bidsPerHour) || 1; 
+
+    biddingperHourChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: [...Array(24).keys()].map(h => `${h}:00 - ${h + 1}:00`), 
+            datasets: [{
+                label: "Bids per Hour",
+                data: bidsPerHour,
+                backgroundColor: "#DDA853",
+                borderColor: "#16404D",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Hours of the Day",
+                        font: { size: 14, weight: "bold" }
+                    },
+                    ticks: {
+                        maxRotation: 45, 
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "Number of Bids",
+                        font: { size: 14, weight: "bold" }
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            return Number.isInteger(value) ? value : null; 
+                        }
+                    },
+                    max: maxBids + 2 
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Most Active Bidding Hours (${$scope.startDate.toLocaleDateString('en-GB')} - ${$scope.endDate.toLocaleDateString('en-GB')})`,
+                    font: { size: 18, weight: "bold" },
+                    padding: { top: 10, bottom: 20 }
+                }
+            }
+        }
+    });
+}
   }
 );

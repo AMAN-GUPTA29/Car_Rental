@@ -4,6 +4,7 @@
  */
 import Conversation from "../../models/chats/conversation.schema.js"
 import Chat from "../../models/chats/chats.schema.js";
+import Attachment from "../../models/chats/attachments.schema.js";
 
 /**
  * @description Controller to handle conversation creation and chat messages
@@ -68,15 +69,38 @@ const conversationController  = async (req, res) => {
        * @type {Object}
        * @description Get Socket.IO instance
        */
+      
+      
+
       const newChat=new Chat({
         conversationId: conversationId,
         chatString:chat.chatString,
         isImage:chat.isImage,
-        sentBy:chat.sentBy   
+        sentBy:chat.sentBy,
+        attachment:{}   
         })
+
+        if(chat.isImage==true){
+          newChat.attachment={
+            AttachmentString: chat.chatString,
+            sentBy: chat.sentBy,
+          }
+        }
+
 
         await newChat.save();
 
+        if(chat.isImage==true){
+          const attachment=new Attachment({
+            AttachmentString: chat.chatString,
+            sentBy: chat.sentBy,
+            conversationId: conversationId,
+          });
+  
+          await attachment.save();
+        }
+
+        
       /**
        * @description Emit new message event to specific room
        */

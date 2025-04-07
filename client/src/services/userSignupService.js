@@ -1,4 +1,4 @@
-carRentalApp.service("userSignupService", function ($q,dbService, idGeneratorService,ApiService) {
+carRentalApp.service("userSignupService", function ($q,dbService, idGeneratorService,ApiService,toastifyService) {
     /**
      * 
      * @param {*} userData 
@@ -43,7 +43,7 @@ carRentalApp.service("userSignupService", function ($q,dbService, idGeneratorSer
    
         
     
-        ApiService.postData('/auth/login', loginData)
+        ApiService.postDatalog('/auth/login', loginData)
             .then(function(response) {
                 console.log("Login successful:", response.data);
                 deferred.resolve({
@@ -54,6 +54,8 @@ carRentalApp.service("userSignupService", function ($q,dbService, idGeneratorSer
             })
             .catch(function(error) {
                 console.error("Login error:", error);
+                    toastifyService.error(error.data.message);
+
                 let errorMessage = "An error occurred during login";
                 if (error.status === 401) {
                     errorMessage = "Invalid email or password";

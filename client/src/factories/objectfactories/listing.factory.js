@@ -207,13 +207,7 @@ carRentalApp.factory("ListingFactory", [
             // Update the current instance with fetched data
               console.log("carll",car)
               self.ownerDetails = car.ownerDetails;
-            
-
-          
               self.images = car.images;
-            
-
-            
               self.carData = car.carData;
             
 
@@ -230,7 +224,6 @@ carRentalApp.factory("ListingFactory", [
 
       block: function() {
         const deferred = $q.defer();
-        // console.log("this",this)
         if (!this.id) {
           return deferred.reject(new Error('Listing is required to block a user.'));
         }
@@ -246,6 +239,7 @@ carRentalApp.factory("ListingFactory", [
   
         return deferred.promise;
       },
+      
     
       unblock: function() {
         const deferred = $q.defer();
@@ -268,50 +262,49 @@ carRentalApp.factory("ListingFactory", [
         return deferred.promise;
       },
 
-      // Keep the existing validate method for backward compatibility
-      validate: function () {
-        const errors = {};
+      // validate: function () {
+      //   const errors = {};
 
-        if (!this.ownerDetails.ownerID) errors.ownerID = "Owner ID is required";
-        if (!this.ownerDetails.ownerEmail)
-          errors.ownerEmail = "Owner email is required";
-        if (!this.ownerDetails.ownerName)
-          errors.ownerName = "Owner name is required";
+      //   if (!this.ownerDetails.ownerID) errors.ownerID = "Owner ID is required";
+      //   if (!this.ownerDetails.ownerEmail)
+      //     errors.ownerEmail = "Owner email is required";
+      //   if (!this.ownerDetails.ownerName)
+      //     errors.ownerName = "Owner name is required";
 
-        if (!this.carData.carMake) errors.carMake = "Car make is required";
-        if (!this.carData.carModel) errors.carModel = "Car model is required";
+      //   if (!this.carData.carMake) errors.carMake = "Car make is required";
+      //   if (!this.carData.carModel) errors.carModel = "Car model is required";
 
-        const yearError = validationService.validateYear(this.carData.carYear);
-        if (yearError) errors.carYear = yearError;
+      //   const yearError = validationService.validateYear(this.carData.carYear);
+      //   if (yearError) errors.carYear = yearError;
 
-        const basePriceError = validationService.validatePrice(
-          this.carData.basePrice
-        );
-        if (basePriceError) errors.basePrice = basePriceError;
+      //   const basePriceError = validationService.validatePrice(
+      //     this.carData.basePrice
+      //   );
+      //   if (basePriceError) errors.basePrice = basePriceError;
 
-        const outstationPriceError = validationService.validatePrice(
-          this.carData.outstationPrice
-        );
-        if (outstationPriceError) errors.outstationPrice = outstationPriceError;
+      //   const outstationPriceError = validationService.validatePrice(
+      //     this.carData.outstationPrice
+      //   );
+      //   if (outstationPriceError) errors.outstationPrice = outstationPriceError;
 
-        const mileageError = validationService.validateMileage(
-          this.carData.carMileage
-        );
-        if (mileageError) errors.carMileage = mileageError;
+      //   const mileageError = validationService.validateMileage(
+      //     this.carData.carMileage
+      //   );
+      //   if (mileageError) errors.carMileage = mileageError;
 
-        if (!this.carData.carTransmission)
-          errors.carTransmission = "Transmission type is required";
-        if (!this.carData.carCategory)
-          errors.carCategory = "Car category is required";
-        if (!this.carData.carAddress)
-          errors.carAddress = "Car address is required";
-        if (!this.carData.carcity) errors.carcity = "Car city is required";
+      //   if (!this.carData.carTransmission)
+      //     errors.carTransmission = "Transmission type is required";
+      //   if (!this.carData.carCategory)
+      //     errors.carCategory = "Car category is required";
+      //   if (!this.carData.carAddress)
+      //     errors.carAddress = "Car address is required";
+      //   if (!this.carData.carcity) errors.carcity = "Car city is required";
 
-        if (!this.images || this.images.length === 0)
-          errors.images = "At least one image is required";
+      //   if (!this.images || this.images.length === 0)
+      //     errors.images = "At least one image is required";
 
-        return Object.keys(errors).length === 0 ? null : errors;
-      },
+      //   return Object.keys(errors).length === 0 ? null : errors;
+      // },
     };
 
     Listing.fetchAll = function (ownerId) {
@@ -349,6 +342,21 @@ carRentalApp.factory("ListingFactory", [
 
       consumerdb
         .getAllCarListings(params)
+        .then(function (listings) {
+          // return listings;
+          deferred.resolve(listings);
+        })
+        .catch(function (error) {
+          deferred.reject(error);
+        });
+      return deferred.promise;
+    };
+
+    Listing.getRecommendedCarListing = function () {
+      const deferred = $q.defer();
+
+      consumerdb
+        .getRecommendedCarListings()
         .then(function (listings) {
           // return listings;
           deferred.resolve(listings);

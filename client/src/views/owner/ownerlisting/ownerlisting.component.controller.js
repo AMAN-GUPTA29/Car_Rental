@@ -157,6 +157,9 @@ carRentalApp.controller(
         !$scope.warnings.outstationPrice
       ) {
         $scope.newCar.images = $scope.nimages;
+
+
+        
         const newListing = new ListingFactory({
           owner: {
             ownerID: $scope.user.id,

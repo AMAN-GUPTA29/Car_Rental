@@ -17,11 +17,6 @@ import * as fs from 'fs';
 const accessLogStream = fs.createWriteStream('./access.log', { flags: 'a' });
 
 
-
-
-
-
-
 /**
  * 
  */
@@ -38,6 +33,9 @@ import consumerRoutes from './routes/consumerroutes/consumerroutes.js'
 import adminRoutes from './routes/adminroutes/adminroutes.js'
 
 
+import imageRoute from './routes/utils.route.js'
+
+
  /**
   * App Variables
   * @const app
@@ -49,7 +47,7 @@ app.use(
     cors({
       origin: "http://127.0.0.1:5500",
       credentials: true,
-      allowedHeaders: ['Content-Type', 'Authorization']
+      allowedHeaders: ['Content-Type', 'Authorization'],
     })
   );
 app.use(express.urlencoded({ extended: true }));
@@ -66,6 +64,8 @@ app.use('/api/v1/owner',ownerRoutes);
 app.use('/api/v1/consumer',consumerRoutes)
 
 app.use('/api/v1/admin',adminRoutes);
+
+app.use('/api/v1/util',imageRoute)
 
 
 

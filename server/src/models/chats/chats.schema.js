@@ -24,6 +24,15 @@ const chatSchema = new mongoose.Schema({
     required: true,
     index: true,
     default: Date.now
+  },
+  attachment:{
+    AttachmentString: {
+      type: String,
+      trim: true
+    },
+    sentBy: {
+      type: String,
+    },
   }
 }, {
   timestamps: true

@@ -7,10 +7,10 @@
  */
 import express from "express";
 import { authenticateJwtAdmin } from "../../middleware/authenticate/index.js";
-import { getUsers, updateUserBlockStatus } from "../../controllers/admin/manageUsers.controllers.js";
+import { getUsers, updateUserAuthStatus, updateUserBlockStatus } from "../../controllers/admin/manageUsers.controllers.js";
 import { deleteListing, getAdminListings } from "../../controllers/admin/manageListing.controller.js";
 
-import{getBidsPerDayController,getActiveInactiveUsersController,getMostPopularCarsController,getMostBookedCarCategoriesController,getAverageBidPerCategoryController,getCarsListedByCategoryController}from "../../controllers/admin/stats/stats.controller.js"
+import{getBidsPerDayController,getActiveInactiveUsersController,getMostPopularCarsController,getMostBookedCarCategoriesController,getAverageBidPerCategoryController,getCarsListedByCategoryController, getNewUserOverTimeController, activeBiddingPerHourController}from "../../controllers/admin/stats/stats.controller.js"
 /**
  * @type {express.Router}
  * @description Create an Express router instance
@@ -26,6 +26,9 @@ router.get("/getusers",authenticateJwtAdmin,getUsers)
  * @description Route to update user block status (admin only)
  */
 router.patch("/users/:id",authenticateJwtAdmin,updateUserBlockStatus);
+
+router.patch("/usersauth/:id",authenticateJwtAdmin,updateUserAuthStatus);
+
 
 /**
  * @description Route to get all listings (admin only)
@@ -63,6 +66,11 @@ router.get("/stats/avgbidamountpercarcategories",authenticateJwtAdmin,getAverage
  * @description Route to get car count per category (admin only)
  */
 router.get("/stats/carcountpercategory",authenticateJwtAdmin,getCarsListedByCategoryController)
+
+router.get("/stats/getNewUserOverTime",authenticateJwtAdmin,getNewUserOverTimeController)
+
+
+router.get("/stats/activeBiddingPerHour",authenticateJwtAdmin,activeBiddingPerHourController)
 
 
 

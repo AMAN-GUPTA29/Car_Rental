@@ -36,6 +36,33 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
         return deferred.promise;
     };
 
+    this.imageUpload=function(file){
+        const deferred = $q.defer();
+        console.log(file);
+        const formData=new FormData();
+            formData.append('images',file);
+        ApiService.postDataInternalimage(`/util/uploadimage`,formData)
+        .then(function(response){
+            console.log("API Listings:", response.data);
+            deferred.resolve(response.data);
+        })
+        .catch(function(error) {
+            console.error("API Error:", error);
+            let errorMessage = "Failed to fetch listings";
+            
+         
+            if (error.status === 401) {
+                errorMessage = "Session expired - please login again";
+            } else if (error.status === 500) {
+                errorMessage = "Server error - try again later";
+            }
+            
+            deferred.reject(errorMessage);
+        });
+        return deferred.promise;
+
+    }
+
     this.getAllListings = function() {
         const deferred = $q.defer();
         
@@ -122,7 +149,7 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
     
         return deferred.promise;
     };
-
+    
     this.getListingOwner = function(lisitngID) {
         const deferred = $q.defer();
         const user = JSON.parse(sessionStorage.getItem("user"));
@@ -177,7 +204,7 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
         user:user,
         chat:chat
        }
-        const deferred=$q.defer()
+            const deferred=$q.defer()
         console.log(chatData);
         ApiService.postDataInternal('/consumer/chats', chatData,user.token)
         .then(response => {
@@ -211,8 +238,8 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
           console.error("Error saving listing:", error);
           deferred.reject(error.data?.message || "Server error");
         });
-        return deferred.promise;
-      
+            return deferred.promise;
+        
     }
 
     this.chatMessagesave=function(chat)
@@ -275,8 +302,8 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
           console.error("Error fetching biddings:", error);
           deferred.reject(error.data?.message || "Server error");
         });
-      
-        return deferred.promise;
+
+            return deferred.promise;
       };
       
 
@@ -353,8 +380,8 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
             console.error("Error updating status:", error);
             deferred.reject(error.data?.message || "Server error");
           });
-      
-        return deferred.promise;
+
+            return deferred.promise;
     }
 
     this.getconversationowner=function(ownerId)
@@ -445,8 +472,8 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
             console.error("Error updating start km:", error);
             deferred.reject(error.data?.message || "Server error");
           });
-      
-        return deferred.promise;
+
+            return deferred.promise;
       };
 
       this.getEndingBiddings = function(ownerId) {
@@ -462,8 +489,8 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
             console.error("Error updating status:", error);
             deferred.reject(error.data?.message || "Server error");
           });
-      
-        return deferred.promise;
+
+            return deferred.promise;
       };
      
 
@@ -481,8 +508,8 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
             console.error("Error updating start km:", error);
             deferred.reject(error.data?.message || "Server error");
           });
-      
-        return deferred.promise;
+
+            return deferred.promise;
     }
 
     this.genrateInvoice=function(invoice)
@@ -521,12 +548,12 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
     }
 )}
 
-this.getInvoices=function(userId)
+this.getInvoices=function(userId,page)
 {
     const user = JSON.parse(sessionStorage.getItem("user"));  
-        
+    console.log("acthere")
     const deferred=$q.defer();
-    ApiService.getDataInternaln(`/consumer/getinvoice/${userId}`, { filter:"all" }, user.token)
+    ApiService.getDataInternaln(`/consumer/getinvoice/${userId}`, { filter:"all",page:page }, user.token)
     .then((response) => {
         console.log("response", response.data);
             deferred.resolve(response.data);
@@ -535,9 +562,9 @@ this.getInvoices=function(userId)
             deferred.reject(error.data?.message || "Server error");
     });
 
-           return deferred.promise;
+    return deferred.promise;
 
-        
+
 }
 
 this.markInvoicePaid=function(invoiceid)
@@ -568,8 +595,8 @@ this.markInvoicePaid=function(invoiceid)
 
 this.markInvoicePaidHistory=function(historyId)
 {     const user = JSON.parse(sessionStorage.getItem("user"));  
-        
-    const deferred=$q.defer();
+
+        const deferred=$q.defer();
     ApiService.getDataInternal(`/consumer/markaspaid/${historyId}`, user.token)
     .then((response) => {
         console.log("response", response.data);
@@ -579,7 +606,7 @@ this.markInvoicePaidHistory=function(historyId)
             deferred.reject(error.data?.message || "Server error");
     });
 
-           return deferred.promise;
+        return deferred.promise;
 
 }
 
@@ -607,6 +634,21 @@ this.markInvoicePaidFalse=function(invoiceid)
 
     }
 )
+}
+
+this.getRecommendedCarListings = function() {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const deferred = $q.defer();
+    console.log("recmend")
+    ApiService.getDataInternal(`/consumer/getrecommendedcarlistings/${user.id}`, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+        deferred.resolve(response.data);
+        }).catch((error) => {
+            console.error("Error getting recommended car listings:", error);
+            deferred.reject(error.data?.message || "Server error");
+        });
+    return deferred.promise;
 }
 
 this.markHistoryPaid=function(historyID)
@@ -637,38 +679,35 @@ this.markHistoryPaid=function(historyID)
 )
 }
 
-this.editUserProfile=function(id,name,phone,password,newpassword)
+this.editUserProfile=function(usern)
 {
-    return dbService.openDB().then((db)=>{
-        const deferred=$q.defer();
-        const transaction = db.transaction("user", "readwrite");
-        const store = transaction.objectStore("user");
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    console.log("userm",usern)
+    // const params={
+    //     userName:name,
+    //     phone:phone,
+    //     password:password,
+    //     newpassword:newpassword
+    // }
+    console.log(usern.id),
+    // console.log(params);
+    
+    
+    deferred=$q.defer();
+    ApiService.patchDataInternalne(`/util/profile/${usern.id}`, usern, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
 
-        const request=store.get(id);
-
-        request.onsuccess=()=>{
-            const user=request.result;
-            if(user.password!==password)
-            {
-                deferred.reject("wrong password");
-                return deferred.promise;
-            }
-            user.name=name;
-            user.phone=phone;
-            user.password=newpassword;
-            store.put(user);
-            deferred.resolve(user);
-        }
-        request.onerror=(error)=>
-        {
-            deferred.reject(error);
-        }
-
-        return deferred.promise;
-
-    }
-)
+            return deferred.promise;
 }
+
+
+
 this.getUserBiddingHistory = function (userId, filters, page, rowsPerPage) {
     console.log("Fetching bids for:", userId, JSON.stringify(filters), "Page:", page, "Rows per page:", rowsPerPage);
 
@@ -727,6 +766,24 @@ this.updateuser=function(params,blocked)
  
 }
 
+this.updateuserauth=function(params,blocked)
+{
+    const user = JSON.parse(sessionStorage.getItem("user"));  
+    
+    const deferred=$q.defer();
+    ApiService.patchDataInternalne(`/admin/usersauth/${params.id}`,blocked, user.token)
+    .then((response) => {
+        console.log("response", response.data);
+            deferred.resolve(response.data);
+    }).catch((error) => {
+        console.error("Error updating start km:", error);
+            deferred.reject(error.data?.message || "Server error");
+    });
+
+    return deferred.promise;
+ 
+}
+
 this.updatelisting=function(params,blocked)
 {
     const user = JSON.parse(sessionStorage.getItem("user"));  
@@ -741,11 +798,36 @@ this.updatelisting=function(params,blocked)
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
- 
+            return deferred.promise;
+
 }
 
 this.unBlockUser=function(userID)
+{
+    
+    return dbService.openDB().then((db) => {
+        const deferred = $q.defer();
+        const transaction = db.transaction("user", "readwrite");
+        const store = transaction.objectStore("user");
+
+        const request=store.get(userID);
+
+        request.onsuccess=()=>{
+            const user= request.result;
+            user.blocked=false;
+            store.put(user);
+            deferred.resolve(user);
+        }
+        request.onerror=()=>{
+            deferred.reject("Error fetching user");
+            }
+            return deferred.promise;
+
+    })
+}
+
+
+this.authoriseUser=function(userID)
 {
     
     return dbService.openDB().then((db) => {
@@ -784,7 +866,7 @@ this.getAllListingsAdmin=function(params)
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
+            return deferred.promise;
 
 }
 
@@ -860,6 +942,7 @@ this.getUserAndAvgBids=function(startDate,endDate) {
     }
     ApiService.getDataInternaln(`/owner/stats/getearningandplateformavg/${user.id}`,params, user.token)
     .then((response) => {
+            console.log("qwertyuiop",response.data.statistics)
             deferred.resolve(response.data.statistics);
     }).catch((error) => {
         console.error("Error updating start km:", error);
@@ -886,8 +969,8 @@ this.getUserAndAvgBids=function(startDate,endDate) {
         console.error("Error updating start km:", error);
             deferred.reject(error.data?.message || "Server error");
     });
-
-    return deferred.promise;
+    
+        return deferred.promise;
 
 }
 
@@ -908,8 +991,8 @@ this.getUserAndAvgBids=function(startDate,endDate) {
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
-  
+        return deferred.promise;
+
 }
 
 
@@ -933,6 +1016,7 @@ this.getCategoryBookingCounts=function(startDate,endDate) {
     
 }
 
+
 this.getAcceptedBidOwner=function(param){
     const user = JSON.parse(sessionStorage.getItem("user"));  
     const deferred=$q.defer();
@@ -947,7 +1031,7 @@ this.getAcceptedBidOwner=function(param){
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
+        return deferred.promise;
 }
 
 this.getBookedDate=function(listingId)
@@ -963,7 +1047,7 @@ this.getBookedDate=function(listingId)
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
+        return deferred.promise;
 }
 
 
@@ -979,7 +1063,7 @@ this.getOwnerEarnings=function() {
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
+        return deferred.promise;
     
 }
 
@@ -1016,16 +1100,16 @@ this.getBidsPerDay=function() {
       .catch(error => {
         console.error("Error updating status:", error);
         deferred.reject(error.data?.message || "Server error");
-      });
-  
-    return deferred.promise;
+        });
+ 
+        return deferred.promise;
    
 }
 
 
 this.getActiveInactiveUsers=function(startDate,endDate) {
   
-    const deferred=$q.defer();
+        const deferred=$q.defer();
     const params={
         "startDate":startDate,
         "endDate":endDate
@@ -1040,8 +1124,8 @@ this.getActiveInactiveUsers=function(startDate,endDate) {
         console.error("Error updating status:", error);
         deferred.reject(error.data?.message || "Server error");
       });
-  
-    return deferred.promise;
+
+        return deferred.promise;
    
        
  
@@ -1066,16 +1150,79 @@ this.getMostPopularCars=function(startDate,endDate) {
         console.error("Error updating status:", error);
         deferred.reject(error.data?.message || "Server error");
       });
-  
-    return deferred.promise;
+
+        return deferred.promise;
 }   
 
+this.getNewUserOverTime=function(startDate,endDate) {
+    console.log("ololoopp")
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    ApiService.getDataInternaln(`/admin/stats/getNewUserOverTime`,params,user.token)
+      .then(response => {
+        console.log(response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+
+        return deferred.promise;
+}
+
+this.getActiveBiddingPerHour=function(startDate,endDate) {
+
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    ApiService.getDataInternaln(`/admin/stats/activeBiddingPerHour`,params,user.token)
+      .then(response => {
+        console.log("oioi",response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+
+        return deferred.promise;
+}
+
+
+this.getActiveBiddingPerHourOwner=function(startDate,endDate) {
+    console.log("ololoodspp")
+    const deferred=$q.defer();
+    const params={
+        "startDate":startDate,
+        "endDate":endDate
+    }
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    ApiService.getDataInternaln(`/owner/stats/activeBiddingPerHour/${user.id}`,params, user.token)
+      .then(response => {
+        console.log("vvb",response.data);
+        deferred.resolve(response.data.statistics);
+      })
+      .catch(error => {
+        console.error("Error updating status:", error);
+        deferred.reject(error.data?.message || "Server error");
+      });
+
+        return deferred.promise;
+}
 
 
 
 this.getMostBookedCarCategories=function(startDate,endDate) {
 
-    const deferred=$q.defer();
+        const deferred=$q.defer();
     const params={
         "startDate":startDate,
         "endDate":endDate
@@ -1090,8 +1237,8 @@ this.getMostBookedCarCategories=function(startDate,endDate) {
         console.error("Error updating status:", error);
         deferred.reject(error.data?.message || "Server error");
       });
-  
-    return deferred.promise;
+
+        return deferred.promise;
    
 }
 
@@ -1116,8 +1263,8 @@ this.getAverageBidPerCategory=function(startDate,endDate) {
         console.error("Error updating status:", error);
         deferred.reject(error.data?.message || "Server error");
       });
-  
-    return deferred.promise;
+
+        return deferred.promise;
  
 }
 
@@ -1125,7 +1272,7 @@ this.getAverageBidPerCategory=function(startDate,endDate) {
 
 
 this.getCarsListedByCategory=function (startDate,endDate){
-    const deferred=$q.defer();
+        const deferred=$q.defer();
     const params={
         "startDate":startDate,
         "endDate":endDate
@@ -1140,8 +1287,8 @@ this.getCarsListedByCategory=function (startDate,endDate){
         console.error("Error updating status:", error);
         deferred.reject(error.data?.message || "Server error");
       });
-  
-    return deferred.promise;
+
+        return deferred.promise;
 }
 
 

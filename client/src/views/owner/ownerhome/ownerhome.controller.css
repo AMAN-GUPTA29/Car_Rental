@@ -80,7 +80,7 @@ body {
     height: 50px;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1400px) {
     #sidebar {
         transform: translateX(-100%);
         z-index: 999;

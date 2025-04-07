@@ -35,6 +35,7 @@ carRentalApp.controller("ApprovedBidsOwnerController", function($scope, db, Sess
     // Call the prototype method on the bidding object
     bidding.getAcceptedBidOwner(params)
       .then(function(response) {
+        $scope.pagination.totalItems=response.totalItems;
         console.log("resssss", response);
         $scope.bids = response.bids; // setting bids
       })

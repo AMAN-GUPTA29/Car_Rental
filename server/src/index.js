@@ -10,7 +10,7 @@ import app from "./app.js";
 import {Server} from "socket.io";
 import http from "http";
 const server = http.createServer(app);
-import awsSQSConsumer from "./controllers/consumer/biddingdb.controller.js";
+import awsSQSConsumer from "./utils/awsSQSconsumerutil.js";
 
 const io = new Server(server, {
   cors: {

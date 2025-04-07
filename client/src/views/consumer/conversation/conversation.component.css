@@ -127,7 +127,7 @@ body {
     border-radius: 20px;
     background: #ffffff;
     color: rgb(0, 0, 0);
-    height: 30px;
+    height: 50px;
     margin-top: auto;
     margin-bottom: auto;
     padding: 10px 12px; 
@@ -294,7 +294,7 @@ sv
     align-items: center;
     gap: 8px;
     transition: 0.3s;
-    width:5%;
+    /* width:; */
 }
 
 .back-btn .arrow {
@@ -305,3 +305,26 @@ sv
     background-color: #52847b; /* Light Green */
 }
 
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+    .chat-container {
+        flex-direction: column; /* Stack the sidebar and chat window vertically */
+    }
+
+    .sidebar {
+        width: 100%; /* Make the sidebar take the full width */
+        height: 100%; /* Adjust height automatically */
+        padding: 10px; /* Add some padding */
+    }
+
+    .chat-window {
+        flex: none; /* Disable flex-grow for chat window */
+        width: 100%;
+        /* height: 0%; Make chat window take full width */
+    }
+
+    .chat-header {
+        border-radius: 0; /* Remove border radius for better alignment */
+    }
+}

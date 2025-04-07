@@ -33,6 +33,15 @@ const loginController = async (req, res) => {
       return res.status(404).json({ message: "User not found!" });
     }
 
+    if (user.blocked) {
+      return res.status(404).json({ message: "User is blocked" });
+    }
+
+    if (!user.authorise) {
+      return res.status(404).json({ message: "User is not authorised" });
+    }
+
+
     /**
      * @type {Boolean}
      * @description Compare provided password with stored hash
@@ -53,12 +62,12 @@ const loginController = async (req, res) => {
 
     const token = user.generateAuthToken(user);
 
-    // res.cookie('token', token, {
-    //   httpOnly: true,
-    //   sameSite: 'lax',
-    //   maxAge: 3600000 * 24, 
-    //   secure:true
-    // });
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 3600000 * 24, 
+      secure:"false"
+    });
 
     
      /**

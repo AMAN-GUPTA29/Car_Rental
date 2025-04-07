@@ -1,5 +1,5 @@
 /**
- * @import bcryp 
+ * @import bcryp
  * @import user schema
  * @import validate user for validating schema
  */
@@ -9,7 +9,6 @@ import { validateUser } from "../../utils/index.js";
 
 import dotenv from "dotenv";
 dotenv.config();
-
 
 /**
  * @description Controller function to handle user registration
@@ -32,9 +31,9 @@ const signupController = async (req, res) => {
     console.log(error);
     return res.status(400).json({ error: error, message: "Validation failed" });
   }
-  console.log(req.body)
+  console.log(req.body);
   try {
-     /**
+    /**
      * @type {String} userName - User's name
      * @type {String} email - User's email
      * @type {String} phone - User's phone number
@@ -74,22 +73,27 @@ const signupController = async (req, res) => {
      */
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
 
-     /**
+    /**
      * @type {String}
      * @description Hash password with salt
      */
     const hashedPassword = await bcrypt.hash(password, salt);
 
-     /**
+    /**
      * @description Create and save new user to database
      */
+    let auth = true;
+    if (role == "owner") {
+      auth = false;
+    }
+
     await new User({
       userName,
       email,
       phone,
       role,
       aadhar,
-      authorise,
+      authorise: auth,
       blocked,
       password: hashedPassword,
     }).save();

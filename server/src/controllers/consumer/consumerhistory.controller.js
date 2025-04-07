@@ -14,7 +14,7 @@ import { ObjectId } from "mongodb";
  */
 const getUserHistory = async (req, res) => {
   try {
-    console.log("pam",req.query)
+  
     /**
      * @type {String}
      * @description ID of the user to fetch history for

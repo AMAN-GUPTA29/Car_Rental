@@ -1,6 +1,6 @@
 carRentalApp.controller(
   "EndJourneyController",
-  function ($scope, ownerdb, SessionService, BiddingFactory) {
+  function ($scope, ownerdb, SessionService, BiddingFactory,toastifyService) {
     /**
      * @type {Array} upcomingBookings
      * @type {Boolean} isModalOpen
@@ -86,12 +86,16 @@ carRentalApp.controller(
       $scope.kmValue = parseInt(kmValue);
 
       if (!$scope.kmValue || isNaN($scope.kmValue)) {
-        alert("Please enter a valid KM value.");
+        toastifyService.error("Please enter a valid KM value.");
+
+       
         return;
       }
 
       if ($scope.kmValue < selectedBooking.startkm) {
-        alert("please enter a value greater than starting value");
+        toastifyService.error("please enter a value greater than starting value");
+
+        // alert("please enter a value greater than starting value");
         return;
       }
 

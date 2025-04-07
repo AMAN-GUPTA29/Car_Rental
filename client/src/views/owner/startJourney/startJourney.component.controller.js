@@ -16,6 +16,7 @@ carRentalApp.controller(
     let selectedBooking = null;
     $scope.currentPage = 1;
     $scope.rowsPerPage = 10;
+    $scope.totalitem=0;
 
     /**
      * @description This function is used to load bookings
@@ -37,6 +38,8 @@ carRentalApp.controller(
       bidding
         .getUpcomingBookings(user.id)
         .then((result) => {
+            console.log("cscs",result)
+            
           $scope.bookings = result.data;
         })
         .catch((err) => {

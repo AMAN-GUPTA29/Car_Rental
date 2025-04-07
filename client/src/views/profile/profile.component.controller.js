@@ -1,4 +1,4 @@
-carRentalApp.controller("profileController", function ($scope,SessionService,db) {
+carRentalApp.controller("profileController", function ($scope,SessionService,db,UserFactory) {
     
     $scope.isModalOpen = false;
 
@@ -60,18 +60,30 @@ carRentalApp.controller("profileController", function ($scope,SessionService,db)
             alert("Password must be at least 8 characters long, with one uppercase letter, one lowercase letter, and one special character.");
             return;
         }
-        db.editUserProfile(
-            $scope.user.id,
-            $scope.editUser.name,
-            $scope.editUser.phone,
-            $scope.editUser.oldPassword,
-            $scope.editUser.newPassword).then((result) => {
-                console.log("Updated User:", result);
-                sessionStorage.setItem("user", JSON.stringify(result));
-                location.reload();
-        }).catch((err) => {
-            console.log(err)
-        }); 
+
+        console.log($scope.editUser)
+        const userToEdit = new UserFactory({ _id: $scope.user.id,userName: $scope.editUser.username,phone:$scope.editUser.phone,password :$scope.editUser.newPassword,aadhar: $scope.editUser.aadhar,
+            email: $scope.editUser.email,role:$scope.user.role});
+
+        userToEdit.edit().then((result) => {
+            console.log("Updated User:", result);
+            sessionStorage.setItem("user", JSON.stringify(result));
+            sessionStorage.setItem("user", JSON.stringify({
+                email: result.data.email,
+                role: result.data.role,
+                id: result.data._id,
+                name: result.data.userName,
+                aadhar: result.data.aadhar,
+                mobile:result.data.phone,
+                token:result.token
+                
+            }));
+            location.reload();
+    }).catch((err) => {
+        console.log(err)
+    }); 
+
+        
     };
 
    

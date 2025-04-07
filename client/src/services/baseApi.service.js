@@ -3,12 +3,18 @@ carRentalApp.service("ApiService", function ($http, API_BASE_URL) {
     return $http.post(API_BASE_URL + endpoint, data);
   };
 
+  this.postDatalog = function (endpoint, data) {
+    return $http.post(API_BASE_URL + endpoint, data,{
+      withCredentials:true,
+    });
+  };
+
+
   this.getData = function (endpoint) {
     return $http.get(API_BASE_URL + endpoint);
   };
 
   this.getDataInternal = function (endpoint, token) {
-    console.log("xssx")
     console.log(API_BASE_URL)
     console.log(endpoint);
     return $http.get(API_BASE_URL + endpoint, {

@@ -300,16 +300,16 @@ carRentalApp.service("consumerdb", [
      * @returns {Promise}
      * @description This function is used to get unpaid invoices 
      */
-    this.getUnpaidInvoices = function (userID) {
+    this.getUnpaidInvoices = function (userID,page) {
       const deferred = $q.defer();
 
-      db.getInvoices(userID)
+      db.getInvoices(userID,page)
         .then((result) => {
           console.log("qqq",result);
-          const invoice = result.invoices
-          const sortedInvoices = invoice.sort((a, b) => a.paid - b.paid);
-          console.log(sortedInvoices)
-          deferred.resolve(sortedInvoices);
+          const invoice = result;
+          // const sortedInvoices = invoice.invoices.sort((a, b) => a.paid - b.paid);
+          // console.log("cygs",sortedInvoices)
+          deferred.resolve(invoice);
         })
         .catch((err) => {
           deferred.reject(err);
@@ -333,6 +333,20 @@ carRentalApp.service("consumerdb", [
           deferred.resolve(result);
         })
         
+        .catch((err) => {
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+    };
+
+
+    this.getRecommendedCarListings = function () {
+      const deferred = $q.defer();
+      db.getRecommendedCarListings()
+        .then((result) => {
+          deferred.resolve(result);
+        })
         .catch((err) => {
           deferred.reject(err);
         });

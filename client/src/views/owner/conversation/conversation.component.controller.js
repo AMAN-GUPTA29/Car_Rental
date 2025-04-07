@@ -1,4 +1,4 @@
-carRentalApp.controller("ChatControllerOwner", ['$timeout',"$scope","ownerdb","SessionService","FileService","DateService", function($timeout,$scope,ownerdb,SessionService,FileService,DateService) {
+carRentalApp.controller("ChatControllerOwner", ['$timeout',"$scope","ownerdb","SessionService","FileService","DateService", "db",function($timeout,$scope,ownerdb,SessionService,FileService,DateService,db) {
     
     
     /**
@@ -128,17 +128,18 @@ $scope.sendMessage =  function () {
         bookerName:selectedConvo.bookerName,
         token:usern.token,
     }
-    // if (file) {
-    //     FileService.convertToBase64(file).then((result) => {
-    //         ownerdb.saveChatMessage(result,"owner",true,selectedConvo).then((result) => {
-    //             $scope.messages.push(result)
-    //         }).catch((err) => {
-    //             console.log(err)
-    //         });
-    //     }).catch((err) => {
-    //         console.log(err)
-    //     });
-    // } else {
+    if (file) {
+        db.imageUpload(file).then((result) => {
+          console.log("poi",result.data.images[0])
+          ownerdb.saveConversation(owner,user,String(result.data.images[0]),"owner",true).then((result) => {
+                // $scope.messages.push(result)
+            }).catch((err) => {
+                console.log(err)
+            });
+        }).catch((err) => {
+            console.log(err)
+        });
+    } else {
         ownerdb.saveConversation(owner,user,message,"owner",false).then((result) => {
             console.log("cscssd",result)
             // $scope.messages.push(result.chat)
@@ -146,7 +147,7 @@ $scope.sendMessage =  function () {
             console.log(err)
         });
         
-    // }
+    }
 
 
 };

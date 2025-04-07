@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="invoice in displayedInvoices ">
+                <tr ng-repeat="invoice in allInvoices ">
                     <td>{{ invoice._id }}</td>
                     <td>{{ invoice.carData.carMake }} {{ invoice.carData.carModel }}</td>
                     <td>{{ invoice.bookerData.bookerName }}</td>
@@ -31,7 +31,7 @@
                     <td>{{ invoice.paid ? "Paid" : "Unpaid" }}</td>
                     <td><button ng-click="openInvoiceModal(invoice)">View</button></td>
                 </tr>
-                <tr ng-if="displayedInvoices.length === 0">
+                <tr ng-if="allInvoices.length === 0">
                     <td colspan="6">No unpaid invoices.</td>
                 </tr>
             </tbody>
@@ -85,7 +85,7 @@
     
     <div class="text-center">
         <ul uib-pagination 
-            total-items="allInvoices.length"
+            total-items="totalInvoices"
             ng-model="currentPage"
             items-per-page="INVOICES_PER_PAGE"
             max-size="5"

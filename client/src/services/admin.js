@@ -56,6 +56,20 @@ carRentalApp.service("admindb", ["db","validationService","$q","idGeneratorServi
         return deferred.promise;
     };
 
+    this.updateuserAuth=function(params,auth)
+    {
+        const blockedd={
+            authorise:auth
+        }
+        let deferred = $q.defer();
+        db.updateuserauth(params,blockedd).then((result) => {
+            deferred.resolve(result)
+        }).catch((err) => {
+            deferred.reject(err)
+        });
+        return deferred.promise;
+    }
+
     /**
      * 
      * @returns {Promise}

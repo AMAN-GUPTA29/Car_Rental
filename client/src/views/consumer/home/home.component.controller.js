@@ -19,6 +19,9 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
   $scope.uniqueModal=CAR_COMPANIES;
   $scope.totalPages;
   $scope.currentPage;
+  $scope.totalCars;
+
+  $scope.recommendedCars = [];
 
   $scope.filters = {
     city: "",
@@ -44,7 +47,11 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
   $scope.init = function () {
     getallcars();
     getCities();
+    getrecommendedCars();
   };
+
+
+  // $scope.currpage=1;
 
 
   function getCities()
@@ -72,14 +79,15 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
         $scope.filters.model="";
       }
     const params = {
-      page: 1,
+      page: $scope.currentPage,
       ...$scope.filters
     };
     // ListingFactory.fetchAll(user.id)
+    console.log(params)
     ListingFactory.getAllCarListing(params).then((response) => {
       console.log("res",response)
       let cars=response.listings;
-     
+     $scope.totalCars=response.totalListings;
       // cars= cars.filter(car => car.isDeleted === false);
       console.log(cars)
       $scope.cars = cars.map((car) => ({
@@ -95,6 +103,26 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
       $scope.currentPage = response.page;
 
       
+
+      
+    }).catch((error) => {
+      console.error("Error loading car listings:", error);
+    });
+  }
+
+  function getrecommendedCars(){
+    ListingFactory.getRecommendedCarListing().then((response) => {
+      console.log("res",response)
+      let cars=response.recommendations;
+      // cars= cars.filter(car => car.isDeleted === false);
+      console.log(cars)
+      $scope.recommendedCars = cars.map((car) => ({
+        ...car.latestBooking,
+        currentImageIndex: 0, 
+        count:car.count,  
+      }));
+
+      console.log("plpl",$scope.recommendedCars);
 
       
     }).catch((error) => {
@@ -138,6 +166,7 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
    * @description This function is used to apply filters
    */
   $scope.applyFilters= function applyFilters() {
+
     getallcars();
 }
 
@@ -158,4 +187,11 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
   $scope.prevImage = function (car) {
     ImageService.prevImage(car);
   };
+
+
+  $scope.loadmore=function()
+  {
+    // $scope.currpage=$scope.currpage+1;
+    getallcars();
+  }
 });

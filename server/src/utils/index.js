@@ -5,7 +5,7 @@
  */
 import {validateUser,validateListing} from "./validators/index.js"
 import s3 from "./s3.utils.js"
-import sendMail from "./nodemailer.js";
+import {sendMail} from "./nodemailer.js";
 
 
 /**

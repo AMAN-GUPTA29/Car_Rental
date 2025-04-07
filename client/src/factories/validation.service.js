@@ -1,7 +1,7 @@
 /**
  * @description This service is used to validate user inputs
  */
-carRentalApp.factory("validationService", function (DateService) {
+carRentalApp.factory("validationService", function (DateService,toastifyService) {
     return {
         validateEmail: function (email) {
             let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,12 +45,13 @@ carRentalApp.factory("validationService", function (DateService) {
         validateBid: function (bidplace, car) {
             console.log("sdd",bidplace,car);
             if (!bidplace.startDate || !bidplace.endDate || !bidplace.bidAmount) {
-              alert("Please fill all the required fields.");
+                toastifyService.error("Fill all the required field");
+
               return false;
             }
       
             if (new Date(bidplace.endDate) < new Date(bidplace.startDate)) {
-              alert("End date must be after start date.");
+                toastifyService.error("End date must after be start date");
               return false;
             }
       
@@ -62,7 +63,8 @@ carRentalApp.factory("validationService", function (DateService) {
             }
       
             if (bidplace.bidAmount < minPrice) {
-              alert(`Your bid amount should be at least $${minPrice}`);
+                toastifyService.error(`Your bid amount should be at least $${minPrice}`);
+            //   alert();
               return false;
             }
       
