@@ -43,14 +43,14 @@ io.on("connection", (socket) => {
   });
 });
 
-// const client = createClient ({
-//   url : process.env.REDIS_URL,
-// });
+const client = createClient ({
+  url : process.env.REDIS_URL,
+});
 
-// client.on("error", function(err) {
-//   throw err;
-// });
-// client.connect();
+client.on("error", function(err) {
+  throw err;
+});
+client.connect();
 
 await connection();
 setInterval(()=>{
