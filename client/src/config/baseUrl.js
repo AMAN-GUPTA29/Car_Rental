@@ -1,2 +1,2 @@
 carRentalApp
-.constant('API_BASE_URL', 'http://localhost:8080/api/v1');
+.constant('API_BASE_URL', 'https://car-rental-mgvc.onrender.com/api/v1');
