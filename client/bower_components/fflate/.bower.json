@@ -1,0 +1,14 @@
+{
+  "name": "fflate",
+  "homepage": "https://github.com/101arrowz/fflate",
+  "version": "0.4.8",
+  "_release": "0.4.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.4.8",
+    "commit": "5503f4dd280c5f6222293462f6ca6d13bf03ce0a"
+  },
+  "_source": "https://github.com/101arrowz/fflate.git",
+  "_target": "^0.4.8",
+  "_originalSource": "101arrowz/fflate"
+}

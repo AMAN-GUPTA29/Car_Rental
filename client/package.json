@@ -9,6 +9,7 @@
     "jsdoc": "^4.0.4"
   },
   "dependencies": {
+    "bower": "^1.8.14",
     "lite-server": "^2.6.1",
     "nodemon": "^3.1.9"
   }

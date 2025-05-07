@@ -1,0 +1,15 @@
+{
+  "name": "jsdoc",
+  "homepage": "https://github.com/jsdoc3/jsdoc",
+  "version": "4.0.4",
+  "_release": "4.0.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "4.0.4",
+    "commit": "f606d7525e39538ea47fb180f9363585c5afc9cb"
+  },
+  "_source": "https://github.com/jsdoc3/jsdoc.git",
+  "_target": "^4.0.4",
+  "_originalSource": "jsdoc",
+  "_direct": true
+}
