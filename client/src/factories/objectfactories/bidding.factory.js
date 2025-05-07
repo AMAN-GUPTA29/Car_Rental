@@ -232,6 +232,24 @@ carRentalApp.factory("BiddingFactory", [
       },
 
       /**
+       * @method getAllPendingBiddingsOwner
+       * @param {string} ownerId - The ID of the owner
+       * @returns {Promise} A promise that resolves with all pending biddings for all cars of an owner
+       */
+      getAllPendingBiddingsOwner : function(ownerId) {
+        const deferred = $q.defer();
+        console.log("ownerId", ownerId);
+        ownerdb.getAllPendingBiddingsOwner(ownerId)
+        .then(function(response) {
+          deferred.resolve(response);
+        })
+        .catch(function(error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      },
+
+      /**
        * @method acceptBid
        * @param {Object} bid - The bid to accept
        * @param {Object} user - The user accepting the bid

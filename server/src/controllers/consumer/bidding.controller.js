@@ -4,6 +4,7 @@
  */
 import {SQS} from "@aws-sdk/client-sqs"
 import awsSQSProducer from "../../utils/awsSQSproducerutil.js";
+import { validateBidding } from "../../utils/validators/biddingDetails.validate.js";
 
 
 /**
@@ -15,7 +16,12 @@ import awsSQSProducer from "../../utils/awsSQSproducerutil.js";
 const consumerBiddingController = async (req, res) => {
     try {
 
-     
+        const { error } = validateBidding(req.body);
+        if (error) {
+        console.log(error)
+        return res.status(400).json({ error: error, message: "Validation failed" });
+        }
+        console.log("Bidding data received:", req.body);
 
         /**
          * defining the params of the sqs
@@ -32,7 +38,7 @@ const consumerBiddingController = async (req, res) => {
         const rep=awsSQSProducer(params);
         
         console.log(req.body);
-        res.status(201).send({ data });
+        res.status(201).send({ rep });
 
     } catch (error) {
         console.error("Error during bidding:", error.message);

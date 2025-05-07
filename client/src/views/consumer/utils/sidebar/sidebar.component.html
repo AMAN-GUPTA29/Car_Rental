@@ -1,15 +1,139 @@
+<button id="sidebarToggle" ng-click="sidebarComponent.toggleSidebar()">☰ Menu</button>
+
 <div id="sidebar" class="sidebar" ng-class="{'active': sidebarComponent.sidebarOpen}">
-    <button id="close-sidebar" class="close-btn" ng-click="sidebarComponent.toggleSidebar()">&times;</button>
+    <!-- here -->
+    <button id="closeButton" ng-click="sidebarComponent.toggleSidebar()">
+        <i class="fa fa-arrow-left"></i>
+    </button>
+    <h2>Menu</h2>
     <ul>
-      
-            <li><a ui-sref="dashboard">Dashboard</a></li>
-            <!-- <li><a ui-sref="user-bookings">My Bookings</a></li> -->
-            <li><a ui-sref="carconsumerchat">Messages</a></li>
-            <li><a ui-sref="allbids">My Biddings</a></li>
-            <li><a ui-sref="profile">Profile</a></li>
-            <li><a ui-sref="invoice">Invoice</a></li>
-            <li><a href="#" ng-click="sidebarComponent.logout()">Logout</a></li>
-       
-        
+        <li><a ui-sref="dashboard">Dashboard</a></li>
+        <li><a ui-sref="carconsumerchat">Messages</a></li>
+        <li><a ui-sref="allbids">My Biddings</a></li>
+        <li><a ui-sref="profile">Profile</a></li>
+        <li><a ui-sref="invoice">Invoice</a></li>
+        <li id="logout" ng-click="sidebarComponent.logout()">Logout</li>
     </ul>
 </div>
+
+<style>
+#sidebar {
+    height: 100%;
+    width: 280px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: white;
+    padding-top: 40px;
+    color: #555;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transition: 0.3s ease-in-out;
+    border-radius: 0 8px 8px 0;
+    transform: translateX(-100%);
+    z-index: 10000;
+}
+
+#sidebar.active {
+    transform: translateX(0) !important;
+}
+
+#sidebar h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar ul li {
+    padding: 16px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#sidebar ul li:hover {
+    background-color: #f8f9fa;
+}
+
+#sidebar ul li a {
+    text-decoration: none;
+    color: #555;
+    display: block;
+    transition: 0.3s;
+}
+
+#sidebar ul li a:hover {
+    color: #007bff;
+}
+
+#sidebarToggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: linear-gradient(135deg, #007bff, #388fec);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    height: 45px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#logout {
+    color: #dc3545;
+    cursor: pointer;
+}
+
+#logout:hover {
+    background-color: #dc3545;
+    color: rgb(63, 21, 21);
+}
+
+#closeButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #007bff, #388fec);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+#closeButton:hover {
+    background: linear-gradient(135deg, #0056b3, #0062cc);
+    transform: translateY(-2px);
+}
+
+@media screen and (max-width: 900px) {
+    #sidebar {
+        transform: translateX(-100%);
+    }
+
+    #sidebarToggle {
+        display: block;
+    }
+
+    #sidebar.active {
+        transform: translateX(0);
+    }
+}
+</style>

@@ -52,6 +52,8 @@
     <script src="/src/factories/objectfactories/bidding.factory.js"></script>
     <script src="/src/factories/objectfactories/listing.factory.js"></script>
 
+    <script src="/src/utils/acceptedbid.controller.js"></script>
+
 
     <script src="/src/services/dbservices/db.service.js"></script>
     <script src="/src/services/db.js"></script>
@@ -72,10 +74,12 @@
     <script src="/src/views/owner/ownerhome/ownerhome.component.controller.js"></script>
     <script src="/src/views/owner/component/sidebar.owner.controller.js"></script>
     <script src="/src/views/owner/ownerlisting/ownerlisting.component.controller.js"></script>
+    <script src="/src/views/owner/ownerlisting/listingModal.controller.js"></script>
     <script src="/src/views/owner/conversation/conversation.component.controller.js"></script>
     <script src="/src/services/utils/getcities.js"></script>
     <script src="/src/views/owner/decidedBids/decidedBids.component.controller.js"></script>
     <script src="/src/views/owner/startJourney/startJourney.component.controller.js"></script>
+    <script src="/src/views/owner/allbids/allbids.controller.component.js"></script>
 
     <script src="/src/views/consumer/home/home.component.controller.js"></script>
     <script src="/src/services/consumer.js"></script>
@@ -102,6 +106,8 @@
     <script src="/src/services/userSignupService.js"></script>
   </head>
   <body ng-app="carRentalApp">
-    <div ui-view></div>
-  </body>
+    <div ng-controller="bidaceeptedController" ng-init="init()">
+        <div ui-view></div>
+    </div>
+</body>
 </html>

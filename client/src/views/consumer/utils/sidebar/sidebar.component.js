@@ -1,4 +1,3 @@
-
 /**
  * Sidebar component
  * @component sidebarComponent
@@ -11,19 +10,17 @@ carRentalApp
         bindings: {
             sidebarOpen: '='
         },
-        controller: function SidebarController() {
-            let vm = this;
-
-            vm.toggleSidebar = function () {
+        controller: ['$state', function SidebarController($state) {
+            this.toggleSidebar = function () {
                 console.log("Toggling sidebar from component...");
-                vm.sidebarOpen = !vm.sidebarOpen;
+                this.sidebarOpen = !this.sidebarOpen;
             };
 
-            vm.logout = function () {
+            this.logout = function () {
                 console.log("Logging out...");
                 sessionStorage.clear(); 
                 $state.go('login'); 
             };
-        },
+        }],
         controllerAs: 'sidebarComponent'
     });

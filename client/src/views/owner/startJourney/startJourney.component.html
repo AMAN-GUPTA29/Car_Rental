@@ -1,90 +1,172 @@
-<div class="container py-4 addhight" ng-controller="StartJourneyController" ng-init="init()">
-    <!-- Back Button -->
-    <button go-Back class="btn back-btn btn-outline-dark mb-3">
-        <i class="fa fa-arrow-left"></i> Back
-    </button>
+<div class="container-fluid" ng-controller="StartJourneyController" ng-init="init()" style="height: 100vh; padding: 0; overflow-x: hidden; position: relative;">
+    <!-- Sidebar - Fixed at the left -->
+    <sidebar style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; z-index: 1000;"></sidebar>
 
-    <h2 class="text-center text-primary fw-bold mb-4">
-        <i class="fa fa-calendar"></i> Upcoming Car Bookings
-    </h2>
+    <!-- Main content area completely separate from sidebar -->
+    <div class="main-content" style="position: fixed; left: 300px; top: 0; width: calc(100% - 320px); height: 100vh; transition: left 0.3s ease; overflow-x: hidden;">
+        <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: none; margin: 10px 10px 0 0; height: calc(100vh - 20px); display: flex; flex-direction: column;">
+            <div class="panel-heading" style="color: rgb(68, 68, 68); border-radius: 8px 8px 0 0; padding: 20px; flex-shrink: 0;">
+               
+                <h3 class="panel-title text-center" style="font-size: 24px; margin: 0;">
+                    <i class="fa fa-calendar"></i> Upcoming Car Bookings
+                </h3>
+            </div>
+            
+            <div class="panel-body" style="padding: 30px; flex-grow: 1; display: flex; flex-direction: column; overflow: auto;">
+                <div class="table-responsive" style="flex-grow: 1;">
+                    <table class="table table-hover" style="background: white; border-radius: 4px; overflow: hidden;">
+                        <thead style="color: rgb(80, 79, 79);">
+                            <tr>
+                                <th style="padding: 15px;"><i class="fa fa-car"></i> Car</th>
+                                <th style="padding: 15px;"><i class="fa fa-user"></i> Booker</th>
+                                <th style="padding: 15px;"><i class="fa fa-calendar-check"></i> Pick-up Date</th>
+                                <th style="padding: 15px;"><i class="fa fa-calendar-minus"></i> Drop-off Date</th>
+                                <th style="padding: 15px;"><i class="fa fa-money-bill"></i> Bid Amount</th>
+                                <th style="padding: 15px;" class="text-center"><i class="fa fa-cogs"></i> Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="bookings.length === 0">
+                                <td colspan="6" class="text-center text-muted" style="padding: 30px;">
+                                    <i class="fa fa-car-slash fa-3x mb-3 text-secondary"></i>
+                                    <h5>No upcoming bookings found.</h5>
+                                </td>
+                            </tr>
 
-    <!-- Booking Table -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th><i class="fa fa-car"></i> Car</th>
-                        <th><i class="fa fa-user"></i> Booker</th>
-                        <th><i class="fa fa-calendar-check"></i> Pick-up Date</th>
-                        <th><i class="fa fa-calendar-minus"></i> Drop-off Date</th>
-                        <th><i class="fa fa-money-bill"></i> Bid Amount ($)</th>
-                        <th class="text-center"><i class="fa fa-cogs"></i> Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- No Bookings Found -->
-                    <tr ng-if="bookings.length === 0">
-                        <td colspan="6" class="text-center text-muted py-4">
-                            <i class="fa fa-car-slash fa-3x mb-3 text-secondary"></i>
-                            <h5>No upcoming bookings found.</h5>
-                        </td>
-                    </tr>
+                            <tr ng-repeat="booking in bookings" style="transition: all 0.3s ease;">
+                                <td style="padding: 15px;">
+                                    <span class="fw-bold">{{ booking.carData.carMake }} {{ booking.carData.carModel }}</span>
+                                </td>
+                                <td style="padding: 15px;">{{ booking.bookerData.bookerName }}</td>
+                                <td style="padding: 15px;">{{ booking.startDate | date:'MMM d, yyyy' }}</td>
+                                <td style="padding: 15px;">{{ booking.endDate | date:'MMM d, yyyy' }}</td>
+                                <td style="padding: 15px;" class="text-success fw-bold">$ {{ booking.bidAmount | number:2 }}</td>
+                                <td style="padding: 15px;" class="text-center">
+                                    <button class="btn btn-primary" 
+                                            ng-click="openLogKmModal(booking)"
+                                            style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px; padding: 8px 15px;">
+                                        <i class="fa fa-road"></i> Log KM
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <!-- Bookings List -->
-                    <tr ng-repeat="booking in bookings">
-                        <td>
-                            <span class="fw-bold">{{ booking.carData.carMake }} {{ booking.carData.carModel }}</span>
-                        </td>
-                        <td>{{ booking.bookerData.bookerName }}</td>
-                        <td>{{ booking.startDate | date:'MMM d, yyyy' }}</td>
-                        <td>{{ booking.endDate | date:'MMM d, yyyy' }}</td>
-                        <td class="text-success fw-bold">$ {{ booking.bidAmount | number:2 }}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-primary px-3" ng-click="openLogKmModal(booking)">
-                                <i class="fa fa-road"></i> Log KM
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul uib-pagination  total-items="bookings.length" ng-model="currentPage" ng-change="pageChanged()"></ul>
-
+                <!-- Pagination -->
+                <div class="text-center" style="margin-top: 20px; margin-bottom: 10px;">
+                    <ul uib-pagination total-items="bookings.length" ng-model="currentPage" ng-change="pageChanged()"></ul>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- KM Logging Modal -->
-
-<uib-modal ng-if="isModalOpen">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fa fa-road"></i> Log Current KM</h5>
-                <button type="button" class="close" ng-click="closeKmModal()">&times;</button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <label for="kmValue" class="form-label">Enter current KM:</label>
-                <input 
-                    type="number" 
-                    id="kmValue" 
-                    class="form-control" 
-                    ng-model="kmValue" 
-                    placeholder="Enter KM" 
-                    min="0"
-                />
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" ng-click="closeKmModal()">Cancel</button>
-                <button type="button" class="btn btn-success" ng-click="saveKm(kmValue)">
-                    <i class="fa fa-save"></i> Save
-                </button>
+    <uib-modal ng-if="isModalOpen">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fa fa-road"></i> Log Current KM</h5>
+                    <!-- <button type="button" class="close" ng-click="closeKmModal()">&times;</button> -->
+                </div>
+    
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <label for="kmValue" class="form-label">Enter current KM:</label>
+                    <input 
+                        type="number" 
+                        id="kmValue" 
+                        class="form-control" 
+                        ng-model="kmValue" 
+                        placeholder="Enter KM" 
+                        min="0"
+                    />
+                </div>
+    
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" ng-click="closeModal()">Cancel</button>
+                    <button type="button" class="btn btn-success" ng-click="saveKm(kmValue)">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-</uib-modal>
+    </uib-modal>
 </div>
+
+<style>
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+
+    .pagination > li > a {
+        color: #007bff;
+        border: 1px solid #dee2e6;
+        margin: 0 2px;
+        border-radius: 4px;
+    }
+
+    .pagination > li.active > a {
+        background: linear-gradient(135deg, #007bff, #388fec);
+        border-color: #007bff;
+    }
+
+    .pagination > li > a:hover {
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+
+    .back-btn {
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        transform: translateX(-5px);
+    }
+
+    /* Responsive design for sidebar */
+    @media (max-width: 1100px) {
+        .main-content {
+            left: 10px !important;
+            width: calc(100% - 20px) !important;
+        }
+        
+        sidebar {
+            width: 0 !important;
+            overflow: hidden;
+        }
+    }
+
+    .modal-dialog {
+        z-index: 1050 !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        width: 90% !important;
+        max-width: 600px !important;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    @media (max-width: 768px) {
+        .modal-dialog {
+            width: 95% !important;
+            max-width: none !important;
+        }
+    }
+</style>

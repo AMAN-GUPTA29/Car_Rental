@@ -48,6 +48,25 @@ carRentalApp.service("ownerdb", [
       return deferred.promise;
     };
 
+    /**
+     * @method getAllPendingBiddingsOwner
+     * @description Get all pending biddings for an owner across all their cars
+     * @param {string} ownerID - The ID of the owner
+     * @returns {Promise} A promise that resolves with all pending biddings
+     */
+    this.getAllPendingBiddingsOwner = function (ownerID) {
+      const deferred = $q.defer();
+      db.getAllPendingBiddingsOwner(ownerID)
+        .then((biddings) => {
+          deferred.resolve(biddings);
+        })
+        .catch((err) => {
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+    };
+
     this.statusbiddings = function (bid, status, user, car) {
       console.log("sedsc",car)
   

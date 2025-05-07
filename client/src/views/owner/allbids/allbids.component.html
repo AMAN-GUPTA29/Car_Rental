@@ -1,0 +1,165 @@
+<div ng-controller="AllBidsOwnerController" ng-init="init()" class="container-fluid all-bids-container" style="padding: 0; overflow-x: hidden;">
+    <!-- Sidebar - Fixed at the left -->
+    <sidebar></sidebar>
+    
+    <!-- Main Container with adaptive margin for sidebar -->
+    <div class="content-wrapper" style="margin-left: 250px; transition: margin-left 0.3s ease;">
+        <!-- Hero Section -->
+        <section class="hero-section" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); width: 100%; padding: 40px 0 30px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 25px; border-radius: 8px;">
+            <div class="container-fluid" style="max-width: 1200px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h2 style="color: #007bff; font-weight: 600; margin: 10px 0; font-size: 28px; text-shadow: 0 1px 2px rgba(0,0,0,0.05);">All Biddings</h2>
+                        <p style="color: #6c757d; margin-bottom: 0;">Manage all car biddings from a single dashboard</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- All Biddings Table Section -->
+        <div class="container-fluid" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
+            <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); border: none; transition: all 0.3s ease; margin-bottom: 25px; background-color: white;">
+                <div class="panel-heading" style="color: #333; border-radius: 8px 8px 0 0; padding: 15px 20px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-bottom: 1px solid rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 500;"><i class="fa fa-list" style="color: #007bff; margin-right: 10px;"></i>All Pending Biddings</h3>
+                </div>
+                <div class="panel-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-hover" style="margin-bottom: 0;">
+                            <thead style="background-color: #f8f9fa;">
+                                <tr>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Car Details</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Bidding Date</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Price</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Bidder Name</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Aadhar</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Booking Type</th>
+                                    <!-- <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Actions</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loading indicator -->
+                                <tr ng-if="isLoading">
+                                    <td colspan="7" style="text-align: center; padding: 30px;">
+                                        <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                        <p style="margin-top: 10px; color: #6c757d;">Loading biddings...</p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Biddings data rows -->
+                                <tr ng-repeat="bid in allBiddings" style="transition: all 0.2s ease;">
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">
+                                        <div style="font-weight: 500; color: #007bff;">{{bid.carData.carMake}} {{bid.carData.carModel}}</div>
+                                        <small style="color: #6c757d;">{{bid.carData.carYear}}</small>
+                                    </td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">{{bid.startDate | date:'shortDate'}} - {{bid.endDate | date:'shortDate'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle; font-weight: 500; color: #28a745;">${{bid.bidAmount || 'N/A'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">{{bid.bookerData.bookerName || 'Unknown'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">{{bid.bookerData.aadhar || 'Unknown'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">
+                                        <span class="badge" style="background-color: #007bff; padding: 6px 10px; border-radius: 4px; color: white;">{{bid.bookType}}</span>
+                                    </td>
+                                    <!-- <td style="padding: 15px; text-align: center; vertical-align: middle;">
+                                        <button class="btn btn-success btn-sm" ng-click="acceptBid(bid)" style="margin-right: 5px; border-radius: 4px; padding: 6px 12px; background: linear-gradient(135deg, #28a745, #1e7e34); border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                            <i class="fa fa-check" style="margin-right: 5px;"></i> Accept
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" ng-click="rejectBid(bid)" style="border-radius: 4px; padding: 6px 12px; background: linear-gradient(135deg, #dc3545, #c82333); border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                            <i class="fa fa-times" style="margin-right: 5px;"></i> Reject
+                                        </button>
+                                    </td> -->
+                                </tr>
+                                
+                                <!-- No biddings message -->
+                                <tr ng-if="!isLoading && allBiddings.length === 0">
+                                    <td colspan="7" style="text-align: center; padding: 30px;">
+                                        <i class="fa fa-info-circle" style="font-size: 48px; color: #6c757d; margin-bottom: 10px;"></i>
+                                        <p style="color: #6c757d; font-style: italic;">No pending biddings available at the moment.</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        overflow-x: hidden;
+    }
+    
+    .all-bids-container {
+        background-color: #f8f9fa;
+    }
+    
+    .panel {
+        transition: all 0.3s ease;
+    }
+    
+    .panel:hover {
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    /* Responsive design for sidebar */
+    @media (max-width: 991px) {
+        .content-wrapper {
+            margin-left: 0 !important;
+        }
+        
+        sidebar {
+            width: 0 !important;
+            overflow: hidden;
+        }
+        
+        .panel-heading h3 {
+            font-size: 16px;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .panel-body {
+            padding: 15px !important;
+        }
+        
+        .table-responsive {
+            border: none;
+        }
+        
+        .table td, .table th {
+            padding: 10px !important;
+        }
+    }
+    
+    @media (max-width: 575px) {
+        .hero-section {
+            padding: 30px 0 20px 0 !important;
+        }
+        
+        h2 {
+            font-size: 22px !important;
+        }
+        
+        .badge {
+            padding: 4px 8px !important;
+            font-size: 11px !important;
+        }
+        
+        .btn-sm {
+            font-size: 11px;
+            padding: 4px 8px !important;
+        }
+    }
+</style>

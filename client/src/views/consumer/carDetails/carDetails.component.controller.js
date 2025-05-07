@@ -147,7 +147,16 @@ $scope.tochange=function()
  */
 $scope.bookCar = function () {
     $scope.user=JSON.parse(sessionStorage.getItem("user"));
-        console.log("qwe",$scope.car);
+       
+        // return;
+    if($scope.bidplace.bidAmount/((($scope.bidplace.endDate-$scope.bidplace.startDate)/(1000*60*60*24))+1) > (5*$scope.car.carData.basePrice))
+    {
+        toastifyService.error("Bid amount should be less than 4 times the price per day");
+        return;
+
+    }
+      
+      
     let bookingData = {
 
         ownerDetails: { ...$scope.car.ownerDetails, ownerId: $scope.car.ownerID },

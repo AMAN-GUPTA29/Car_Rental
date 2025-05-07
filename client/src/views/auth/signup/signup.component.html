@@ -1,36 +1,103 @@
-<!-- <div class="bodyauth"> -->
-<div class="container" ng-controller="SignupController">
-    <div class="form-container">
-        <h2>Signup</h2>
-        <form ng-submit="signup()">
-            <label for="signup-role">Role:</label>
-            <select id="signup-role" ng-model="user.role">
-                <option value="admin">Admin</option>
-                <option value="owner">Owner</option>
-                <option value="user">User</option>
-            </select>
+<div class="container-fluid" ng-controller="SignupController">
+    <div class="row" style="min-height: 100vh; display: flex; align-items: center; background-color: #f5f5f5;">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style="margin-top: 40px; margin-bottom: 40px;">
+            <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: none;">
+                <div class="panel-heading" style="color: rgb(85, 85, 85); border-radius: 8px 8px 0 0; padding: 25px 20px;">
+                    <h3 class="panel-title text-center" style="font-size: 24px; margin: 0;">Sign Up</h3>
+                </div>
+                <div class="panel-body" style="padding: 40px 30px;">
+                    <form ng-submit="signup()">
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="signup-role" style="font-weight: 500; color: #555;">Role:</label>
+                                    <select class="form-control" 
+                                            id="signup-role" 
+                                            ng-model="user.role"
+                                            style="height: 45px; border-radius: 4px;">
+                                        <option value="admin">Admin</option>
+                                        <option value="owner">Owner</option>
+                                        <option value="user">User</option>
+                                    </select>
+                                </div>
 
-            <label for="signup-email">Email:</label>
-            <input type="email" id="signup-email" ng-model="user.email" email-validation required>
-            <small class="warning">{{ warnings.email }}</small>
+                                <div class="form-group">
+                                    <label for="signup-email" style="font-weight: 500; color: #555;">Email:</label>
+                                    <input type="email" 
+                                           class="form-control" 
+                                           id="signup-email" 
+                                           ng-model="user.email"
+                                           email-validation
+                                           style="height: 45px; border-radius: 4px;" 
+                                           required>
+                                    <small class="text-danger">{{ warnings.email }}</small>
+                                </div>
 
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" ng-model="user.phone" phone-validation required>
-            <small class="warning">{{ warnings.phone }}</small>
+                                <div class="form-group">
+                                    <label for="phone" style="font-weight: 500; color: #555;">Phone:</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="phone" 
+                                           ng-model="user.phone"
+                                           phone-validation
+                                           style="height: 45px; border-radius: 4px;" 
+                                           required>
+                                    <small class="text-danger">{{ warnings.phone }}</small>
+                                </div>
+                            </div>
 
-            <label for="username">Username:</label>
-            <input type="text" id="username" ng-model="user.username" required>
+                            <!-- Right Column -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="username" style="font-weight: 500; color: #555;">Username:</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="username" 
+                                           ng-model="user.username"
+                                           style="height: 45px; border-radius: 4px;" 
+                                           required>
+                                </div>
 
-            <label for="aadhar">Aadhar:</label>
-            <input type="text" id="aadhar" ng-model="user.aadhar" required>
+                                <div class="form-group">
+                                    <label for="aadhar" style="font-weight: 500; color: #555;">Aadhar:</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="aadhar" 
+                                           ng-model="user.aadhar"
+                                           style="height: 45px; border-radius: 4px;" 
+                                           required>
+                                </div>
 
-            <label for="signup-password">Password:</label>
-            <input type="password" id="signup-password" ng-model="user.password" password-validation required>
-            <small class="warning">{{ warnings.password }}</small>
+                                <div class="form-group">
+                                    <label for="signup-password" style="font-weight: 500; color: #555;">Password:</label>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="signup-password" 
+                                           ng-model="user.password"
+                                           password-validation
+                                           style="height: 45px; border-radius: 4px;" 
+                                           required>
+                                    <small class="text-danger">{{ warnings.password }}</small>
+                                </div>
+                            </div>
+                        </div>
 
-            <button type="submit">Signup</button>
-        </form>
-        <p>Already have an account? <a ui-sref="login">Login here</a></p>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button type="submit" 
+                                        class="btn btn-primary btn-block"
+                                        style="height: 45px; margin-top: 25px; font-size: 16px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 4px; transition: all 0.3s ease;">
+                                    Sign Up
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <p class="text-center" style="margin-top: 25px; color: #666;">
+                        Already have an account? <a ui-sref="login" style="color: #007bff; text-decoration: none; font-weight: 500;">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<!-- </div> -->

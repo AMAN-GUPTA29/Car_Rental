@@ -132,5 +132,13 @@ const historySchema = new mongoose.Schema({
   });
   
   const History = mongoose.model('History', historySchema);
+
+
+
+  historySchema.index({ "bookerData.bookerId": 1 });
+  historySchema.index({ "carData.listingId": 1 });
+  historySchema.index({ "ownerDetails.ownerID": 1 });
+  historySchema.index({ status: 1 });
+
   export default History;
   

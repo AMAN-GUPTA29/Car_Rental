@@ -1,127 +1,280 @@
-<div ng-controller="CarListingController" ng-init="init()" class="">
+<div ng-controller="CarListingController" ng-init="init()" class="container-fluid">
+    <sidebar></sidebar>
 
-    
-    <h2 class="text-center" id="usersalutation">Hello, {{ user.name }}!</h2>
-
-    <sidebar></sidebar> 
-   
-
-    <button class="btn btn-primary btn-show-popup" ng-click="openModal()">Register New Listing</button>
-
-  
-    <h3 class="headtoshow text-center" ng-show="listings.length > 0">Your Listings</h3>
-    <div class="col-md-offset-3">
-    <div id="row">
-        <!-- <div ng-if="!listings || listings.length === 0">
-            <p>No listings found.</p>
-        </div> -->
-
-        <div  ng-repeat="listing in listings" class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-body">
-            <div uib-carousel interval="3000"  no-wrap="false">
-                <div uib-slide ng-repeat="img in listing.images track by $index" index="$index">
-                    <img ng-src="{{ img || 'placeholder.jpg' }}" class="listing-image" alt="{{ listing.carData.carMake }} {{ listing.carData.carModel }}">
-                </div>
+    <div id="content-wrapper" class="content-wrapper" style="margin-left: 280px; transition: all 0.3s ease;">
+        <div class="row" style="margin-top: 30px;">
+            <div class="col-xs-12 text-center">
+                <h2 id="usersalutation" style="color: #007bff; font-weight: 500;">Hello, {{ user.name }}!</h2>
             </div>
+        </div>
 
-            
+        <div class="row" style="margin: 20px 0 30px 0;" ng-show="listings.length > 0">
+            <div class="col-xs-6">
+                <h3 class="headtoshow" style="margin: 8px 0; color: #555; font-weight: 500;">Your Listings</h3>
+            </div>
+            <div class="col-xs-6 text-right">
+                <button class="btn btn-primary" 
+        ng-click="openModal()"
+        style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px; padding: 10px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease;">
+    <i class="fa fa-plus-circle"></i> Register New Listing
+</button>
+            </div>
+        </div>
 
-            <a ui-sref="carownerlisting({listingID: listing._id })" class="listing-link" style="text-decoration: none;">
-                <div class="listing-header">
-                    <h3 class="text-center">{{ listing.carData.carMake }} {{ listing.carData.carModel }}</h3>
-                    <p class="text-center price">${{ listing.carData.basePrice }}/day</p>
-                </div>
-                <div class="listing-details">
-                    <p><strong>Location:</strong> {{ listing.carData.carAddress }}</p>
-                    <p><strong>Category:</strong> {{ listing.carData.carCategory }}</p>
-                    <p><strong>Transmission:</strong> {{ listing.carData.carTransmission }}</p>
-                    <div>
-                        <strong>Color:</strong> 
-                        <span class="color-box" ng-style="{'background-color': listing.carData.carColor}"></span>
+        <!-- Button shown when there are no listings -->
+        <div class="row" style="margin: 20px 0 30px 0;" ng-hide="listings.length > 0">
+            <div class="col-xs-12 text-right">
+                <button class="btn btn-primary" ng-click="openModal()" style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px; padding: 10px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease;">
+                    <i class="fa fa-plus-circle"></i> Register New Listing
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div ng-repeat="listing in listings" class="col-md-4 col-sm-6">
+                <div class="panel panel-info" style="border-radius: 8px; margin-bottom: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none; transition: all 0.3s ease;">
+                    <div class="panel-heading" style=" color: rgb(63, 63, 63); border-radius: 8px 8px 0 0; padding: 15px; border: none;">
+                        <h3 class="panel-title text-center" style="margin: 0; font-size: 20px;">{{ listing.carData.carMake }} {{ listing.carData.carModel }}</h3>
+                        <p class="text-center" style="margin: 5px 0 0 0; font-size: 18px; font-weight: 600;">${{ listing.carData.basePrice }}/day</p>
                     </div>
-                    <p><strong>Year:</strong> {{ listing.carData.carYear }}</p>
-                    <p><strong>Mileage:</strong> {{ listing.carData.carMileage }} km</p>
-                    <p ng-if="listing.carData.isDeleted" style="color: red; font-weight: bold;">
-                        <strong>Car Blocked:</strong> Yes
-                    </p>
-                    <p><strong>Listing Date:</strong> {{ listing.listingDate | date:'medium' }}</p>
-                    <p><strong>Car City:</strong> {{ listing.carData.carcity }}</p>
+                    <div class="panel-body" style="padding: 0;">
+                        <div uib-carousel interval="3000" no-wrap="false" style="border-radius: 0;">
+                            <div uib-slide ng-repeat="img in listing.images track by $index" index="$index">
+                                <img ng-src="{{ img || 'placeholder.jpg' }}" style="width: 100%; height: 200px; object-fit: cover;" alt="{{ listing.carData.carMake }} {{ listing.carData.carModel }}">
+                            </div>
+                        </div>
+
+                        <a ui-sref="carownerlisting({listingID: listing._id })" style="text-decoration: none; color: #555; display: block; padding: 20px;">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <p><i class="fa fa-map-marker" style="color: #007bff; width: 20px;"></i> {{ listing.carData.carAddress }}</p>
+                                    <p><i class="fa fa-tag" style="color: #007bff; width: 20px;"></i> {{ listing.carData.carCategory }}</p>
+                                    <p><i class="fa fa-cog" style="color: #007bff; width: 20px;"></i> {{ listing.carData.carTransmission }}</p>
+                                    <div>
+                                        <i class="fa fa-tint" style="color: #007bff; width: 20px;"></i>
+                                        <span class="color-box" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; border: 1px solid #ddd;" ng-style="{'background-color': listing.carData.carColor}"></span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <p><i class="fa fa-calendar" style="color: #007bff; width: 20px;"></i> {{ listing.carData.carYear }}</p>
+                                    <p><i class="fa fa-tachometer" style="color: #007bff; width: 20px;"></i> {{ listing.carData.carMileage }} km</p>
+                                    <p><i class="fa fa-building" style="color: #007bff; width: 20px;"></i> {{ listing.carData.carcity }}</p>
+                                    <p><i class="fa fa-clock-o" style="color: #007bff; width: 20px;"></i> {{ listing.listingDate | date:'medium' }}</p>
+                                </div>
+                            </div>
+                            <p ng-if="listing.carData.isDeleted" class="label label-danger" style="font-size: 14px; margin-top: 10px;">
+                                <i class="fa fa-ban"></i> Car Blocked
+                            </p>
+                        </a>
+                    </div>
                 </div>
-            </a>
-        </div>
-        </div>
-    </div>
-    </div>
-</div>
-
-    <div id="listingModal" class="modal" ng-show="isModalOpen">
-        <div class="modal-content">
-            <span class="close" ng-click="closeModal()">&times;</span>
-            <h3>Register New Listing</h3>
-            <form id="register-listing-form" ng-submit="registerListing()" enctype="multipart/form-data">
-                <label for="car-make">Car Name:</label>
-            <input type="text" id="car-make" ng-model="newCar.carMake" placeholder="Enter Car Make" required>
-            
-            <label for="car-model">Car Model:</label>
-            <select id="car-model" ng-model="newCar.carModel" required>
-                <option value="" disabled selected>Select Car Model</option>
-                <option ng-repeat="model in carModels" value="{{ model }}">{{ model }}</option>
-            </select>
-           
-            <label for="car-year">Year:</label>
-            <input type="number" id="car-year" ng-model="newCar.carYear" placeholder="Enter Year" year-validation required>
-            <small class="warning" ng-show="warnings.year">{{ warnings.year }}</small>
-
-            <label for="car-price">Base Price:</label>
-            <input type="number" id="car-price" ng-model="newCar.carPrice" price-validation placeholder="Base Price" required>
-            <div class="warning" ng-show="warnings.carPrice">{{ warnings.carPrice }}</div>
-
-
-            <label for="car-outstation-price">Outstation Price:</label>
-            <input type="number" id="car-outstation-price" ng-model="newCar.carOutstationPrice" price-validation placeholder="Outstation Price" required>
-            <div class="warning" ng-show="warnings.carOutstationPrice">{{ warnings.carOutstationPrice }}</div>
-
-            <label for="car-color">Color:</label>
-            <input type="color" id="car-color" ng-model="newCar.carColor" required>
-
-            <label for="car-mileage">Mileage:</label>
-            <input type="number" id="car-mileage" ng-model="newCar.carMileage" mileage-validation placeholder="Mileage" required>
-            <div class="warning" ng-show="warnings.carMileage">{{ warnings.carMileage }}</div>
-
-            <label for="car-transmission">Transmission:</label>
-<select id="car-transmission" ng-model="newCar.carTransmission" required>
-    <option value="" disabled selected>Select Transmission Type</option>
-    <option ng-repeat="type in transmissionTypes" value="{{ type }}">{{ type }}</option>
-</select>
-
-
-            <label for="car-category">Category:</label>
-<select id="car-category" ng-model="newCar.carCategory" required>
-    <option value="" disabled selected>Select Car Category</option>
-    <option ng-repeat="category in carCategories" value="{{ category }}">{{ category }}</option>
-</select>
-
-
-            <label for="car-description">Description:</label>
-            <textarea id="car-description" ng-model="newCar.carDescription" placeholder="Enter Car Description"></textarea>
-
-            <label for="car-address">Address:</label>
-            <input type="text" id="car-address" ng-model="newCar.carAddress" placeholder="Enter Address" required>
-
-            <label for="carcity">City:</label>
-            <select id="carcity" ng-model="newCar.carcity">
-                <option ng-repeat="city in cities" value="{{ city }}">{{ city }}</option>
-            </select>
-
-            <label for="car-images">Upload Images:</label>
-            <input type="file" id="car-images" multiple onchange="angular.element(this).scope().previewImages(event)" required>
-            
-            <div id="image-preview">
-                <img ng-repeat="image in newCar.images track by $index" ng-src="{{ image }}" class="preview-image">
             </div>
-                <button type="submit">Register Listing</button>
-            </form>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-backdrop" ng-show="isModalOpen"></div>
+    <div class="modal" ng-class="{'show': isModalOpen}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: none;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #91a4a4, #aed9e1); color: white; border-radius: 8px 8px 0 0; padding: 15px 20px;">
+                    <h3 style="margin: 0; font-size: 24px;">Register New Listing</h3>
+                    <button type="button" class="close" ng-click="closeModal()" style="position: absolute; top: 15px; right: 20px; font-size: 24px; color: rgb(10, 82, 97); cursor: pointer;">&times;</button>
+                </div>
+                <div class="modal-body" style="padding: 20px;">
+                    <form id="register-listing-form" ng-submit="registerListing()" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="car-make">Car Name:</label>
+                            <input type="text" id="car-make" class="form-control" ng-model="newCar.carMake" placeholder="Enter Car Make" required style="height: 40px; border-radius: 4px;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="car-model">Car Model:</label>
+                            <select id="car-model" class="form-control" ng-model="newCar.carModel" required style="height: 40px; border-radius: 4px;">
+                                <option value="" disabled selected>Select Car Model</option>
+                                <option ng-repeat="model in carModels" value="{{ model }}">{{ model }}</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="car-year">Year:</label>
+                            <input type="number" id="car-year" class="form-control" ng-model="newCar.carYear" placeholder="Enter Year" year-validation required style="height: 40px; border-radius: 4px;">
+                            <small class="warning text-danger" ng-show="warnings.year">{{ warnings.year }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-price">Base Price:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input type="number" id="car-price" class="form-control" ng-model="newCar.carPrice" price-validation placeholder="Base Price" required style="height: 40px; border-radius: 0 4px 4px 0;">
+                            </div>
+                            <div class="warning text-danger" ng-show="warnings.carPrice">{{ warnings.carPrice }}</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-outstation-price">Outstation Price:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input type="number" id="car-outstation-price" class="form-control" ng-model="newCar.carOutstationPrice" price-validation placeholder="Outstation Price" required style="height: 40px; border-radius: 0 4px 4px 0;">
+                            </div>
+                            <div class="warning text-danger" ng-show="warnings.carOutstationPrice">{{ warnings.carOutstationPrice }}</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-color">Color:</label>
+                            <input type="color" id="car-color" class="form-control" ng-model="newCar.carColor" required style="height: 40px; width: 100%;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-mileage">Mileage:</label>
+                            <div class="input-group">
+                                <input type="number" id="car-mileage" class="form-control" ng-model="newCar.carMileage" mileage-validation placeholder="Mileage" required style="height: 40px;">
+                                <span class="input-group-addon">km</span>
+                            </div>
+                            <div class="warning text-danger" ng-show="warnings.carMileage">{{ warnings.carMileage }}</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-transmission">Transmission:</label>
+                            <select id="car-transmission" class="form-control" ng-model="newCar.carTransmission" required style="height: 40px; border-radius: 4px;">
+                                <option value="" disabled selected>Select Transmission Type</option>
+                                <option ng-repeat="type in transmissionTypes" value="{{ type }}">{{ type }}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-category">Category:</label>
+                            <select id="car-category" class="form-control" ng-model="newCar.carCategory" required style="height: 40px; border-radius: 4px;">
+                                <option value="" disabled selected>Select Car Category</option>
+                                <option ng-repeat="category in carCategories" value="{{ category }}">{{ category }}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-description">Description:</label>
+                            <textarea id="car-description" class="form-control" ng-model="newCar.carDescription" placeholder="Enter Car Description" style="border-radius: 4px;"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-address">Address:</label>
+                            <input type="text" id="car-address" class="form-control" ng-model="newCar.carAddress" placeholder="Enter Address" required style="height: 40px; border-radius: 4px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="carcity">City:</label>
+                            <select id="carcity" class="form-control" ng-model="newCar.carcity" style="height: 40px; border-radius: 4px;">
+                                <option ng-repeat="city in cities" value="{{ city }}">{{ city }}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="car-images">Upload Images:</label>
+                            <input type="file" id="car-images" class="form-control" multiple onchange="angular.element(this).scope().previewImages(event)" required style="height: auto; padding: 10px;">
+                        </div>
+                        
+                        <div id="image-preview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                            <img ng-repeat="image in newCar.images track by $index" ng-src="{{ image }}" class="preview-image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 20px; height: 45px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 4px; font-size: 16px; font-weight: 500; transition: all 0.3s ease;">Register Listing</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1050;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal.show {
+        display: block !important;
+    }
+
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        background-color: #000;
+        opacity: 0.5;
+    }
+
+    .carousel-control {
+        background-image: none !important;
+        opacity: 0.7;
+    }
+    
+    .carousel-control:hover {
+        opacity: 1;
+    }
+    
+    .panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+    
+    @media (max-width: 768px) {
+        .modal-content {
+            width: 90%;
+        }
+    }
+    
+    @media screen and (max-width: 1100px) {
+        .content-wrapper {
+            margin-left: 0 !important;
+            width: 100%;
+            padding: 0 15px;
+        }
+        
+        /* Make sure columns use more width on smaller screens */
+        .col-sm-6 {
+            width: 100%;
+            float: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get references to sidebar and content
+        var sidebar = document.getElementById('sidebar');
+        var contentWrapper = document.getElementById('content-wrapper');
+        
+        // Function to check sidebar state and adjust content accordingly
+        function adjustContent() {
+            if (window.innerWidth <= 900) {
+                contentWrapper.style.marginLeft = '0';
+            } else {
+                contentWrapper.style.marginLeft = '280px';
+            }
+        }
+        
+        // Run on page load
+        adjustContent();
+        
+        // Run when window is resized
+        window.addEventListener('resize', adjustContent);
+        
+        // Create a button to make adjustments when clicked (for the toggle button)
+        var sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                // Add a small delay to let the sidebar toggle first
+                setTimeout(adjustContent, 50);
+            });
+        }
+    });
+</script>

@@ -731,6 +731,5 @@ function activeBiddingPerHour(bidsPerHour)
         }
     });
 }
-
-  }
+}
 );

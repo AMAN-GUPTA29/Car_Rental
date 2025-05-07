@@ -20,7 +20,7 @@ carRentalApp.controller("profileController", function ($scope,SessionService,db,
      */
     $scope.openEditModal = function () {
         $scope.isModalOpen = true;
-
+        console.log($scope.user)
         $scope.editUser = {
             username: $scope.user.username,
             email: $scope.user.email,

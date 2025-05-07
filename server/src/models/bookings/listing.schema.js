@@ -85,4 +85,7 @@ const carSchema = new mongoose.Schema({
 
 const Listing = mongoose.model("Listing", carSchema);
 
+carSchema.index({ "ownerDetails.ownerID": 1 });
+
+
 export default Listing;

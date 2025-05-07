@@ -130,4 +130,10 @@ const bookingSchema = new mongoose.Schema({
 
 const Bidding = mongoose.model("Bidding", bookingSchema);
 
+
+bookingSchema.index({ "bookerData.bookerId": 1 });
+bookingSchema.index({ "carData.listingId": 1 });
+bookingSchema.index({ "ownerDetails.ownerID": 1 });
+bookingSchema.index({ status: 1 });
+
 export default Bidding;

@@ -21,6 +21,7 @@ import { getAllConversations } from "../../controllers/owner/getConversation.con
 import { getChatMessages } from "../../controllers/owner/getChats.controller.js";
 import { conversationController } from "../../controllers/owner/chats.controller.js";
 import { getApprovedBidsOwner } from "../../controllers/owner/approvedBidsTable.controller.js";
+import { getAllPendingBiddingsOwner } from "../../controllers/owner/getAllPendingBiddings.controller.js";
 import {getBidsPerDayOwnerController,getBidsPerDayOfWeekController,getUserAndAvgBidsController,getListingWiseEarningsController,getTopCarModelsController,getCategoryBookingCountsController,getOwnerRecentEarningsController, activeBiddingPerHourController} from "../../controllers/owner/stats/ownerstats.controller.js"
 
 /**
@@ -48,6 +49,11 @@ router.get("/listing/:id",authenticateJwtOwner,viewListingOwnerController)
  * @description Route to view all bids for a specific car listing
  */
 router.get("/allbidding/:listingId",authenticateJwtOwner,viewAllBiddingParticularCar);
+
+/**
+ * @description Route to view all pending bids for all cars of a specific owner
+ */
+router.get("/allbiddings/:ownerId",authenticateJwtOwner,getAllPendingBiddingsOwner);
 
 /**
  * @description Route to accept or reject a bid

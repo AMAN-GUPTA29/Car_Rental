@@ -1,108 +1,404 @@
-
-<div ng-controller="OwnerCarController" ng-init="init()" class="container">
-
-    <sidebar></sidebar> 
-
-    <button id="editCarListingBtn" class="edit-car-btn btn btn-warning pull-right" ng-click="openEditModal()">✏️ Edit</button>
-
-    <div>
-        <div id="text-center panel panel-default">
-
-        <div class=" panel-body">
-        <div class="row pull-right">
-            <div class=" text-center col-md-6">
-            <ul class="">
-            <h2 class="text-center">{{car.carData.carMake}} {{car.carData.carModel}}</h2>
-            <p class="text-center"><strong>Base Price:</strong> ${{car.carData.basePrice}}/day</p>
-            <p class="text-center"><strong>Outstation Price:</strong> {{car.carData.outstationPrice ? '$' + car.carData.outstationPrice + '/day' : 'NA'}}</p>
-            <p class="text-center"><strong>Location:</strong> {{car.carData.carAddress}}</p>
-            <p class="text-center"><strong>Category:</strong> {{car.carData.carCategory}}</p>
-            <p class="text-center"><strong>Transmission:</strong> {{car.carData.carTransmission}}</p>
-            <p class="text-center"><strong>Color:</strong><span class="color-box" ng-style="{'background-color': car.carData.carColor}"></span>
-            </p>
-                
-            <p class="text-center"><strong>Year:</strong> {{car.carData.carYear}}</p>
-            <p class="text-center"><strong>Mileage:</strong> {{car.carData.carMileage}} km</p>
-            </ul>
+<div ng-controller="OwnerCarController" ng-init="init()" class="container-fluid listing-details-container" style="padding: 0; overflow-x: hidden;">
+    <!-- Main Container with adaptive margin for sidebar -->
+    <div class="content-wrapper" style="margin-left: 250px; transition: margin-left 0.3s ease;">
+        <!-- Hero Section with Car Title -->
+        <section class="hero-section" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); width: 100%; padding: 40px 0 30px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 25px; border-radius: 8px;">
+            <div class="container-fluid" style="max-width: 1200px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h2 style="color: #007bff; font-weight: 600; margin: 10px 0; font-size: 28px; text-shadow: 0 1px 2px rgba(0,0,0,0.05);">{{car.carData.carMake}} {{car.carData.carModel}}</h2>
+                        <div style="margin-bottom: 15px;">
+                            <span class="badge" style="background: linear-gradient(135deg, #007bff, #0056b3); margin-right: 10px; padding: 6px 12px; border-radius: 30px; font-size: 13px; font-weight: 500; box-shadow: 0 2px 5px rgba(0,123,255,0.3);">{{car.carData.carCategory}}</span>
+                            <span class="badge" style="background: linear-gradient(135deg, #28a745, #1e7e34); padding: 6px 12px; border-radius: 30px; font-size: 13px; font-weight: 500; box-shadow: 0 2px 5px rgba(40,167,69,0.3);">{{car.carData.carTransmission}}</span>
         </div>
-
-        
-            
-            <div class=" text-center shiftr col-md-6">
-                <div class="carousel">
-                    <button class="prev" ng-click="prevImage(car)">&#10094;</button>
-                    <div class="carousel-inner">
-                        <img ng-src="{{car.images[carimgno]}}" class="carousel-image active" alt="Car Image">
+                        <!-- <button class="btn btn-warning" ng-click="openEditModal()" style="background: linear-gradient(135deg, #fd7e14, #e65c00); border: none; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; font-size: 14px; padding: 8px 20px; color: white; font-weight: 500;">
+                            <i class="fa fa-edit" style="margin-right: 8px;"></i> Edit Listing
+                        </button> -->
                     </div>
-                    <button class="next" ng-click="nextImage(car)">&#10095;</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Car Details Section -->
+        <div class="container-fluid" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
+            <div class="row equal-height-row" style="display: flex; flex-wrap: wrap;">
+                <!-- Car Image Carousel -->
+                <div class="col-lg-6 col-md-12" style="margin-bottom: 25px; display: flex;">
+                    <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); border: none; transition: all 0.3s ease; background-color: white; height: 100%; width: 100%;">
+                        <div class="panel-heading" style="color: #333; border-radius: 8px 8px 0 0; padding: 15px 20px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-bottom: 1px solid rgba(0,0,0,0.05);">
+                            <h3 style="margin: 0; font-size: 18px; font-weight: 500;"><i class="fa fa-car" style="color: #007bff; margin-right: 10px;"></i>Car Images</h3>
+                        </div>
+                        <div class="panel-body" style="padding: 0;">
+                            <div uib-carousel interval="3000" no-wrap="false" style="border-radius: 0 0 8px 8px;">
+                                <div uib-slide ng-repeat="image in car.images track by $index" index="$index">
+                                    <img ng-src="{{ image }}" style="height: 350px; max-height: 350px; object-fit: cover; width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car Details Panel -->
+                <div class="col-lg-6 col-md-12" style="margin-bottom: 25px; display: flex;">
+                    <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); border: none; transition: all 0.3s ease; height: 100%; background-color: white; display: flex; flex-direction: column; width: 100%;">
+                        <div class="panel-heading" style="color: #333; border-radius: 8px 8px 0 0; padding: 15px 20px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-bottom: 1px solid rgba(0,0,0,0.05);">
+                            <h3 style="margin: 0; font-size: 18px; font-weight: 500;"><i class="fa fa-info-circle" style="color: #007bff; margin-right: 10px;"></i>Car Details</h3>
+                        </div>
+                        <div class="panel-body" style="padding: 25px 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div class="row" style="flex-grow: 1;">
+                                <!-- Price Information Section -->
+                                <div class="col-md-12">
+                                    <h4 style="font-size: 16px; color: #007bff; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #eee;">
+                                        <i class="fa fa-tag" style="margin-right: 8px;"></i> Pricing Information
+                                    </h4>
+                                    <div class="row" style="margin-bottom: 15px;">
+                                        <div class="col-md-6">
+                                            <div class="detail-item" style="display: flex; align-items: center;">
+                                                <i class="fa fa-dollar-sign" style="color: #007bff; width: 25px; text-align: center;"></i>
+                                                <strong style="color: #555; width: 120px;">Base Price:</strong> 
+                                                <span style="color: #28a745; font-weight: 600; font-size: 16px;">${{car.carData.basePrice}}/day</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="detail-item" style="display: flex; align-items: center;">
+                                                <i class="fa fa-road" style="color: #007bff; width: 25px; text-align: center;"></i>
+                                                <strong style="color: #555; width: 120px;">Outstation Price:</strong> 
+                                                <span style="color: #28a745; font-weight: 600; font-size: 16px;">{{car.carData.outstationPrice ? '$' + car.carData.outstationPrice + '/day' : 'NA'}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Car Specifications Section -->
+                                    <h4 style="font-size: 16px; color: #007bff; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #eee;">
+                                        <i class="fa fa-car" style="margin-right: 8px;"></i> Car Specifications
+                                    </h4>
+                                    <div class="row" style="margin-bottom: 15px;">
+                                        <div class="col-md-6">
+                                            <div class="detail-item" style="display: flex; align-items: center; padding: 8px 0;">
+                                                <i class="fa fa-calendar" style="color: #007bff; width: 25px; text-align: center;"></i>
+                                                <strong style="color: #555; width: 120px;">Year:</strong> 
+                                                <span style="font-weight: 500;">{{car.carData.carYear}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="detail-item" style="display: flex; align-items: center; padding: 8px 0;">
+                                                <i class="fa fa-tachometer-alt" style="color: #007bff; width: 25px; text-align: center;"></i>
+                                                <strong style="color: #555; width: 120px;">Mileage:</strong> 
+                                                <span style="font-weight: 500;">{{car.carData.carMileage}} km</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="detail-item" style="display: flex; align-items: center; padding: 8px 0;">
+                                                <i class="fa fa-cog" style="color: #007bff; width: 25px; text-align: center;"></i>
+                                                <strong style="color: #555; width: 120px;">Transmission:</strong> 
+                                                <span style="font-weight: 500;">{{car.carData.carTransmission}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="detail-item" style="display: flex; align-items: center; padding: 8px 0;">
+                                                <i class="fa fa-list-alt" style="color: #007bff; width: 25px; text-align: center;"></i>
+                                                <strong style="color: #555; width: 120px;">Category:</strong> 
+                                                <span style="font-weight: 500;">{{car.carData.carCategory}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="detail-item" style="display: flex; align-items: center; padding: 8px 0;">
+                                                <i class="fa fa-palette" style="color: #007bff; width: 25px; text-align: center;"></i>
+                                                <strong style="color: #555; width: 120px;">Color:</strong> 
+                                                <div style="display: flex; align-items: center;">
+                                                    <span class="color-box" style="display: inline-block; width: 24px; height: 24px; border-radius: 4px; vertical-align: middle; border: 1px solid #ddd; margin-right: 10px;" ng-style="{'background-color': car.carData.carColor}"></span>
+                                                    <span style="font-weight: 500; text-transform: capitalize;">{{car.carData.carColor}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Location Section -->
+                                    <h4 style="font-size: 16px; color: #007bff; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #eee;">
+                                        <i class="fa fa-map-marker-alt" style="margin-right: 8px;"></i> Location Information
+                                    </h4>
+                                    <div class="detail-item" style="display: flex; align-items: flex-start; padding: 8px 0;">
+                                        <i class="fa fa-map-marked-alt" style="color: #007bff; width: 25px; text-align: center; margin-top: 3px;"></i>
+                                        <strong style="color: #555; width: 120px;">Address:</strong> 
+                                        <span style="font-weight: 500; flex: 1;">{{car.carData.carAddress}}</span>
+                                    </div>
+                                </div>
                 </div>
             </div>
             </div>
         </div>
         </div>
 
-        <!-- <div class="table-responsive"> -->
-            <table id="biddingsTable" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Bidding Date</th>
-                        <th>Price</th>
-                        <th>Bidder Name</th>
-                        <th>Aadhar</th>
-                        <th>Booking Type</th>
-                        <th>Actions</th>
+            <!-- Biddings Table Section -->
+            <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); border: none; transition: all 0.3s ease; margin-bottom: 25px; background-color: white;">
+                <div class="panel-heading" style="color: #333; border-radius: 8px 8px 0 0; padding: 15px 20px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-bottom: 1px solid rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 500;"><i class="fa fa-list" style="color: #007bff; margin-right: 10px;"></i>Bidding History</h3>
+                </div>
+                <div class="panel-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-hover" style="margin-bottom: 0;">
+                            <thead style="background-color: #f8f9fa;">
+                                <tr>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Bidding Date</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Price</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Bidder Name</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Aadhar</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Booking Type</th>
+                                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #e9ecef;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="bid in biddings">
-                        <td>{{bid.startDate | date:'shortDate'}} - {{bid.endDate | date:'shortDate'}}</td>
-                        <td>${{bid.bidAmount || 'N/A'}}</td>
-                        <td>{{bid.bookerData.bookerName || 'Unknown'}}</td>
-                        <td>{{bid.bookerData.aadhar || 'Unknown'}}</td>
-                        <td>{{bid.bookType}}</td>
-                        <td>
-                            <button class="btn btn-success btn-sm" ng-click="acceptBid(bid)">✅ Accept</button>
-                            <button class="btn btn-danger btn-sm" ng-click="rejectBid(bid)">❌ Reject</button>
+                                <tr ng-repeat="bid in biddings" style="transition: all 0.2s ease;">
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">{{bid.startDate | date:'shortDate'}} - {{bid.endDate | date:'shortDate'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle; font-weight: 500; color: #28a745;">${{bid.bidAmount || 'N/A'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">{{bid.bookerData.bookerName || 'Unknown'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">{{bid.bookerData.aadhar || 'Unknown'}}</td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">
+                                        <span class="badge" style="background-color: #007bff; padding: 6px 10px; border-radius: 4px; color: white;">{{bid.bookType}}</span>
+                                    </td>
+                                    <td style="padding: 15px; text-align: center; vertical-align: middle;">
+                                        <button class="btn btn-success btn-sm" ng-click="acceptBid(bid)" style="margin-right: 5px; border-radius: 4px; padding: 6px 12px; background: linear-gradient(135deg, #28a745, #1e7e34); border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                            <i class="fa fa-check" style="margin-right: 5px;"></i> Accept
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" ng-click="rejectBid(bid)" style="border-radius: 4px; padding: 6px 12px; background: linear-gradient(135deg, #dc3545, #c82333); border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                            <i class="fa fa-times" style="margin-right: 5px;"></i> Reject
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr ng-if="biddings.length === 0">
+                                    <td colspan="6" style="text-align: center; padding: 30px;">
+                                        <p style="color: #6c757d; font-style: italic;">No bidding history available.</p>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
         
         <div uib-modal id="editCarModal" class="car-modal" ng-show="isEditModalOpen">
             <div class="car-modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Edit Car Listing</h3>
-                    <button type="button" class="close" ng-click="close()">&times;</button>
+                    <div class="modal-header" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 8px 8px 0 0; padding: 15px 20px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                        <h3 class="modal-title" style="margin: 0; font-size: 18px; font-weight: 500;"><i class="fa fa-edit" style="color: #007bff; margin-right: 10px;"></i>Edit Car Listing</h3>
+                        <button type="button" class="close" ng-click="close()" style="position: absolute; top: 15px; right: 20px;">&times;</button>
                 </div>
-                <div class="modal-body">
+                    <div class="modal-body" style="padding: 20px;">
                 <form id="editCarListingForm" ng-submit="updateCarListing()">
-                    <label>Car Make: <input type="text" ng-model="editCar.carMake"></label>
-                    <label for="car-model">Car Model:</label>
-            <select id="car-model" ng-model="editCar.carModel" required>
+                            <div class="row">
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-car" style="color: #007bff; width: 20px; text-align: center;"></i> Car Make
+                                        </label>
+                                        <input type="text" class="form-control" ng-model="editCar.carMake" required style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 8px 12px;">
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-car" style="color: #007bff; width: 20px; text-align: center;"></i> Car Model
+                                        </label>
+                                        <select class="form-control" id="car-model" ng-model="editCar.carModel" required style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 8px 12px;">
                 <option value="" disabled selected>Select Car Model</option>
                 <option ng-repeat="model in carModels" value="{{ model }}">{{ model }}</option>
             </select>
-                    <label>Base Price: <input type="number" ng-model="editCar.carPrice"></label>
-                    <label>Outstation Price: <input type="number" ng-model="editCar.carOutstationPrice"></label>
-                    <label>Location: <input type="text" ng-model="editCar.carAddress"></label>
-                    <label for="car-category">Category:</label>
-                    <select id="car-category" ng-model="editCar.carCategory" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-tag" style="color: #007bff; width: 20px; text-align: center;"></i> Base Price
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" style="background-color: #f8f9fa; border: 1px solid #ced4da; border-right: none;">$</span>
+                                            </div>
+                                            <input type="number" class="form-control" ng-model="editCar.carPrice" required style="height: 38px; border-radius: 0 4px 4px 0; border: 1px solid #ced4da; padding: 8px 12px;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-road" style="color: #007bff; width: 20px; text-align: center;"></i> Outstation Price
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" style="background-color: #f8f9fa; border: 1px solid #ced4da; border-right: none;">$</span>
+                                            </div>
+                                            <input type="number" class="form-control" ng-model="editCar.carOutstationPrice" style="height: 38px; border-radius: 0 4px 4px 0; border: 1px solid #ced4da; padding: 8px 12px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                    <i class="fa fa-map-marker-alt" style="color: #007bff; width: 20px; text-align: center;"></i> Location
+                                </label>
+                                <input type="text" class="form-control" ng-model="editCar.carAddress" required style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 8px 12px;">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-list-alt" style="color: #007bff; width: 20px; text-align: center;"></i> Category
+                                        </label>
+                                        <select class="form-control" id="car-category" ng-model="editCar.carCategory" required style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 8px 12px;">
                         <option value="" disabled selected>Select Car Category</option>
                         <option ng-repeat="category in carCategories" value="{{ category }}">{{ category }}</option>
                     </select>
-                    <label for="car-transmission">Transmission:</label>
-
-                    <select id="car-transmission" ng-model="editCar.carTransmission" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-cog" style="color: #007bff; width: 20px; text-align: center;"></i> Transmission
+                                        </label>
+                                        <select class="form-control" id="car-transmission" ng-model="editCar.carTransmission" required style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 8px 12px;">
                         <option value="" disabled selected>Select Transmission Type</option>
                         <option ng-repeat="type in transmissionTypes" value="{{ type }}">{{ type }}</option>
-                    </select>                    <label>Color: <input type="color" ng-model="editCar.carColor"></label>
-                    <label>Year: <input type="number" ng-model="editCar.carYear"></label>
-                    <label>Mileage: <input type="number" ng-model="editCar.carMileage"></label>
-                    <button type="submit" class="save-car-btn">Save Changes</button>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-palette" style="color: #007bff; width: 20px; text-align: center;"></i> Color
+                                        </label>
+                                        <input type="color" class="form-control" ng-model="editCar.carColor" style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 2px;">
+                                    </div>
+                                </div>
+                                <div class="col-md-4" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-calendar" style="color: #007bff; width: 20px; text-align: center;"></i> Year
+                                        </label>
+                                        <input type="number" class="form-control" ng-model="editCar.carYear" required style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 8px 12px;">
+                                    </div>
+                                </div>
+                                <div class="col-md-4" style="margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">
+                                            <i class="fa fa-tachometer-alt" style="color: #007bff; width: 20px; text-align: center;"></i> Mileage (km)
+                                        </label>
+                                        <input type="number" class="form-control" ng-model="editCar.carMileage" required style="height: 38px; border-radius: 4px; border: 1px solid #ced4da; padding: 8px 12px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group text-center" style="margin-top: 25px;">
+                                <button type="button" class="btn btn-light" ng-click="close()" style="margin-right: 15px; background-color: #f8f9fa; border: 1px solid #ced4da; padding: 8px 20px; border-radius: 4px; font-weight: 500;">
+                                    <i class="fa fa-times" style="margin-right: 5px;"></i> Cancel
+                                </button>
+                                <button type="submit" class="btn btn-primary save-car-btn" style="background: linear-gradient(135deg, #007bff, #0056b3); border: none; padding: 8px 25px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500; color: white;">
+                                    <i class="fa fa-save" style="margin-right: 5px;"></i> Save Changes
+                                </button>
+                            </div>
                 </form>
             </div>
             </div>
         </div>
     </div>
 </div>
+
+    <!-- Sidebar - Fixed at the left -->
+    <sidebar style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; z-index: 1000;"></sidebar>
+
+ 
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        overflow-x: hidden;
+    }
+    
+    .listing-details-container {
+        background-color: #f8f9fa;
+    }
+    
+    .panel {
+        transition: all 0.3s ease;
+    }
+    
+    .panel:hover {
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .detail-item {
+        padding: 6px 0;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    /* Responsive design for sidebar */
+    @media (max-width: 991px) {
+        .content-wrapper {
+            margin-left: 0 !important;
+        }
+        
+        sidebar {
+            width: 0 !important;
+            overflow: hidden;
+        }
+        
+        .panel-heading h3 {
+            font-size: 16px;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .panel-body {
+            padding: 15px !important;
+        }
+        
+        .table-responsive {
+            border: none;
+        }
+        
+        .table td, .table th {
+            padding: 10px !important;
+        }
+    }
+    
+    @media (max-width: 575px) {
+        .hero-section {
+            padding: 30px 0 20px 0 !important;
+        }
+        
+        h2 {
+            font-size: 22px !important;
+        }
+        
+        .badge {
+            padding: 4px 8px !important;
+            font-size: 11px !important;
+        }
+        
+        .btn-sm {
+            font-size: 11px;
+            padding: 4px 8px !important;
+        }
+    }
+</style>

@@ -1,89 +1,177 @@
-<div ng-controller="BiddingController" ng-init="init()" class="container-fluid py-4">
-
-    <!-- Header Section -->
-    <div class="justify-content-between align-items-center mb-4">
-        <button class="btn back-btn btn-outline-secondary" go-Back>
+<div ng-controller="BiddingController" ng-init="init()" class="container-fluid" style="padding: 0; overflow-x: hidden;">
+    <main>
+        <button class="btn btn-primary" go-Back style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; position: fixed; top: 15px; left: 15px; z-index: 1000; font-size: 16px; padding: 8px 15px;">
             <i class="fa fa-arrow-left"></i> Back
         </button>
-        <h2 class="text-primary fw-bold">My Bidding History</h2>
-    </div>
 
-    <!-- Filters Section -->
-    <div class="filters row mb-3">
-        <div class="col-md-3">
-            <label class="form-label fw-bold">Category</label>
-            <select class="form-select" ng-model="filters.category" ng-change="applyFilters()" ng-options="category for category in categories">
-                <option value="">All</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold">City</label>
-            <select class="form-select" style="width: 50%;" ng-model="filters.city" ng-change="applyFilters()" ng-options="city for city in cities">
-                <option value="">All</option>
-            </select>
-        </div>
-        <!-- <div class="col-md-3">
-            <label class="form-label fw-bold">Owner Email</label>
-            <select class="form-select" ng-model="filters.ownerEmail" ng-change="applyFilters()" ng-options="email for email in ownerEmails">
-                <option value="">All</option>
-            </select>
-        </div> -->
-        <div class="col-md-3">
-            <label class="form-label fw-bold">Status</label>
-            <select class="form-select" ng-model="filters.status" ng-change="applyFilters()">
-                <option value="">All</option>
-                <option value="pending">Pending</option>
-                <option value="accepted">Approved</option>
-                <option value="rejected">Rejected</option>
-            </select>
-        </div>
-    </div>
+        <section class="hero-section" style="background-color: white; width: 100%;" padding: 60px 0 25px 0; width: 100%; ">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="text-center" style="color: #007bff; font-weight: 500; margin-top: 20px; margin-bottom: 12px;">My Bidding History</h2>
+                        <p class="text-center" style="color: #555; margin-bottom: 15px;">Track all your bids and their current status</p>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Bidding History Table -->
-    <div class="table-responsive">
-        <table class="table table-striped table-hover border">
-            <thead class="table-dark">
-                <tr>
-                    <th>Car</th>
-                    <th>Category</th>
-                    <th>City</th>
-                    <th>Bid Amount ($)</th>
-                    <th>Bid Date</th>
-                    <th>Owner</th>
-                    <th>Owner Email</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="bid in bids">
-                    <td class="text-center text-primary">{{ bid.carData.carMake }} - {{ bid.carData.carModel }}</td>
-                    <td class="text-center" >{{ bid.carData.carCategory }}</td>
-                    <td class="text-center ">{{ bid.carData.carcity }}</td>
-                    <td class="text-success text-center fw-bold">${{ bid.bidAmount }}</td>
-                    <td class="text-center ">{{ bid.biddingDate | date:'yyyy-MM-dd' }}</td>
-                    <td class="text-center">{{ bid.ownerDetails.ownerName }}</td>
-                    <td class="text-center ">{{ bid.ownerDetails.ownerEmail }}</td>
-                    <td class="text-center">
-                        <span class="badge text-center"
+            <div class="container-fluid" style="max-width: 1400px; margin: 15px auto 25px; padding: 20px 25px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none; transition: all 0.3s ease; background-color: rgba(255, 255, 255, 0.9);">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 style="color: #007bff; margin-top: 0; margin-bottom: 15px; font-weight: 500; text-align: center;">Filter Bids</h4>
+                    </div>
+                </div>
+                <div class="form-container row">
+                    <div class="col-12 col-sm-6 col-md-4 mb-3">
+                        <div class="input-group flex-column">
+                            <label class="form-label" style="color: #555; font-weight: 500; margin-bottom: 6px;">
+                                <i class="fa fa-car" style="color: #007bff; width: 20px;"></i> Category
+                            </label>
+                            <select class="form-control filter-input" ng-model="filters.category" ng-change="applyFilters()" style="height: 38px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
+                                <option value="">All Categories</option>
+                                <option ng-repeat="category in categories" value="{{category}}">{{category}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 mb-3">
+                        <div class="input-group flex-column">
+                            <label class="form-label" style="color: #555; font-weight: 500; margin-bottom: 6px;">
+                                <i class="fa fa-map-marker" style="color: #007bff; width: 20px;"></i> City
+                            </label>
+                            <select class="form-control filter-input" ng-model="filters.city" ng-change="applyFilters()" style="height: 38px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
+                                <option value="">All Cities</option>
+                                <option ng-repeat="city in cities" value="{{city}}">{{city}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 mb-3">
+                        <div class="input-group flex-column">
+                            <label class="form-label" style="color: #555; font-weight: 500; margin-bottom: 6px;">
+                                <i class="fa fa-check-circle" style="color: #007bff; width: 20px;"></i> Status
+                            </label>
+                            <select class="form-control filter-input" ng-model="filters.status" ng-change="applyFilters()" style="height: 38px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="accepted">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                              ng-class="{'bg-warning text-center': bid.status === 'pending', 'classgreen': bid.status === 'accept', 'classred': bid.status === 'rejected'}">
-                            {{ bid.status || 'Pending' }}
+        <section style="padding: 20px 0 30px; background-color: white; width: 100%;">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none; transition: all 0.3s ease;">
+                    <div class="panel-heading" style="color: rgb(59, 59, 59); border-radius: 8px 8px 0 0; padding: 12px 16px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 18px;">Bidding History</h3>
+                    </div>
+                    <div class="panel-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" style="margin-bottom: 0;">
+                                <thead>
+                                    <tr style="background-color: #f8f9fa;">
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Car</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Category</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">City</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Bid Amount</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Bid Date</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Owner</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Owner Email</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="bid in bids" style="transition: all 0.3s ease;">
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ bid.carData.carMake }} - {{ bid.carData.carModel }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ bid.carData.carCategory }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ bid.carData.carcity }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; font-weight: bold; color: #28a745; text-align: center;">${{ bid.bidAmount }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ bid.biddingDate | date:'yyyy-MM-dd' }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ bid.ownerDetails.ownerName }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ bid.ownerDetails.ownerEmail }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">
+                                            <span class="badge" style="padding: 5px 8px; font-weight: 500; border-radius: 4px; font-size: 11px;"
+                                                  ng-class="{
+                                                    'bg-warning': bid.status === 'pending', 
+                                                    'bg-success': bid.status === 'accept', 
+                                                    'bg-danger': bid.status === 'rejected'
+                                                  }">
+                                                {{ bid.status || 'Pending' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center" style="margin: 25px 0 10px;">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" ng-disabled="currentPage === 1" ng-click="prevPage()" style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px 0 0 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; padding: 8px 18px;">
+                            <i class="fa fa-chevron-left"></i> Previous
+                        </button>
+                        <span class="btn" style="background-color: #f8f9fa; border: 1px solid #ddd; color: #555; padding: 8px 12px;">
+                            Page {{ currentPage }}
                         </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination Controls -->
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <button class="btn btn-warning" ng-disabled="currentPage === 1" ng-click="prevPage()">
-            <i class="fa fa-chevron-left"></i> Previous
-        </button>
-        <span class="fw-bold text-secondary">Page {{ currentPage }}</span>
-        <button class="btn btn-warning" ng-disabled="bids.length < rowsPerPage" ng-click="nextPage()">
-            Next <i class="fa fa-chevron-right"></i>
-        </button>
-    </div>
-
+                        <button class="btn btn-primary" ng-disabled="bids.length < rowsPerPage" ng-click="nextPage()" style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 0 4px 4px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; padding: 8px 18px;">
+                            Next <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 </div>
+
+<style>
+    .filter-input {
+        display: block;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+    
+    .input-group.flex-column {
+        width: 100%;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    table tr:hover {
+        background-color: #f0f7ff !important;
+    }
+    
+    .badge.bg-warning {
+        background-color: #ffc107 !important;
+        color: #212529;
+    }
+    
+    .badge.bg-success {
+        background-color: #28a745 !important;
+        color: #fff;
+    }
+    
+    .badge.bg-danger {
+        background-color: #dc3545 !important;
+        color: #fff;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section {
+            padding-top: 80px !important;
+        }
+        
+        th, td {
+            padding: 8px !important;
+            font-size: 14px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>

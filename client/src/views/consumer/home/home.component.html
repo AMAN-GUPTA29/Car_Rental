@@ -1,22 +1,33 @@
-<div class="bd" ng-controller="CarController" ng-init="init()">
-    <main >
-        <button id="options-btn" class="options-btn btn btn-primary" ng-click="toggleSidebar()">&#9776;</button>
+<div class="bd container-fluid" ng-controller="CarController" ng-init="init()" style="padding: 0; overflow-x: hidden;">
+    <main>
+        <button id="options-btn" class="options-btn btn btn-primary" ng-click="toggleSidebar()" style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; position: fixed; top: 15px; left: 15px; z-index: 1000; font-size: 22px; padding: 10px 14px; width: 50px; height: 50px;">&#9776;</button>
         <sidebar-component sidebar-open="sidebarOpen"></sidebar-component>
-        <a ui-sref="login" class="login-button" ng-show="!user">Login</a>
+        <a ui-sref="login" class="login-button" ng-show="!user" style="background: linear-gradient(135deg, #007bff, #388fec); border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; position: fixed; top: 15px; right: 15px; z-index: 1000;">Login</a>
 
+        <section class="hero-section" style="background-color: white; width: 100%;"padding: 60px 0 30px 0; width: 100%;">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="lop text-center" style="color: #007bff; font-weight: 500; margin-top: 30px;">Welcome to Car Rental System</h2>
+                        <p class="lop text-center" style="color: #555; margin-bottom: 20px;">Find and book your perfect rental car easily with our platform.</p>
+                    </div>
+                </div>
+            </div>
 
-
-        <section>
-            <h2 class="lop text-center">Welcome to Car Rental System</h2>
-            <p class="lop text-center">Find and book your perfect rental car easily with our platform.</p>
-
-            <div class="rental-container container">
+            <div class="rental-container container-fluid" style="max-width: 1400px; margin: 25px auto 30px; padding: 25px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none; transition: all 0.3s ease; background-color: rgba(255, 255, 255, 0.9);">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 style="color: #007bff; margin-top: 0; margin-bottom: 20px; font-weight: 500; text-align: center;">Find Your Perfect Car</h4>
+                    </div>
+                </div>
                 <div class="form-container row">
                     <!-- First row -->
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <div class="input-group flex-column">
-                            <label for="city-filter">Location</label>
-                            <select id="city-filter" class="colortext form-control" ng-model="filters.city" ng-change="applyFilters()">
+                            <label for="city-filter" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                <i class="fa fa-map-marker" style="color: #007bff; width: 20px;"></i> Location
+                            </label>
+                            <select id="city-filter" class="colortext form-control filter-input" ng-model="filters.city" ng-change="applyFilters()" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
                                 <option value="all">All Cities</option>
                                 <option ng-repeat="city in uniqueCities" value="{{city}}">{{city}}</option>
                             </select>
@@ -25,22 +36,28 @@
             
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <div class="input-group flex-column">
-                            <label for="min-price">Min Base Price</label>
-                            <input type="number" class="colortext form-control" id="min-price" ng-model="filters.minPrice" ng-change="applyFilters()" min="0">
+                            <label for="min-price" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                <i class="fa fa-tag" style="color: #007bff; width: 20px;"></i> Min Base Price
+                            </label>
+                            <input type="number" class="colortext form-control filter-input" id="min-price" ng-model="filters.minPrice" ng-change="applyFilters()" min="0" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
                         </div>
                     </div>
             
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <div class="input-group flex-column">
-                            <label for="max-price">Max Base Price</label>
-                            <input type="number" class="colortext form-control" id="max-price" ng-model="filters.maxPrice" ng-change="applyFilters()" min="0">
+                            <label for="max-price" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                <i class="fa fa-tag" style="color: #007bff; width: 20px;"></i> Max Base Price
+                            </label>
+                            <input type="number" class="colortext form-control filter-input" id="max-price" ng-model="filters.maxPrice" ng-change="applyFilters()" min="0" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
                         </div>
                     </div>
             
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <div class="input-group flex-column">
-                            <label for="category-filter">Category</label>
-                            <select id="category-filter" class="colortext form-control" ng-model="filters.category" ng-change="applyFilters()">
+                            <label for="category-filter" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                <i class="fa fa-car" style="color: #007bff; width: 20px;"></i> Category
+                            </label>
+                            <select id="category-filter" class="colortext form-control filter-input" ng-model="filters.category" ng-change="applyFilters()" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
                                 <option value="all">All Categories</option>
                                 <option ng-repeat="category in uniqueCategories" value="{{category}}">{{category}}</option>
                             </select>
@@ -50,26 +67,31 @@
                     <!-- Second row (will automatically wrap) -->
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <div class="input-group flex-column">
-                            <label for="min-mileage">Min Mileage</label>
-                            <input type="number" class="colortext form-control" id="min-mileage" ng-model="filters.minMileage" ng-change="applyFilters()">
+                            <label for="min-mileage" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                <i class="fa fa-tachometer" style="color: #007bff; width: 20px;"></i> Min Mileage
+                            </label>
+                            <input type="number" class="colortext form-control filter-input" id="min-mileage" ng-model="filters.minMileage" ng-change="applyFilters()" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
                         </div>
                     </div>
             
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <div class="input-group flex-column">
-                            <label for="model-filter">Car Model</label>
-                            <select id="modal-filter" class="colortext form-control" ng-model="filters.model" ng-change="applyFilters()">
-                                <option value="all">All Modal</option>
+                            <label for="model-filter" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                <i class="fa fa-info-circle" style="color: #007bff; width: 20px;"></i> Car Model
+                            </label>
+                            <select id="modal-filter" class="colortext form-control filter-input" ng-model="filters.model" ng-change="applyFilters()" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
+                                <option value="all">All Models</option>
                                 <option ng-repeat="modal in uniqueModal" value="{{modal}}">{{modal}}</option>
                             </select>
-                            <!-- <input type="text" class="colortext" id="model-filter" ng-model="filters.model" ng-change="applyFilters()"> -->
                         </div>
                     </div>
             
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <div class="input-group flex-column">
-                            <label for="transmission-filter">Transmission</label>
-                            <select id="transmission-filter" class="colortext form-control" ng-model="filters.transmission" ng-change="applyFilters()">
+                            <label for="transmission-filter" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                <i class="fa fa-cog" style="color: #007bff; width: 20px;"></i> Transmission
+                            </label>
+                            <select id="transmission-filter" class="colortext form-control filter-input" ng-model="filters.transmission" ng-change="applyFilters()" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding-left: 12px; width: 100%;">
                                 <option value="all">All</option>
                                 <option value="Automatic">Automatic</option>
                                 <option value="Manual">Manual</option>
@@ -77,283 +99,337 @@
                             </select>
                         </div>
                     </div>
+                    
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="input-group flex-column">
+                            <label style="color: #555; font-weight: 500; margin-bottom: 8px; visibility: hidden;">
+                                <i class="fa fa-search" style="color: #007bff; width: 20px;"></i> Apply Filters
+                            </label>
+                            <button class="btn btn-primary filter-input" style="height: 40px; border-radius: 4px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; width: 100%;">
+                                <i class="fa fa-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            
         </section>
 
-        <section>
-          <h2 class="lop text-center">Recommendation</h2>
-          <div class="col-md-4 pl" ng-repeat="car in recommendedCars" ng-if="!isLoading">
-            <!--
-            -->
-            <div class="panel panel-default">
-                <!-- Car Image Section -->
-                <div class="panel-heading" style="padding: 0; position: relative">
-                 <button class="carousel-btn left" ng-click="prevImage(car)">&#9664;</button>
-                  <img
-                    ng-src="{{car.images[car.currentImageIndex]}}"
-                    class="img-responsive"
-                    alt="{{$ctrl.car.name}}"
-                    style="width: 100%; height: 165px; object-fit: cover"
-                  />
-                  <button class="carousel-btn right" ng-click="nextImage(car)">&#9654;</button>
-
-                  <div
-                    style="
-                      position: absolute;
-                      bottom: 0;
-                      left: 0;
-                      width: 100%;
-                      padding: 8px 12px;
-                      background: rgba(0, 0, 0, 0.5);
-                      color: white;
-                    "
-                  >
-                    <i class="fa fa-map-marker"></i> {{car.carData.carcity}}
-                  </div>
-                </div>
-                <!-- Car Header -->
-                <div class="panel-heading" style="border-top: 0">
-                  <div class="row">
-                    <div class="col-xs-8">
-                      <h4
-                        class="panel-title text-success"
-                        style="
-                          margin: 0;
-                          white-space: nowrap;
-                          overflow: hidden;
-                          text-overflow: ellipsis;
-                        "
-                      >
-                        {{car.carData.carMake}} - {{car.carData.carModel}}
-                      </h4>
+        <section style="padding: 40px 0; background-color: white; width: 100%;">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="lop text-center" style="color: #007bff; font-weight: 500; margin-bottom: 30px;">Recommendation</h2>
+                        <h3 ng-if="recommendedCars.length === 0" style="color: #555; text-align: center;">Book Your first ride to get recommendation</h3>
                     </div>
-                    <!-- <div class="col-xs-4 text-right">
-                      <span
-                        class="label label-default"
-                        style="font-size: 11px; letter-spacing: 1px"
-                      >
-                        {{$ctrl.car.numberPlate}}
-                      </span>
-                    </div> -->
-                  </div>
-                </div>
-                <!-- Car Details Section -->
-                <div class="panel-body">
-                  <div class="row">
-                    <!-- Left Side: Car Details -->
-                    <div class="col-xs-7" style="margin-top: 8px">
-                      <div class="row">
-                        <div class="col-xs-6 text-muted">Base Price:</div>
-                        <div class="col-xs-6 text-right">
-                          <strong>{{ car.carData.basePrice | currency:"₹" }}</strong>
-                        </div>
-                      </div>
-                      <div class="row" style="margin-top: 2px">
-                        <div class="col-xs-6 text-muted">Outstation:</div>
-                        <div class="col-xs-6 text-right">
-                          <strong>{{ car.carData.outstationPrice | currency:"₹" }}</strong>
-                        </div>
-                      </div>
-                      <div class="row" style="margin-top: 2px">
-                        <div class="col-xs-6 text-muted">Mileage:</div>
-                        <div class="col-xs-6 text-right">
-                          <strong>{{car.carData.carMileage }} km/L</strong>
-                        </div>
-                      </div>
-                      <div class="row" style="margin-top: 2px">
-                        <div class="col-xs-8 text-muted">Fine Per Extra Day:</div>
-                        <div class="col-xs-4 text-right">
-                          <strong>{{car.carData.carTransmission}} </strong>
-                        </div>
-                      </div>
-                      <!-- <div class="row" style="margin-top: 2px">
-                        <div class="col-xs-6 text-muted">Travelled:</div>
-                        <div class="col-xs-6 text-right">
-                          <strong>{{$ctrl.car.travelled}} km</strong>
-                        </div>
-                      </div> -->
-                    </div>
-                    <!-- Right Side: Fuel Info -->
-                    <div class="col-xs-5 text-center"  style="margin-top: 2px">
-                        <button class="book-button" ng-click="goToCarDetails(car._id)">Book Now</button>
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-           <!--
-            -->
-                <!-- <div class="panel panel-info">
-                <div class="panel-body">
-                <div class="carousel">
-                    <button class="carousel-btn left" ng-click="prevImage(car)">&#9664;</button>
-                    <img ng-src="{{car.images[car.currentImageIndex]}}" class="carousel-image" alt="Car Image">
-                    <button class="carousel-btn right" ng-click="nextImage(car)">&#9654;</button>
-                </div>
-    
-                <h3 ><strong>{{car.carData.carMake}} {{car.carData.carModel}}</strong></h3>
-
-                    <p><strong>Base Price:</strong> ${{car.carData.basePrice}}/day</p>
-                    <p><strong>Location:</strong> {{car.carData.carcity}}</p>
-                    <p><strong>Mileage:</strong> {{car.carData.carMileage}} km</p>
-                    <p><strong>Transmission:</strong> {{car.carData.carTransmission}}</p>
-         
-            </div>
-    
-                <button class="book-button" ng-click="goToCarDetails(car._id)">Book Now</button>
-        </div> -->
-        
-      </div>
-        </section>
-
-        <section>
-            <div id="car-listings" class="car-container">
-                <div id="page-loading" ng-if="isLoading">
-                    <img style="margin: auto;"  src="/src/assets/images/Pulse@1x-1.0s-200px-200px.gif" />
-                    {{isLoading}}
                 </div>
                 
-              
-                 
-                 <div class="roww">
-                  <h2 class="lop text-center">All Cars</h2>
-            <div class="col-md-4 pl" ng-repeat="car in filteredCars" ng-if="!isLoading">
-                <!--
-                -->
-                <div class="panel panel-default">
-                    <!-- Car Image Section -->
-                    <div class="panel-heading" style="padding: 0; position: relative">
-                     <button class="carousel-btn left" ng-click="prevImage(car)">&#9664;</button>
-                      <img
-                        ng-src="{{car.images[car.currentImageIndex]}}"
-                        class="img-responsive"
-                        alt="{{$ctrl.car.name}}"
-                        style="width: 100%; height: 165px; object-fit: cover"
-                      />
-                      <button class="carousel-btn right" ng-click="nextImage(car)">&#9654;</button>
-
-                      <div
-                        style="
-                          position: absolute;
-                          bottom: 0;
-                          left: 0;
-                          width: 100%;
-                          padding: 8px 12px;
-                          background: rgba(0, 0, 0, 0.5);
-                          color: white;
-                        "
-                      >
-                        <i class="fa fa-map-marker"></i> {{car.carData.carcity}}
-                      </div>
-                    </div>
-                    <!-- Car Header -->
-                    <div class="panel-heading" style="border-top: 0">
-                      <div class="row">
-                        <div class="col-xs-8">
-                          <h4
-                            class="panel-title text-success"
-                            style="
-                              margin: 0;
-                              white-space: nowrap;
-                              overflow: hidden;
-                              text-overflow: ellipsis;
-                            "
-                          >
-                            {{car.carData.carMake}} - {{car.carData.carModel}}
-                          </h4>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 col-lg-4" ng-repeat="car in recommendedCars" ng-if="!isLoading" style="margin-bottom: 30px;">
+                        <div class="panel panel-info car-panel" style="border-radius: 8px; height: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none; transition: all 0.3s ease;">
+                            <!-- Car Image Section -->
+                            <div class="panel-heading" style="padding: 0; position: relative; border-radius: 8px 8px 0 0;">
+                                <div uib-carousel interval="3000" no-wrap="false" style="border-radius: 8px 8px 0 0;">
+                                    <div uib-slide ng-repeat="img in car.images track by $index" index="$index">
+                                        <img ng-src="{{img}}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;" alt="Car Image">
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 8px 12px; background: rgba(0, 0, 0, 0.5); color: white;">
+                                    <i class="fa fa-map-marker" style="color: #007bff;"></i> {{car.carData.carcity}}
+                                </div>
+                            </div>
+                            
+                            <!-- Car Header -->
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #333; border-top: 0; padding: 15px;">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <h4 class="panel-title" style="margin: 0; font-size: 18px; color: #007bff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            {{car.carData.carMake}} - {{car.carData.carModel}}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Car Details Section -->
+                            <div class="panel-body" style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
+                                <div class="car-details">
+                                    <div class="row car-details-row">
+                                        <div class="col-xs-6 text-muted"><i class="fa fa-tag" style="color: #007bff; width: 20px;"></i> Base Price:</div>
+                                        <div class="col-xs-6 text-right">
+                                            <strong>{{ car.carData.basePrice | currency:"₹" }}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row car-details-row" style="margin-top: 8px">
+                                        <div class="col-xs-6 text-muted"><i class="fa fa-road" style="color: #007bff; width: 20px;"></i> Outstation:</div>
+                                        <div class="col-xs-6 text-right">
+                                            <strong>{{ car.carData.outstationPrice | currency:"₹" }}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row car-details-row" style="margin-top: 8px">
+                                        <div class="col-xs-6 text-muted"><i class="fa fa-tachometer" style="color: #007bff; width: 20px;"></i> Mileage:</div>
+                                        <div class="col-xs-6 text-right">
+                                            <strong>{{car.carData.carMileage }} km/L</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row car-details-row" style="margin-top: 8px">
+                                        <div class="col-xs-6 text-muted"><i class="fa fa-cog" style="color: #007bff; width: 20px;"></i> Trans:</div>
+                                        <div class="col-xs-6 text-right">
+                                            <strong>{{car.carData.carTransmission}}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" style="margin-top: 15px;">
+                                    <div class="col-xs-12">
+                                        <button class="btn btn-primary book-btn" ng-click="goToCarDetails(car.carData.listingId)">Book Now</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <!-- <div class="col-xs-4 text-right">
-                          <span
-                            class="label label-default"
-                            style="font-size: 11px; letter-spacing: 1px"
-                          >
-                            {{$ctrl.car.numberPlate}}
-                          </span>
-                        </div> -->
-                      </div>
                     </div>
-                    <!-- Car Details Section -->
-                    <div class="panel-body">
-                      <div class="row">
-                        <!-- Left Side: Car Details -->
-                        <div class="col-xs-7" style="margin-top: 8px">
-                          <div class="row">
-                            <div class="col-xs-6 text-muted">Base Price:</div>
-                            <div class="col-xs-6 text-right">
-                              <strong>{{ car.carData.basePrice | currency:"₹" }}</strong>
-                            </div>
-                          </div>
-                          <div class="row" style="margin-top: 2px">
-                            <div class="col-xs-6 text-muted">Outstation:</div>
-                            <div class="col-xs-6 text-right">
-                              <strong>{{ car.carData.outstationPrice | currency:"₹" }}</strong>
-                            </div>
-                          </div>
-                          <div class="row" style="margin-top: 2px">
-                            <div class="col-xs-6 text-muted">Mileage:</div>
-                            <div class="col-xs-6 text-right">
-                              <strong>{{car.carData.carMileage }} km/L</strong>
-                            </div>
-                          </div>
-                          <div class="row" style="margin-top: 2px">
-                            <div class="col-xs-8 text-muted">Fine Per Extra Day:</div>
-                            <div class="col-xs-4 text-right">
-                              <strong>{{car.carData.carTransmission}} </strong>
-                            </div>
-                          </div>
-                          <!-- <div class="row" style="margin-top: 2px">
-                            <div class="col-xs-6 text-muted">Travelled:</div>
-                            <div class="col-xs-6 text-right">
-                              <strong>{{$ctrl.car.travelled}} km</strong>
-                            </div>
-                          </div> -->
-                        </div>
-                        <!-- Right Side: Fuel Info -->
-                        <div class="col-xs-5 text-center"  style="margin-top: 2px">
-                            <button class="book-button" ng-click="goToCarDetails(car._id)">Book Now</button>
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-               <!--
-                -->
-                    <!-- <div class="panel panel-info">
-                    <div class="panel-body">
-                    <div class="carousel">
-                        <button class="carousel-btn left" ng-click="prevImage(car)">&#9664;</button>
-                        <img ng-src="{{car.images[car.currentImageIndex]}}" class="carousel-image" alt="Car Image">
-                        <button class="carousel-btn right" ng-click="nextImage(car)">&#9654;</button>
-                    </div>
-        
-                    <h3 ><strong>{{car.carData.carMake}} {{car.carData.carModel}}</strong></h3>
-
-                        <p><strong>Base Price:</strong> ${{car.carData.basePrice}}/day</p>
-                        <p><strong>Location:</strong> {{car.carData.carcity}}</p>
-                        <p><strong>Mileage:</strong> {{car.carData.carMileage}} km</p>
-                        <p><strong>Transmission:</strong> {{car.carData.carTransmission}}</p>
-             
                 </div>
-        
-                    <button class="book-button" ng-click="goToCarDetails(car._id)">Book Now</button>
-            </div> -->
             </div>
-          </div>
-            
-
-            </div>
-            
-
         </section>
-        
+
+        <section style="padding: 40px 0; background-color: #f8f9fa; width: 100%;">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <div id="car-listings" class="car-container">
+                    <div id="page-loading" ng-if="isLoading" class="text-center">
+                        <img style="margin: auto;" src="/src/assets/images/Pulse@1x-1.0s-200px-200px.gif" />
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="lop text-center" style="color: #007bff; font-weight: 500; margin-bottom: 30px;">All Cars</h2>
+                        </div>
+                        
+                        <div class="col-sm-6 col-md-4" ng-repeat="car in filteredCars" ng-if="!isLoading" style="margin-bottom: 30px;">
+                            <div class="panel panel-info car-panel" style="border-radius: 8px; height: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none; transition: all 0.3s ease;">
+                                <!-- Car Image Section -->
+                                <div class="panel-heading" style="padding: 0; position: relative; border-radius: 8px 8px 0 0;">
+                                    <div uib-carousel interval="3000" no-wrap="false" style="border-radius: 8px 8px 0 0;">
+                                        <div uib-slide ng-repeat="img in car.images track by $index" index="$index">
+                                            <img ng-src="{{img}}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;" alt="Car Image">
+                                        </div>
+                                    </div>
+                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 8px 12px; background: rgba(0, 0, 0, 0.5); color: white;">
+                                        <i class="fa fa-map-marker" style="color: #007bff;"></i> {{car.carData.carcity}}
+                                    </div>
+                                </div>
+                                
+                                <!-- Car Header -->
+                                <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #333; border-top: 0; padding: 15px;">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <h4 class="panel-title" style="margin: 0; font-size: 18px; color: #007bff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                {{car.carData.carMake}} - {{car.carData.carModel}}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Car Details Section -->
+                                <div class="panel-body" style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
+                                    <div class="car-details">
+                                        <div class="row car-details-row">
+                                            <div class="col-xs-6 text-muted"><i class="fa fa-tag" style="color: #007bff; width: 20px;"></i> Base Price:</div>
+                                            <div class="col-xs-6 text-right">
+                                                <strong>{{ car.carData.basePrice | currency:"₹" }}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="row car-details-row" style="margin-top: 8px">
+                                            <div class="col-xs-6 text-muted"><i class="fa fa-road" style="color: #007bff; width: 20px;"></i> Outstation:</div>
+                                            <div class="col-xs-6 text-right">
+                                                <strong>{{ car.carData.outstationPrice | currency:"₹" }}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="row car-details-row" style="margin-top: 8px">
+                                            <div class="col-xs-6 text-muted"><i class="fa fa-tachometer" style="color: #007bff; width: 20px;"></i> Mileage:</div>
+                                            <div class="col-xs-6 text-right">
+                                                <strong>{{car.carData.carMileage }} km/L</strong>
+                                            </div>
+                                        </div>
+                                        <div class="row car-details-row" style="margin-top: 8px">
+                                            <div class="col-xs-6 text-muted"><i class="fa fa-cog" style="color: #007bff; width: 20px;"></i> Trans:</div>
+                                            <div class="col-xs-6 text-right">
+                                                <strong>{{car.carData.carTransmission}}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row" style="margin-top: 15px;">
+                                        <div class="col-xs-12">
+                                            <button class="btn btn-primary book-btn" ng-click="goToCarDetails(car._id)">Book Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center loadmore" style="margin-top: 40px;">
+                <uib-pagination 
+                    total-items="totalCars" 
+                    ng-model="currentPage" 
+                    ng-change="pageChanged()"
+                    max-size="5"
+                    boundary-links="true"
+                    first-text="&laquo;" 
+                    last-text="&raquo;"
+                    previous-text="&lsaquo;" 
+                    next-text="&rsaquo;"
+                    class="pagination-sm"
+                    style="margin: 20px 0;">
+                </uib-pagination>
+            </div>
+        </section>
     </main>
-
-    <div class="text-center loadmore">
-      <div  uib-pagination total-items="totalCars" ng-model="currentPage" ng-change="pageChanged()"></div>
-  </div>
- 
-
 </div>
+
+<style>
+    body {
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+    
+    .login-button {
+        padding: 8px 15px;
+        border-radius: 4px;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .login-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .book-btn {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        border-radius: 4px;
+        padding: 8px 15px;
+        width: 100%;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .car-panel {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .panel-body {
+        flex: 1;
+    }
+    
+    .car-details {
+        flex: 1;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 1200px) {
+        .car-details-row {
+            font-size: 12px;
+        }
+    }
+    
+    @media (max-width: 991px) {
+        .rental-container {
+            padding: 15px;
+        }
+        
+        .car-panel {
+            margin-bottom: 20px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .options-btn, .login-button {
+            position: absolute;
+            top: 10px;
+        }
+        
+        .options-btn {
+            left: 10px;
+            padding: 8px 12px;
+            font-size: 18px;
+        }
+        
+        .login-button {
+            right: 10px;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .hero-section {
+            padding-top: 80px !important;
+        }
+        
+        .rental-container {
+            margin-top: 20px !important;
+        }
+        
+        .panel-heading h4 {
+            font-size: 16px;
+        }
+        
+        .car-details-row {
+            margin-top: 5px !important;
+        }
+    }
+    
+    @media screen and (max-width: 575px) {
+        .hero-section {
+            padding: 60px 10px 20px !important;
+        }
+        
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        h2.lop {
+            font-size: 24px;
+        }
+        
+        p.lop {
+            font-size: 14px;
+        }
+        
+        .uib-carousel {
+            height: 180px;
+        }
+    }
+    
+    .filter-input {
+        display: block;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+    
+    .input-group.flex-column {
+        width: 100%;
+    }
+</style>

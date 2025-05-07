@@ -32,7 +32,7 @@ import { sendUserStatusMail,sendAuthorizationMail } from '../../utils/nodemailer
                 }
             },
             {
-                $sort: { signupDate: -1 }  // Add this stage to sort by newest first
+                $sort: { signupDate: -1 }  // newest first
             },
             {
                 $facet: {

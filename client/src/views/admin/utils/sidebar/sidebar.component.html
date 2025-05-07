@@ -1,97 +1,80 @@
+<button id="sidebarToggle" ng-click="toggleSidebar($event)" class="btn btn-primary" style="display: none; position: fixed; top: 20px; left: 20px; z-index: 1000; background: linear-gradient(135deg, #007bff, #388fec); color: white; border: none; padding: 10px 15px; font-size: 18px; cursor: pointer; height: 45px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">☰ Menu</button>
 
-<button id="sidebarToggle" ng-click="toggleSidebar($event)">☰ Menu</button>
-
-<div id="sidebar">
-    <h2>Menu</h2>
-    <ul>
-        <li><a ui-sref="admindashboard">Statistics</a></li>
-        <li><a ui-sref="manageUser">Users</a></li>
-        <li><a ui-sref="adminListing">Listings</a></li>
-        <!-- <li><a href="/admin/history/admin-history.html">History</a></li> -->
-        <li><a ui-sref="profile">Profile</a></li>
-        <li id="logout" ng-click="logout()">Logout</li>
+<div id="sidebar" class="sidebar-container" style="height: 100%; width: 280px; position: fixed; top: 0; left: 0; background: white; padding-top: 40px; color: #555; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: 0.3s ease-in-out; border-radius: 0 8px 8px 0; z-index: 999;">
+    <h2 style="text-align: center; font-size: 24px; color: #007bff; margin-bottom: 30px; letter-spacing: 1px; font-weight: 500;">Menu</h2>
+    <ul class="nav nav-pills nav-stacked" style="list-style-type: none; padding: 0;">
+        <li style="padding: 16px; text-align: center; font-size: 16px; font-weight: 500; transition: all 0.3s ease; border-bottom: 1px solid #f0f0f0;">
+            <a ui-sref="admindashboard" style="text-decoration: none; color: #555; display: block; transition: 0.3s;">
+                <i class="fa fa-chart-bar" style="margin-right: 8px;"></i> Statistics
+            </a>
+        </li>
+        <li style="padding: 16px; text-align: center; font-size: 16px; font-weight: 500; transition: all 0.3s ease; border-bottom: 1px solid #f0f0f0;">
+            <a ui-sref="manageUser" style="text-decoration: none; color: #555; display: block; transition: 0.3s;">
+                <i class="fa fa-users" style="margin-right: 8px;"></i> Users
+            </a>
+        </li>
+        <li style="padding: 16px; text-align: center; font-size: 16px; font-weight: 500; transition: all 0.3s ease; border-bottom: 1px solid #f0f0f0;">
+            <a ui-sref="adminListing" style="text-decoration: none; color: #555; display: block; transition: 0.3s;">
+                <i class="fa fa-car" style="margin-right: 8px;"></i> Listings
+            </a>
+        </li>
+        <li style="padding: 16px; text-align: center; font-size: 16px; font-weight: 500; transition: all 0.3s ease; border-bottom: 1px solid #f0f0f0;">
+            <a ui-sref="profile" style="text-decoration: none; color: #555; display: block; transition: 0.3s;">
+                <i class="fa fa-user" style="margin-right: 8px;"></i> Profile
+            </a>
+        </li>
+        <li id="logout" ng-click="logout()" style="padding: 16px; text-align: center; font-size: 16px; font-weight: 500; transition: all 0.3s ease; border-bottom: 1px solid #f0f0f0; color: #dc3545; cursor: pointer;">
+            <i class="fa fa-sign-out-alt" style="margin-right: 8px;"></i> Logout
+        </li>
     </ul>
-
-
-    <style>
-        #sidebar {
-    height: 100%;
-    width: 280px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #16404D;  
-    padding-top: 40px;
-    color: white;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
-    transition: 0.3s ease-in-out;
-}
-
-#sidebar h2 {
-    text-align: center;
-    font-size: 24px;
-    color: #A6CDC6;  
-    margin-bottom: 30px;
-    letter-spacing: 1px;
-}
-
-#sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-#sidebar ul li {
-    padding: 16px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-#sidebar ul li:hover {
-    background-color: #DDA853; 
-}
-
-#sidebar ul li a {
-    text-decoration: none;
-    color: white;
-    display: block;
-}
-
-#sidebar ul li a:hover {
-    color: #16404D;  
-}
-
-#sidebarToggle {
-    display: none;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-    background-color: #16404D;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 18px;
-    cursor: pointer;
-    height: 50px;
-}
-
-@media screen and (max-width: 1000px) {
-    #sidebar {
-        transform: translateX(-100%);
-        z-index: 999;
-    }
-
-    #sidebarToggle {
-        display: block;
-    }
-
-    #sidebar.active {
-        transform: translateX(0);
-    }
-}
-      </style>
 </div>
+
+<style>
+    #sidebar ul li:hover {
+        background-color: #f8f9fa;
+    }
+
+    #sidebar ul li a:hover {
+        color: #007bff;
+    }
+
+    #logout:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    @media screen and (max-width: 1100px) {
+        #sidebar {
+            transform: translateX(-100%);
+        }
+
+        #sidebarToggle {
+            display: block !important;
+        }
+
+        #sidebar.active {
+            transform: translateX(0);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var sidebarToggle = document.getElementById('sidebarToggle');
+        var sidebar = document.getElementById('sidebar');
+
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            var isClickInside = sidebar.contains(event.target) || sidebarToggle.contains(event.target);
+            if (!isClickInside && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    });
+</script>
 
 

@@ -12,7 +12,8 @@ carRentalApp.controller(
     ownerdb,
     SessionService,
     $q,
-    ListingFactory
+    ListingFactory,
+    $uibModal
   ) {
     $scope.user = SessionService.getUser();
 
@@ -99,16 +100,31 @@ carRentalApp.controller(
     $scope.openModal = function () {
       $scope.isModalOpen = true;
     };
+
     /**
      * @description This function is used to close modal
      *
      */
     $scope.closeModal = function () {
       $scope.isModalOpen = false;
-      $scope.newCar = {};
+      $scope.newCar = {
+        carMake: "",
+        carModel: "",
+        carYear: "",
+        carPrice: "",
+        carOutstationPrice: "",
+        carColor: "",
+        carMileage: "",
+        carTransmission: "",
+        carCategory: "",
+        carDescription: "",
+        carAddress: "",
+        carcity: "",
+        images: []
+      };
       loadListings();
-      $timeout();
     };
+
     /**
      * @description This function is used to logout
      */

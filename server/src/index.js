@@ -11,10 +11,12 @@ import {Server} from "socket.io";
 import http from "http";
 const server = http.createServer(app);
 import awsSQSConsumer from "./utils/awsSQSconsumerutil.js";
+import { createClient } from "redis"
 
+dotenv.config();
 const io = new Server(server, {
   cors: {
-    origin: "http://127.0.0.1:5500",
+    origin: ["http://127.0.0.1:5500", "http://localhost:3000","http://127.0.0.1:5501"],
     methods: ["GET", "POST"],
   },
 });
@@ -23,19 +25,37 @@ app.set("io", io);
 
 io.on("connection", (socket) => {
   console.log("User connected :: ", socket.id);
+
+  socket.on("join_room", (userId) => {
+    socket.join(userId);
+    console.log(`Socket ${socket.id} joined room ${userId}`);
+    // Confirm room joining to client
+    socket.emit("room_joined", { userId, socketId: socket.id });
+  });
+
   socket.on("joinChat", (chatId) => {
     socket.join(chatId);
     console.log("User joined chat :: ", chatId);
   });
 
-  socket.on("disconnect", (socket) => {
+  socket.on("disconnect", () => {
     console.log("User disconnected :: ", socket.id);
   });
 });
 
-dotenv.config();
+// const client = createClient ({
+//   url : process.env.REDIS_URL,
+// });
+
+// client.on("error", function(err) {
+//   throw err;
+// });
+// client.connect();
+
 await connection();
-setInterval(awsSQSConsumer, 10000);
+setInterval(()=>{
+  awsSQSConsumer(io)
+}, 30000);
 
 const port = process.env.PORT || 8080;
 server.listen(port, () => console.log(`Listning on port ${port}....`));

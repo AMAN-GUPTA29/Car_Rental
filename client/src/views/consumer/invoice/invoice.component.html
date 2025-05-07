@@ -1,42 +1,68 @@
-
-<div ng-controller="InvoiceController" ng-init="init()" class="container-fluid py-4">
-
-    <!-- Header Section -->
-    <div class="justify-content-between align-items-center mb-4">
-        <button class="btn back-btn btn-outline-secondary" go-Back>
+<div ng-controller="InvoiceController" ng-init="init()" class="container-fluid" style="padding: 0; overflow-x: hidden;">
+    <main>
+        <button class="btn btn-primary" go-Back style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; position: fixed; top: 15px; left: 15px; z-index: 1000; font-size: 16px; padding: 8px 15px;">
             <i class="fa fa-arrow-left"></i> Back
         </button>
-        <h2 class="text-primary fw-bold text-center">Unpaid Invoice</h2>
-    </div>
 
+        <section class="hero-section" style="background-color: white; width: 100%; padding: 60px 0 25px 0;">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="text-center" style="color: #007bff; font-weight: 500; margin-top: 20px; margin-bottom: 12px;">Unpaid Invoices</h2>
+                        <p class="text-center" style="color: #555; margin-bottom: 15px;">View and manage your invoice payments</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover border">
-            <thead class="table-dark">
-                <tr>
-                    <th>Invoice ID</th>
-                    <th>Car</th>
-                    <th>Booker</th>
-                    <th>Final Amount ($)</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="invoice in allInvoices ">
-                    <td>{{ invoice._id }}</td>
-                    <td>{{ invoice.carData.carMake }} {{ invoice.carData.carModel }}</td>
-                    <td>{{ invoice.bookerData.bookerName }}</td>
-                    <td>${{ invoice.bidAmount }}</td>
-                    <td>{{ invoice.paid ? "Paid" : "Unpaid" }}</td>
-                    <td><button ng-click="openInvoiceModal(invoice)">View</button></td>
-                </tr>
-                <tr ng-if="allInvoices.length === 0">
-                    <td colspan="6">No unpaid invoices.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <section style="padding: 20px 0 30px; background-color: white; width: 100%;">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: none; transition: all 0.3s ease;">
+                    <div class="panel-heading" style="color: rgb(59, 59, 59); border-radius: 8px 8px 0 0; padding: 12px 16px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 18px;">Invoice History</h3>
+                    </div>
+                    <div class="panel-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" style="margin-bottom: 0;">
+                                <thead>
+                                    <tr style="background-color: #f8f9fa;">
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Invoice ID</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Car</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Booker</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Final Amount</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Status</th>
+                                        <th style="padding: 12px; color: #007bff; font-weight: 500; text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="invoice in allInvoices" style="transition: all 0.3s ease;">
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ invoice._id }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ invoice.carData.carMake }} {{ invoice.carData.carModel }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">{{ invoice.bookerData.bookerName }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; font-weight: bold; color: #28a745; text-align: center;">${{ invoice.bidAmount }}</td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">
+                                            <span class="badge" style="padding: 5px 8px; font-weight: 500; border-radius: 4px; font-size: 11px;"
+                                                  ng-class="{
+                                                    'bg-success': invoice.paid, 
+                                                    'bg-danger': !invoice.paid
+                                                  }">
+                                                {{ invoice.paid ? "Paid" : "Unpaid" }}
+                                            </span>
+                                        </td>
+                                        <td style="padding: 10px 12px; vertical-align: middle; text-align: center;">
+                                            <button class="btn btn-primary" style="background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 4px; padding: 5px 10px; font-size: 12px;" ng-click="openInvoiceModal(invoice)">
+                                                <i class="fa fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="allInvoices.length === 0">
+                                        <td colspan="6" style="text-align: center; padding: 20px;">No unpaid invoices found.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
     
     <!-- <div id="invoice-modal" ng-show="isModalOpen">
@@ -57,31 +83,31 @@
         </div>
     </div> -->
 
-    <uib-modal id="invoice-modal" class="text-center"  ng-show="isModalOpen">
-        <div class="text-center modal-content">
-    <div class="">
-        <div class="modal-header" >
-            <h3 class="modal-title">Invoice</h3>
-        </div>
-        <div class="modal-body">
-            <p><strong>Invoice ID:</strong> {{ selectedInvoice._id }}</p>
-            <p><strong>Car:</strong> {{ selectedInvoice.carData.carMake }} {{ selectedInvoice.carData.carModel }}</p>
-            <p><strong>Booker:</strong> {{ selectedInvoice.bookerData.bookerName }}</p>
-            <p><strong>Amount:</strong> ${{ selectedInvoice.bidAmount }}</p>
-            <p><strong>Status:</strong> 
-                <span class="label" ng-class="{'label-success': selectedInvoice.paid, 'label-danger': !selectedInvoice.paid}">
-                    {{ selectedInvoice.paid ? "Paid" : "Unpaid" }}
-                </span>
-            </p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-success" ng-click="markAsPaid()" ng-show="!selectedInvoice.paid">Mark as Paid</button>
-            <button class="btn btn-secondary" ng-click="closeModal()">Close</button>
-            <button class="btn btn-primary" ng-click="downloadInvoice()">Download Invoice</button>
+    <div id="invoice-modal-container" class="invoice-modal-overlay" ng-show="isModalOpen">
+        <div class="invoice-modal-dialog">
+            <div class="invoice-modal-content">
+                <div class="invoice-modal-header">
+                    <h3 class="invoice-modal-title">Invoice</h3>
+                </div>
+                <div class="invoice-modal-body">
+                    <p><strong>Invoice ID:</strong> {{ selectedInvoice._id }}</p>
+                    <p><strong>Car:</strong> {{ selectedInvoice.carData.carMake }} {{ selectedInvoice.carData.carModel }}</p>
+                    <p><strong>Booker:</strong> {{ selectedInvoice.bookerData.bookerName }}</p>
+                    <p><strong>Amount:</strong> ${{ selectedInvoice.bidAmount }}</p>
+                    <p><strong>Status:</strong> 
+                        <span class="label" ng-class="{'label-success': selectedInvoice.paid, 'label-danger': !selectedInvoice.paid}">
+                            {{ selectedInvoice.paid ? "Paid" : "Unpaid" }}
+                        </span>
+                    </p>
+                </div>
+                <div class="invoice-modal-footer">
+                    <button class="btn btn-success" ng-click="markAsPaid()" ng-show="!selectedInvoice.paid">Mark as Paid</button>
+                    <button class="btn btn-secondary" ng-click="closeModal()">Close</button>
+                    <button class="btn btn-primary" ng-click="downloadInvoice()">Download Invoice</button>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
-    </uib-modal>
     
     <div class="text-center">
         <ul uib-pagination 
@@ -98,4 +124,125 @@
     
 
 </div>
+
+<style>
+    /* Custom Modal Styling */
+    .invoice-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: block;
+        text-align: center;
+    }
+    
+    .invoice-modal-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 500px;
+        margin: 0 auto;
+        display: inline-block;
+    }
+    
+    .invoice-modal-content {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        position: relative;
+        text-align: left;
+        overflow: hidden;
+    }
+    
+    .invoice-modal-header {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #333;
+        padding: 15px 20px;
+        border-bottom: 1px solid #ddd;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .invoice-modal-title {
+        margin: 0;
+        color: #007bff;
+        font-weight: 500;
+        font-size: 20px;
+        text-align: center;
+    }
+    
+    .invoice-modal-body {
+        padding: 20px;
+    }
+    
+    .invoice-modal-body p {
+        margin-bottom: 10px;
+    }
+    
+    .invoice-modal-footer {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #ddd;
+        border-radius: 0 0 8px 8px;
+        text-align: center;
+    }
+    
+    .invoice-modal-footer .btn {
+        margin: 0 5px;
+        border-radius: 4px;
+        padding: 8px 15px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    /* Status badge styling */
+    .label {
+        padding: 5px 8px;
+        font-weight: 500;
+        border-radius: 4px;
+        font-size: 11px;
+        display: inline-block;
+    }
+    
+    .label-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .label-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+        color: white;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+        color: white;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .invoice-modal-dialog {
+            width: 95%;
+        }
+    }
+</style>
 

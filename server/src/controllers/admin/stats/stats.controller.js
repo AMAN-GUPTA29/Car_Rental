@@ -9,10 +9,7 @@ import { CAR_CATEGORIES } from "../../../utils/constant.js";
 import Listing from "../../../models/bookings/listing.schema.js";
 import User from "../../../models/users/user.schema.js";
 import Bidding from "../../../models/bookings/booking.schema.js";
-
-
-
-
+import {redisUtil,redisUtilGet} from "../../../utils/redis.util.js";
 
 
 /**
@@ -31,6 +28,15 @@ const getAverageBidPerCategoryController = async (req, res) => {
     const end = new Date(endDate);
     if (isNaN(start) || isNaN(end)) {
       return res.status(400).json({ message: "Invalid date format" });
+    }
+
+    const cachedData = await redisUtilGet(`getAverageBidPerCategoryController${startDate}${endDate}`);
+    if (cachedData) {
+      console.log("qss")
+      return res.status(200).json({
+        message: "avg bids per day successfully from cache",
+        statistics: cachedData
+      });
     }
 
     /**
@@ -91,12 +97,17 @@ const getAverageBidPerCategoryController = async (req, res) => {
     /**
      * return the categories and avg bids
      */
+
+    const statistics = {
+      categories: result.map((item) => item.category),
+      avgBids: result.map((item) => parseFloat(item.avgBid)),
+    };
+
+    redisUtil(`getAverageBidPerCategoryController${startDate}${endDate}`,statistics);
+
     res.status(200).json({
       message: "Average bids per category retrieved successfully",
-      statistics: {
-        categories: result.map((item) => item.category),
-        avgBids: result.map((item) => parseFloat(item.avgBid)),
-      },
+      statistics:statistics,
     });
   } catch (error) {
     console.error("Error in getAverageBidPerCategory:", error);
@@ -115,8 +126,17 @@ const getAverageBidPerCategoryController = async (req, res) => {
  * @param {*} res 
  * this method gets the last 7 days all bids of the plateform for the admin
  */
-const getBidsPerDayController = async (req, res) => {
+const getBidsPerDayController = async (req, res) => {   
   try {
+
+    // const cachedData = await redisUtilGet(`getBidsPerDayController${startDate}${endDate}`);
+    // if (cachedData) {
+    //   console.log("qss")
+    //   return res.status(200).json({
+    //     message: "Bids per day successfully from cache",
+    //     statistics: cachedData
+    //   });
+    // }
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -161,6 +181,7 @@ const getBidsPerDayController = async (req, res) => {
 
     const [aggregationResult] = await History.aggregate(aggregationPipeline);
 
+    console.log("aggregationResult",aggregationResult);
     
     /**
      * getting last 7 days.
@@ -171,27 +192,20 @@ const getBidsPerDayController = async (req, res) => {
       return date.toISOString().split("T")[0];
     }).reverse();
 
-    /**
-     * mapping data in bidsMao which are date and amount
-     */
-    const bidsMap = new Map(
-      aggregationResult?.bidsData?.map(item => [item.date, item.amount]) || []
-    );
-
-    /**
-     * mapping bidAmounts with per day data and adding 0  where no bids.
-     */
-    const bidAmounts = days.map(date => bidsMap.get(date) || 0);
+    
 
     /**
      * getting total bids amount per day last 7 days
      */
+    const statistics={
+      days,
+      aggregationResult
+    }
+
+    // redisUtil(`getBidsPerDayController${startDate}${endDate}`,statistics);
     res.status(200).json({
       message: "Bid statistics retrieved successfully",
-      statistics: {
-        days,
-        bidAmounts
-      }
+      statistics: statistics
     });
 
   } catch (error) {
@@ -217,6 +231,15 @@ const getCarsListedByCategoryController = async (req, res) => {
         const end = new Date(endDate);
         if (isNaN(start) || isNaN(end)) {
             return res.status(400).json({ message: "Invalid date format" });
+        }
+
+        const cachedData = await redisUtilGet(`getCarsListedByCategoryController${startDate}${endDate}`);
+        if (cachedData) {
+          console.log("qss")
+          return res.status(200).json({
+            message: "Car Listed successfully from cache",
+            statistics: cachedData
+          });
         }
 
         /**
@@ -265,16 +288,19 @@ const getCarsListedByCategoryController = async (req, res) => {
             categoryMap.get(category) || 0
         );
 
+        const statistics={
+          categories: CAR_CATEGORIES,
+          carCounts
+        }
+
+        redisUtil(`getCarsListedByCategoryController${startDate}${endDate}`,statistics);
         
         /**
          * returning the car counts per catagory
          */
         res.status(200).json({
             message: "Car listings by category retrieved successfully",
-            statistics: {
-                categories: CAR_CATEGORIES,
-                carCounts
-            }
+            statistics: statistics
         });
 
     } catch (error) {
@@ -303,6 +329,15 @@ const getActiveInactiveUsersController = async (req, res) => {
     
         if (isNaN(start) || isNaN(end)) {
             return res.status(400).json({ message: "Invalid date format" });
+        }
+
+        const cachedData = await redisUtilGet(`getActiveInactiveUsersController${startDate}${endDate}`);
+        if (cachedData) {
+          console.log("qss")
+          return res.status(200).json({
+            message: "active Inactive successfully from cache",
+            statistics: cachedData
+          });
         }
 
 
@@ -398,6 +433,8 @@ const getActiveInactiveUsersController = async (req, res) => {
       
         const stats = result || { activeUsers: 0, inactiveUsers: 0 };
 
+        redisUtil(`getActiveInactiveUsersController${startDate}${endDate}`,stats);
+
         /**
          * returning stats which is no of active and inactive user
          */
@@ -430,6 +467,15 @@ const getMostPopularCarsController = async (req, res) => {
     if (isNaN(start) || isNaN(end)) {
       return res.status(400).json({ message: "Invalid date format" });
     }
+
+    const cachedData = await redisUtilGet(`getMostPopularCarsController${startDate}${endDate}`);
+        if (cachedData) {
+          console.log("qss")
+          return res.status(200).json({
+            message: "most popular car categories successfully from cache",
+            statistics: cachedData
+          });
+        }
 
     /**
      * @$match matching document on  basis of start and end date
@@ -480,6 +526,8 @@ const getMostPopularCarsController = async (req, res) => {
       bookingCounts: result.map((item) => item.count),
     };
 
+    redisUtil(`getMostPopularCarsController${startDate}${endDate}`,formattedResult);
+
     /**
      * returning the formatted result
      */
@@ -511,6 +559,15 @@ const getMostBookedCarCategoriesController = async (req, res) => {
         const end = new Date(endDate);
         if (isNaN(start) || isNaN(end)) {
             return res.status(400).json({ message: "Invalid date format" });
+        }
+
+        const cachedData = await redisUtilGet(`getMostBookedCarCategoriesController${startDate}${endDate}`);
+        if (cachedData) {
+          console.log("qss")
+          return res.status(200).json({
+            message: "most Booked car categories successfully from cache",
+            statistics: cachedData
+          });
         }
 
         const allCategories =CAR_CATEGORIES;
@@ -562,6 +619,12 @@ const getMostBookedCarCategoriesController = async (req, res) => {
         /**
          * @return the booking counts for each category
          */
+
+        const statistics = {
+            categories: allCategories,
+            bookingCounts
+        };
+        redisUtil(`getMostBookedCarCategoriesController${startDate}${endDate}`,statistics);
         res.status(200).json({
             message: "Car category statistics retrieved successfully",
             statistics: {
@@ -583,11 +646,23 @@ const getMostBookedCarCategoriesController = async (req, res) => {
 const getNewUserOverTimeController = async (req, res) => {
 
   try {
+
+   
+
     const { startDate, endDate } = req.query;
     
     // Validate input
     if (!startDate || !endDate) {
       return res.status(400).json({ error: 'Both startDate and endDate are required' });
+    }
+
+     const cachedData = await redisUtilGet(`getNewUserOverTimeController${startDate}${endDate}`);
+    if (cachedData) {
+      console.log("qss")
+      return res.status(200).json({
+        message: "User retrieved successfully from cache",
+        statistics: cachedData
+      });
     }
 
     // Date handling
@@ -652,7 +727,9 @@ const getNewUserOverTimeController = async (req, res) => {
     const result = await User.aggregate(pipeline);
 
     const response = result[0] || { dates: [], userCounts: [], ownerCounts: [] };
- 
+
+
+    redisUtil(`getNewUserOverTimeController${startDate}${endDate}`,response);
     res.status(200).json({
       message: "Owner and user over time",
       statistics: response
@@ -678,6 +755,16 @@ const activeBiddingPerHourController = async (req, res) => {
     if (!startDate || !endDate) {
       return res.status(400).json({ error: 'Both startDate and endDate are required' });
     }
+
+    const cachedData = await redisUtilGet(`activeBiddingPerHourController${startDate}${endDate}`);
+    if (cachedData) {
+      console.log("qss")
+      return res.status(200).json({
+        message: "activeBidding successfully from cache",
+        statistics: cachedData
+      });
+    }
+
 
     // Date handling
     const start = new Date(startDate);
@@ -720,6 +807,7 @@ const activeBiddingPerHourController = async (req, res) => {
       bidsPerHour[result._id] = result.count;
     });
     console.log("bidsPerHour",bidsPerHour)
+    redisUtil(`activeBiddingPerHourController${startDate}${endDate}`,bidsPerHour);
     res.status(200).json({
       message: "Bids per hour retrieved successfully",
       statistics: bidsPerHour

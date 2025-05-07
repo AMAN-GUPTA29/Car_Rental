@@ -53,6 +53,7 @@ const endkm = async (req, res) => {
           "ownerDetails.ownerID": new ObjectId(String(ownerId)),
           startkm: {$ne:-1},
           endkm:-1,
+          endDate: { $lte: currentDate },
           status:"accepted"
         }
       },

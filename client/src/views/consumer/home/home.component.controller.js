@@ -154,6 +154,7 @@ carRentalApp.controller("CarController", function ($scope, consumerdb, $state,$t
    * @description This function is used to navigate to car details page
    */
   $scope.goToCarDetails = function (listingID) {
+    console.log("listingID",listingID)
     if (!listingID) {
       alert("Invalid car listing.");
       return;

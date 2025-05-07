@@ -1,57 +1,299 @@
-
-<div ng-controller="profileController">
-
-    <button go-Back class="back-btn">
-        <span class="arrow">&#8592;</span> Back
+<div class="container-fluid" ng-controller="profileController">
+    <button go-Back class="btn back-btn btn-outline-dark" style="margin: 20px;">
+        <i class="fa fa-arrow-left"></i> Back
     </button>
 
-    <!-- <div class="col-md-6"> -->
-    <div class="profile-container panel panel-success text-center">
-        <div class="opa panel-heading ">
-        <h2 class="opa panel-title">User Profile</h2>
-    </div>
-    <div class="panel-body">
+    <div class="profile-panel panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: none; margin: 20px;">
+        <div class="panel-heading" style="color: rgb(68, 68, 68); border-radius: 8px 8px 0 0; padding: 20px;">
+            <h3 class="panel-title text-center" style="font-size: 24px; margin: 0;">
+                <i class="fa fa-user-circle"></i> User Profile
+            </h3>
+        </div>
         
-        <div class="info"><label>Name:</label> <span>{{ user.name || 'N/A' }}</span></div>
-        <div class="info"><label>Email:</label> <span>{{ user.email || 'N/A' }}</span></div>
-        <div class="info"><label>Aadhar:</label> <span>{{ user.aadhar || 'N/A' }}</span></div>
-        <div class="info"><label>Phone:</label> <span>{{ user.mobile || 'N/A' }}</span></div>
+        <div class="panel-body" style="padding: 30px;">
+            <div class="profile-info-container">
+                <div class="info-item">
+                    <label><i class="fa fa-user"></i> Name</label>
+                    <span class="info-value">{{ user.name || 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label><i class="fa fa-envelope"></i> Email</label>
+                    <span class="info-value">{{ user.email || 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label><i class="fa fa-id-card"></i> Aadhar</label>
+                    <span class="info-value">{{ user.aadhar || 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label><i class="fa fa-phone"></i> Phone</label>
+                    <span class="info-value">{{ user.mobile || 'N/A' }}</span>
+                </div>
 
-        <button  class="edit-btn " ng-click="openEditModal()">Edit Profile</button>
-    </div>
-    <!-- </div> -->
-</div>
-
-    <div id="editModal" class="modal" ng-show="isModalOpen">
-        <div class="modal-content">
-            <h3>Edit Profile</h3>
-            
-            <label>Name:</label>
-            <input type="text" ng-model="editUser.username">
-
-            <label>Email:</label>
-            <input type="email" ng-model="editUser.email" disabled>
-
-            <label>Aadhar:</label>
-            <input type="text" ng-model="editUser.aadhar" disabled>
-
-            <label>Phone:</label>
-            <input type="text" ng-model="editUser.phone" >
-            <small class="warning">{{ warnings.phone }}</small>
-
-            <label>Old Password:</label>
-            <input type="password" ng-model="editUser.oldPassword">
-
-            <label>New Password:</label>
-            <input type="password" ng-model="editUser.newPassword" >
-            <small class="warning">{{ warnings.password }}</small>
-
-            <div class="modal-buttons">
-                <button class="btn btn-default btn-sm" ng-click="saveProfile()">Save</button>
-                <button ng-click="closeEditModal()">Cancel</button>
+                <button class="btn btn-primary edit-profile-btn" ng-click="openEditModal()" 
+                        style="background: linear-gradient(135deg, #007bff, #388fec); border: none; border-radius: 4px; padding: 10px 20px; margin-top: 20px;">
+                    <i class="fa fa-edit"></i> Edit Profile
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- Edit Profile Modal -->
+    <div class="modal-backdrop fade in" ng-show="isModalOpen"></div>
+    <uib-modal ng-show="isModalOpen">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><i class="fa fa-user-edit"></i> Edit Profile</h3>
+                    <button type="button" class="close" ng-click="closeEditModal()">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <form class="edit-profile-form">
+                        <div class="form-group">
+                            <label><i class="fa fa-user"></i> Name</label>
+                            <input type="text" class="form-control" ng-model="editUser.username">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa fa-envelope"></i> Email</label>
+                            <input type="email" class="form-control" ng-model="editUser.email" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa fa-id-card"></i> Aadhar</label>
+                            <input type="text" class="form-control" ng-model="editUser.aadhar" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa fa-phone"></i> Phone</label>
+                            <input type="text" class="form-control" ng-model="editUser.phone">
+                            <small class="text-danger" ng-if="warnings.phone">{{ warnings.phone }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa fa-lock"></i> Old Password</label>
+                            <input type="password" class="form-control" ng-model="editUser.oldPassword">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa fa-key"></i> New Password</label>
+                            <input type="password" class="form-control" ng-model="editUser.newPassword">
+                            <small class="text-danger" ng-if="warnings.password">{{ warnings.password }}</small>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" ng-click="closeEditModal()">
+                        <i class="fa fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-success" ng-click="saveProfile()">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </uib-modal>
 </div>
+
+<style>
+    .profile-panel {
+        max-width: 800px;
+        margin: 20px auto !important;
+    }
+
+    .profile-info-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .info-item label {
+        font-weight: 600;
+        color: #495057;
+        margin: 0;
+    }
+
+    .info-item i {
+        margin-right: 10px;
+        color: #007bff;
+    }
+
+    .info-value {
+        color: #6c757d;
+    }
+
+    .edit-profile-btn {
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .edit-profile-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,123,255,0.2);
+    }
+
+    .edit-profile-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    .edit-profile-form label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+
+    .edit-profile-form .form-control {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+    }
+
+    .edit-profile-form .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+
+    .modal-dialog {
+        max-width: 500px;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 8px 8px 0 0;
+    }
+
+    .modal-title {
+        color: #495057;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #eee;
+        padding: 15px;
+    }
+
+    .modal-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        z-index: 1500 !important;
+        display: block !important;
+    }
+
+    .modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 2000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: all !important;
+    }
+
+    .modal-dialog {
+        position: relative !important;
+        width: 95% !important;
+        max-width: 500px !important;
+        margin: 0 auto !important;
+        z-index: 2001 !important;
+        transform: none !important;
+    }
+
+    .modal-content {
+        position: relative !important;
+        width: 100% !important;
+        background: #fff !important;
+        border-radius: 6px !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    @media (max-width: 768px) {
+        .profile-panel {
+            margin: 10px !important;
+        }
+
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .info-value {
+            margin-top: 5px;
+        }
+
+        .modal-dialog {
+            margin: 10px;
+        }
+    }
+
+    .modal-open {
+        overflow: hidden;
+    }
+
+    .modal {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 9999999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        pointer-events: auto !important;
+        overflow-y: auto !important;
+    }
+
+    .modal-dialog {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 95% !important;
+        max-width: 500px !important;
+        margin: 0 !important;
+        z-index: 10000000 !important;
+    }
+
+    .modal-content {
+        margin: 0 !important;
+        position: relative !important;
+        background: #fff !important;
+        border-radius: 6px !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  opacity: 0.8;
+}
+</style>
 

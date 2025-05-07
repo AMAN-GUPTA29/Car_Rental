@@ -1,47 +1,264 @@
-<div class="  admin-listings" ng-init="init()">
-    <header class="clearfix">
-         <button go-Back class="btn btn-default back-btn text-left">
-            <span class="glyphicon glyphicon-arrow-left"></span> Back
-        </button>
-        <h1 class="text-center">Manage Car Listings</h1>
-    </header>
+<div class="container-fluid" ng-controller="AdminListingController" ng-init="init()" style="padding: 0; overflow-x: hidden; background-color: #f8f9fa; min-height: 100vh;">
+    <!-- Sidebar -->
+    <admin-sidebar style="position: fixed; top: 0; left: 0; width: 280px; height: 100vh; z-index: 1000;"></admin-sidebar>
 
-    <div class="filter-container form-group">
-        <label for="emailSearch">Search by Owner Email:</label>
-        <input type="text" id="emailSearch" class="form-control" ng-model="searchEmail" ng-change="applyFilter()" placeholder="Enter owner email">
-    </div>
-    
-    <div class="listings-container">
-        <div class="listing-card col-md-3" ng-repeat="listing in listings">
-            <div class="panel text-center panel-default">
-           
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ listing.carData.carMake }} - {{ listing.carData.carModel }}</h3>
+    <!-- Main Content Area -->
+    <div class="main-content" style="position: fixed; left: 300px; top: 0; width: calc(100% - 320px); height: 100vh; transition: left 0.3s ease; overflow-y: auto; padding-bottom: 20px;">
+        <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 20px 20px 0 0; border: none;">
+            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-bottom: 1px solid #dee2e6; border-radius: 8px 8px 0 0; padding: 15px 20px;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 style="margin: 0; font-size: 20px; color: #495057; font-weight: 500;">
+                            <i class="fa fa-car" style="color: #007bff; margin-right: 10px;"></i> Manage Car Listings
+                        </h3>
+                    </div>
+                    <div class="col-md-6">
+                        <button go-Back class="btn btn-outline-secondary pull-right" style="background: transparent; border: 1px solid #ced4da; border-radius: 4px; padding: 6px 12px; font-size: 14px; transition: all 0.3s ease;">
+                            <i class="fa fa-arrow-left"></i> Back
+                        </button>
+                    </div>
                 </div>
-
-               <div class="carousel-container">
-                <button class="carousel-btn prev-btn" ng-click="prevImage(listing)">&#10094;</button>
-                <img ng-src="{{ listing.images[listing.currentImageIndex] }}" class="carousel-image">
-                <button class="carousel-btn next-btn" ng-click="nextImage(listing)">&#10095;</button>
             </div>
-
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Category:</strong> {{ listing.carData.carCategory }}</li>
-                <li class="list-group-item"><strong>Year:</strong> {{ listing.carData.carYear }}</li>
-                <li class="list-group-item"><strong>Color:</strong><span class="color-box" ng-style="{'background-color': listing.carData.carColor}"></span></li>
-                <li class="list-group-item"><strong>Transmission:</strong> {{ listing.carData.carTransmission }}</li>
-                <li class="list-group-item"><strong>Mileage:</strong> {{ listing.carData.carMileage }} km</li>
-                <li class="list-group-item"><strong>City:</strong> {{ listing.carData.carcity }}</li>
-                <li class="list-group-item"><strong>Address:</strong> {{ listing.carData.carAddress }}</li>
-                <li class="list-group-item"><strong>Base Price:</strong> ₹{{ listing.carData.basePrice }}/day</li>
-                <li class="list-group-item"><strong>Owner Email:</strong> {{ listing.ownerDetails.ownerEmail }}</li>
-                <li class="list-group-item"><strong>Deleted:</strong> {{ listing.isDeleted ? "Yes" : "No" }}</li>
-            </ul>
-
-            <button class="btn btn-danger btn-block" ng-if="!listing.isDeleted" ng-click="deleteListing(listing._id)">
-                Delete Listing
-            </button>
+            
+            <div class="panel-body" style="padding: 20px;">
+                <!-- Search Filter -->
+                <div class="row" style="margin-bottom: 20px;">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="input-group">
+                            <span class="input-group-addon" style="background-color: #f8f9fa; border: 1px solid #ced4da; border-right: none; padding: 10px 15px; border-radius: 4px 0 0 4px;">
+                                <i class="fa fa-search" style="color: #007bff;"></i>
+                            </span>
+                            <input type="text" class="form-control" id="emailSearch" ng-model="searchEmail" ng-change="applyFilter()" placeholder="Filter by owner email" style="height: 42px; border: 1px solid #ced4da; box-shadow: none; border-radius: 0 4px 4px 0;">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Car Listings Grid -->
+                <div class="row">
+                    <div class="col-md-4" ng-repeat="listing in listings" style="margin-bottom: 20px;">
+                        <div class="panel panel-default" style="border-radius: 8px; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s ease; height: 100%; overflow: hidden; position: relative;">
+                            <div class="status-ribbon" ng-if="!listing.isDeleted" style="position: absolute; top: 10px; right: -30px; background: linear-gradient(135deg, #28a745, #218838); color: white; padding: 5px 30px; transform: rotate(45deg); z-index: 1; font-size: 11px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                ACTIVE
+                            </div>
+                            <div class="status-ribbon" ng-if="listing.isDeleted" style="position: absolute; top: 10px; right: -30px; background: linear-gradient(135deg, #dc3545, #c82333); color: white; padding: 5px 30px; transform: rotate(45deg); z-index: 1; font-size: 11px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                BLOCKED
+                            </div>
+                            
+                            <div class="panel-heading" style="background: linear-gradient(to right, #f8f9fa, #e9ecef); border-bottom: 1px solid #dee2e6; border-radius: 8px 8px 0 0; padding: 12px 15px;">
+                                <h3 class="panel-title text-center" style="margin: 0; font-size: 17px; font-weight: 600; color: #495057;">
+                                    {{ listing.carData.carMake }} {{ listing.carData.carModel }}
+                                </h3>
+                                <p class="text-center" style="margin: 5px 0 0; font-size: 16px; font-weight: 600; color: #28a745;">
+                                    ₹{{ listing.carData.basePrice }}/day
+                                </p>
+                            </div>
+                            
+                            <div class="panel-body" style="padding: 0;">
+                                <!-- Using uib-carousel -->
+                                <div uib-carousel active="0" interval="5000" no-wrap="false" style="height: 200px;">
+                                    <div uib-slide ng-repeat="img in listing.images track by $index" index="$index">
+                                        <img ng-src="{{ img }}" style="width: 100%; height: 200px; object-fit: cover;">
+                                    </div>
+                                </div>
+                                
+                                <div style="padding: 15px;">
+                                    <!-- Car Details Section with improved styling -->
+                                    <div style="margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                        <h4 style="color: #495057; font-size: 14px; font-weight: 600; margin-top: 0; margin-bottom: 10px;">
+                                            <i class="fa fa-info-circle" style="color: #007bff;"></i> Car Details
+                                        </h4>
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: center;">
+                                                    <i class="fa fa-tag" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px;"></i>
+                                                    <span style="flex: 1;">{{ listing.carData.carCategory }}</span>
+                                                </div>
+                                                <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: center;">
+                                                    <i class="fa fa-calendar" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px;"></i>
+                                                    <span style="flex: 1;">{{ listing.carData.carYear }}</span>
+                                                </div>
+                                                <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: center;">
+                                                    <i class="fa fa-tint" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px;"></i>
+                                                    <span class="color-box" style="display: inline-block; width: 18px; height: 18px; border-radius: 4px; vertical-align: middle; border: 1px solid #dee2e6; margin-right: 5px;" ng-style="{'background-color': listing.carData.carColor}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: center;">
+                                                    <i class="fa fa-cog" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px;"></i>
+                                                    <span style="flex: 1;">{{ listing.carData.carTransmission }}</span>
+                                                </div>
+                                                <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: center;">
+                                                    <i class="fa fa-tachometer" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px;"></i>
+                                                    <span style="flex: 1;">{{ listing.carData.carMileage }} km</span>
+                                                </div>
+                                                <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: center;">
+                                                    <i class="fa fa-building" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px;"></i>
+                                                    <span style="flex: 1;">{{ listing.carData.carcity }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Owner Details Section -->
+                                    <div style="margin-bottom: 15px;">
+                                        <h4 style="color: #495057; font-size: 14px; font-weight: 600; margin-top: 0; margin-bottom: 10px;">
+                                            <i class="fa fa-user" style="color: #007bff;"></i> Owner Details
+                                        </h4>
+                                        <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                            <i class="fa fa-user" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px; margin-top: 3px;"></i>
+                                            <span style="flex: 1; word-break: break-word;" title="{{ listing.ownerDetails.ownerName }}">{{ listing.ownerDetails.ownerName | limitTo: 18 }}{{ listing.ownerDetails.ownerName.length > 18 ? '...' : '' }}</span>
+                                        </div>
+                                        <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                            <i class="fa fa-envelope" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px; margin-top: 3px;"></i>
+                                            <span style="flex: 1; word-break: break-word;" title="{{ listing.ownerDetails.ownerEmail }}">{{ listing.ownerDetails.ownerEmail | limitTo: 18 }}{{ listing.ownerDetails.ownerEmail.length > 18 ? '...' : '' }}</span>
+                                        </div>
+                                        <div class="detail-item" style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                            <i class="fa fa-map-marker" style="color: #007bff; width: 20px; text-align: center; margin-right: 8px; margin-top: 3px;"></i>
+                                            <span style="flex: 1; word-break: break-word;" title="{{ listing.carData.carAddress }}">{{ listing.carData.carAddress | limitTo: 25 }}{{ listing.carData.carAddress.length > 25 ? '...' : '' }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="margin-top: 15px;">
+                                        <button ng-if="!listing.isDeleted" ng-click="deleteListing(listing._id)" class="btn btn-danger btn-block" uib-tooltip="Block this listing" style="background: linear-gradient(135deg, #dc3545, #c82333); border: none; border-radius: 4px; padding: 8px 15px; font-size: 14px; transition: all 0.3s ease;">
+                                            <i class="fa fa-ban"></i> Block Listing
+                                        </button>
+                                        <button ng-if="listing.isDeleted" ng-click="unblockListing(listing._id)" class="btn btn-success btn-block" uib-tooltip="Unblock this listing" style="background: linear-gradient(135deg, #28a745, #218838); border: none; border-radius: 4px; padding: 8px 15px; font-size: 14px; transition: all 0.3s ease;">
+                                            <i class="fa fa-check-circle"></i> Unblock Listing
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div class="text-center" ng-if="listings.length === 0" style="text-align: center; padding: 30px; color: #6c757d; margin-top: 20px; background-color: #f8f9fa; border-radius: 8px; border: 1px dashed #dee2e6;">
+                    <i class="fa fa-search fa-2x" style="margin-bottom: 15px; color: #adb5bd;"></i>
+                    <p style="margin: 0; font-size: 16px;">No car listings found matching your criteria.</p>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="text-center" style="margin-top: 25px;">
+                    <ul uib-pagination 
+                        total-items="totalListings" 
+                        ng-model="currentPage"
+                        items-per-page="itemsPerPage"
+                        max-size="5"
+                        class="pagination-sm"
+                        boundary-links="true"
+                        force-ellipses="true"
+                        first-text="&laquo;" 
+                        last-text="&raquo;"
+                        previous-text="&lsaquo;" 
+                        next-text="&rsaquo;"
+                        ng-change="pageChanged()" ng-if="totalListings > itemsPerPage">
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
 </div>
+
+<style>
+    /* Button hover effects */
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Pagination styling */
+    .pagination > li > a {
+        color: #007bff;
+        border: 1px solid #dee2e6;
+        margin: 0 2px;
+        border-radius: 4px;
+    }
+    
+    .pagination > li.active > a {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border-color: #007bff;
+    }
+    
+    .pagination > li > a:hover {
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+    
+    /* Panel hover effect */
+    .panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+    
+    /* Carousel navigation */
+    .carousel-control {
+        background-image: none !important;
+        box-shadow: none;
+        opacity: 0.7;
+    }
+    
+    .carousel-control:hover {
+        opacity: 1;
+        color: #007bff;
+    }
+    
+    /* Status ribbon animation */
+    .status-ribbon {
+        animation: glow 2s infinite alternate;
+    }
+    
+    @keyframes glow {
+        from {
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        to {
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+    }
+    
+    /* Detail item hover effect */
+    .detail-item:hover {
+        background-color: #f8f9fa;
+        border-radius: 4px;
+    }
+    
+    /* Responsive design for sidebar */
+    @media (max-width: 1100px) {
+        .main-content {
+            left: 10px !important;
+            width: calc(100% - 20px) !important;
+        }
+        
+        admin-sidebar {
+            width: 0 !important;
+            overflow: hidden;
+        }
+    }
+    
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+        .panel-title {
+            font-size: 14px !important;
+        }
+        
+        .panel-body {
+            padding: 10px !important;
+        }
+        
+        .btn-sm {
+            padding: 4px 8px !important;
+            font-size: 11px !important;
+        }
+        
+        .panel-heading h3 {
+            font-size: 16px !important;
+        }
+        
+        .status-ribbon {
+            right: -35px !important;
+            padding: 4px 35px !important;
+            font-size: 10px !important;
+        }
+    }
+</style>

@@ -4,7 +4,7 @@ carRentalApp.config([
     "$ocLazyLoadProvider",
     function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
 
-      
+      ////
       $ocLazyLoadProvider.config({
         debug: false,
         events: true,
@@ -364,6 +364,25 @@ carRentalApp.config([
               link.rel = "stylesheet";
               link.type = "text/css";
               link.href = "/src/views/admin/adminlisting/adminlisting.component.css";
+              document.head.appendChild(link);
+              return true;
+          },
+          ],
+        }
+      }).state("allbidsowner",{
+        url: "/consumer/allbidsowner",
+        templateUrl: "/src/views/owner/allbids/allbids.component.html",
+        controller: "AllBidsOwnerController",
+        resolve:{
+          auth: ["AuthFactory", function (AuthFactory) {
+            return AuthFactory.checkOwner();
+        }],
+          loadCSS: [
+            function () {
+              var link = document.createElement("link");
+              link.rel = "stylesheet";
+              link.type = "text/css";
+              link.href = "/src/views/consumer/allbids/allbids.component.css";
               document.head.appendChild(link);
               return true;
           },

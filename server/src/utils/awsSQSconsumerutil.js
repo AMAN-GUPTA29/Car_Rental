@@ -9,7 +9,7 @@ import { SQS } from "@aws-sdk/client-sqs";
  * @description Consumes messages from AWS SQS queue and processes bidding data
  * @returns {Promise<void>} - Processes SQS messages and saves to database
  */
-async function awsSQSConsumer() {
+async function awsSQSConsumer(io) {
   /**
    * @type {SQS}
    * @description Initialize SQS client with AWS credentials
@@ -50,12 +50,25 @@ async function awsSQSConsumer() {
      */
     const bid = JSON.parse(Messages[0].Body);
 
+    console.log("bidd", bid);
     /**
      * @description Save bid data to database
      */
     await new Bidding({
       ...bid,
     }).save();
+
+    // Get all connected socket clients
+    const connectedSockets = await io.sockets.adapter.rooms.get(bid.bookerData.bookerId);
+    
+    if (connectedSockets && connectedSockets.size > 0) {
+        console.log(`Found ${connectedSockets.size} connected clients for user:`, bid.bookerData.bookerId);
+        // Broadcast to ensure delivery
+        io.in(bid.bookerData.bookerId).emit('booking', bid);
+    } else {
+        console.warn(`No connected sockets found for user ${bid.bookerData.bookerId}. Adding to pending notifications.`);
+        // Optionally store notification for later delivery
+    }
 
     /**
      * @type {Object}

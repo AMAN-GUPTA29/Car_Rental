@@ -11,11 +11,12 @@ import { ObjectId } from "mongodb";
 import { CAR_CATEGORIES } from "../../../utils/constant.js";
 
 
+
 /**
- * @description Controller to get owner's recent earnings for the last 14 days
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Promise<void>} - Returns earnings data for the last 14 days
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns {Promise<void>} - Returns recent earnings of owner
  */
 const getOwnerRecentEarningsController = async (req, res) => {
     try {
@@ -38,7 +39,7 @@ const getOwnerRecentEarningsController = async (req, res) => {
                 $facet: {
                     // Generate all dates in the 14-day range
                     "allDates": [
-                        { $match: { _id: { $exists: true } } }, // Just to have a document to start with
+                        { $match: { _id: { $exists: true } } }, 
                         { $limit: 1 },
                         { $project: { _id: 0 } },
                         {
@@ -141,6 +142,7 @@ const getOwnerRecentEarningsController = async (req, res) => {
 
         const [result] = await History.aggregate(aggregationPipeline);
 
+
         res.status(200).json({
             message: "14-day earnings retrieved successfully",
             statistics: result || { days: [], earnings: [] }
@@ -157,7 +159,7 @@ const getOwnerRecentEarningsController = async (req, res) => {
 
 
 /**
- * @description Controller to get owner's recent earnings for the last 14 days
+ * @description Controller to get user and average bids for a specific owner
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Promise<void>} - Return avg of user and plateform bidding
@@ -239,7 +241,9 @@ const getUserAndAvgBidsController = async (req, res) => {
         });
 
        
-        // console.log(days)
+        console.log("toata;",totalBidsMap)
+        console.log("userBidsMap;",userBidsMap)
+        console.log("userCountMap;",userCountMap)
 
         // Generate results for all days
         const result = days.map(date => ({
@@ -249,7 +253,7 @@ const getUserAndAvgBidsController = async (req, res) => {
         }));
 
         
-        // console.log("res",result);
+        console.log("res",result);
      
         res.status(200).json({
             message: "User and average bids retrieved successfully",
@@ -270,7 +274,7 @@ const getUserAndAvgBidsController = async (req, res) => {
 };
 
 /**
- * @description Controller to get owner's recent earnings for the last 14 days
+ * @description Controller to get bids per day of the week for a specific owner
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Promise<void>} - Return bids per day of the weeks
@@ -326,21 +330,21 @@ const getBidsPerDayOfWeekController = async (req, res) => {
         const aggregationResult = await Bidding.aggregate(aggregationPipeline);
 
         // Initialize with zeros
-        const bidAmounts = new Array(7).fill(0);
+        // const bidAmounts = new Array(7).fill(0);
         
         
-        aggregationResult.forEach(item => {
-            const index = item.dayNumber - 1; 
-            if (index >= 0 && index < 7) {
-                bidAmounts[index] = item.totalAmount;
-            }
-        });
+        // aggregationResult.forEach(item => {
+        //     const index = item.dayNumber - 1; 
+        //     if (index >= 0 && index < 7) {
+        //         bidAmounts[index] = item.totalAmount;
+        //     }
+        // });
 
         res.status(200).json({
             message: "Weekly bid statistics retrieved successfully",
             statistics: {
                 labels: dayOrder,
-                bidAmounts
+                aggregationResult
             }
         });
 
@@ -354,7 +358,7 @@ const getBidsPerDayOfWeekController = async (req, res) => {
 };
 
 /**
- * @description Controller to get owner's recent earnings for the last 14 days
+ * @description Controller to get bids per day for a specific owner
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Promise<void>} - Bids per day owner controller
@@ -471,19 +475,13 @@ const getCategoryBookingCountsController = async (req, res) => {
 
         const aggregationResult = await Bidding.aggregate(aggregationPipeline);
 
-        const categoryMap = new Map(
-            aggregationResult.map(item => [item.category, item.count])
-        );
-
-        const bookings = CAR_CATEGORIES.map(category => 
-            categoryMap.get(category) || 0
-        );
+        
 
         res.status(200).json({
             message: "Category booking counts retrieved successfully",
             statistics: {
                 categories: CAR_CATEGORIES,
-                bookings
+                aggregationResult
             }
         });
 
@@ -497,7 +495,7 @@ const getCategoryBookingCountsController = async (req, res) => {
 };
 
 /**
- * @description Controller to get owner's recent earnings for the last 14 days
+ * @description Controller to get top car earnings of owner.
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Promise<void>} - Returns top car modal
@@ -587,25 +585,26 @@ const getTopCarModelsController = async (req, res) => {
         ];
 
         const [result] = await Bidding.aggregate(aggregationPipeline);
-        // Calculate platform average
-        const platformStats = result.platformStats || {};
-        const avgBidPerModel = platformStats.modelCount > 0 
-            ? (platformStats.totalBids || 0) / platformStats.modelCount 
-            : 0;
 
-        // Prepare owner models data
-        const ownerModels = result.ownerModels || [];
-        const responseData = {
-            carModels: ownerModels.map(item => item.carModel),
-            ownerBidCounts: ownerModels.map(item => item.count),
-            avgPlatformBids: ownerModels.map(() => avgBidPerModel)
-        };
+        // Calculate platform average
+        // const platformStats = result.platformStats || {};
+        // const avgBidPerModel = platformStats.modelCount > 0 
+        //     ? (platformStats.totalBids || 0) / platformStats.modelCount 
+        //     : 0;
+
+        // // Prepare owner models data
+        // const ownerModels = result.ownerModels || [];
+        // const responseData = {
+        //     carModels: ownerModels.map(item => item.carModel),
+        //     ownerBidCounts: ownerModels.map(item => item.count),
+        //     avgPlatformBids: ownerModels.map(() => avgBidPerModel)
+        // };
 
       
 
         res.status(200).json({
             message: "Top car models retrieved successfully",
-            statistics: responseData
+            statistics: result
         });
 
     } catch (error) {
@@ -619,10 +618,10 @@ const getTopCarModelsController = async (req, res) => {
 
 
 /**
- * @description Controller to get owner's recent earnings for the last 14 days
+ * @description Controller to get listing-wise earnings for a specific owner
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
- * @returns {Promise<void>} - Returns top car modal
+ * @returns {Promise<void>} -Returns lisitng wise earning
  */
 const getListingWiseEarningsController = async (req, res) => {
     try {
@@ -688,7 +687,12 @@ const getListingWiseEarningsController = async (req, res) => {
     }
 };
 
-
+/**
+ * @description Controller to get active bidding per hour for a specific owner
+ * @param {*} req 
+ * @param {*} res 
+ * @returns {Promise<void>} - Returns active bidding per hour
+ */
 const activeBiddingPerHourController = async (req, res) => {
     try {
       const { startDate, endDate } = req.query;
@@ -734,16 +738,16 @@ const activeBiddingPerHourController = async (req, res) => {
       const rawResults = await History.aggregate(pipeline);
   
       // Initialize 24-hour array with zeros
-      const bidsPerHour = Array(24).fill(0);
+    //   const bidsPerHour = Array(24).fill(0);
   
-      // Map MongoDB results to the array
-      rawResults.forEach(result => {
-        bidsPerHour[result._id] = result.count;
-      });
-      console.log("bidsPerHour",bidsPerHour)
+    //   // Map MongoDB results to the array
+    //   rawResults.forEach(result => {
+    //     bidsPerHour[result._id] = result.count;
+    //   });
+    //   console.log("bidsPerHour",bidsPerHour)
       res.status(200).json({
         message: "Bids per hour retrieved successfully",
-        statistics: bidsPerHour
+        statistics: rawResults,
     });
   
     } catch (error) {

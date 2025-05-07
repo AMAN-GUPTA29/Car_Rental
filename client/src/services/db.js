@@ -306,6 +306,26 @@ carRentalApp.service("db", function ($q,dbService,idGeneratorService,ApiService)
             return deferred.promise;
       };
       
+      /**
+       * Get all pending biddings for a specific owner across all their cars
+       * @param {string} ownerId - The owner's ID
+       * @returns {Promise} A promise that resolves with all pending biddings for the owner 
+       */
+      this.getAllPendingBiddingsOwner = function(ownerId) {
+        const deferred = $q.defer();
+        const user = JSON.parse(sessionStorage.getItem("user")); 
+        console.log("scA") 
+        ApiService.getDataInternal(`/owner/allbiddings/${ownerId}`,user.token)
+        .then(response => {
+          deferred.resolve(response.data);
+        })
+        .catch(error => {
+          console.error("Error fetching all biddings:", error);
+          deferred.reject(error.data?.message || "Server error");
+        });
+
+        return deferred.promise;
+      };
 
     this.statusrejectbooking=function(currbid)
     {
@@ -552,7 +572,7 @@ this.getInvoices=function(userId,page)
 {
     const user = JSON.parse(sessionStorage.getItem("user"));  
     console.log("acthere")
-    const deferred=$q.defer();
+            const deferred=$q.defer();
     ApiService.getDataInternaln(`/consumer/getinvoice/${userId}`, { filter:"all",page:page }, user.token)
     .then((response) => {
         console.log("response", response.data);
@@ -562,7 +582,7 @@ this.getInvoices=function(userId,page)
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
+            return deferred.promise;
 
 
 }
@@ -703,7 +723,7 @@ this.editUserProfile=function(usern)
             deferred.reject(error.data?.message || "Server error");
     });
 
-            return deferred.promise;
+                return deferred.promise;
 }
 
 
@@ -780,7 +800,7 @@ this.updateuserauth=function(params,blocked)
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
+        return deferred.promise;
  
 }
 
@@ -901,6 +921,7 @@ this.getBidsPerDayOwner=function() {
     const deferred=$q.defer();
     ApiService.getDataInternal(`/owner/stats/ownerbidlastweek/${user.id}`, user.token)
     .then((response) => {
+                
             deferred.resolve(response.data.statistics);
     }).catch((error) => {
         console.error("Error updating start km:", error);
@@ -922,7 +943,24 @@ this.getBidsPerDayOfWeek=function(startDate,endDate) {
     }
     ApiService.getDataInternaln(`/owner/stats/ownerearningdaywise/${user.id}`,params, user.token)
     .then((response) => {
-            deferred.resolve(response.data.statistics);
+            console.log("daywise",response.data.statistics)
+
+            const bidAmounts = new Array(7).fill(0);
+        
+        
+            response.data.statistics.aggregationResult.forEach(item => {
+            const index = item.dayNumber - 1; 
+            if (index >= 0 && index < 7) {
+                bidAmounts[index] = item.totalAmount;
+            }
+       `` });
+
+       const result={
+        labels: response.data.statistics.labels,
+        bidAmounts
+       }
+
+            deferred.resolve(result);
     }).catch((error) => {
         console.error("Error updating start km:", error);
             deferred.reject(error.data?.message || "Server error");
@@ -943,6 +981,8 @@ this.getUserAndAvgBids=function(startDate,endDate) {
     ApiService.getDataInternaln(`/owner/stats/getearningandplateformavg/${user.id}`,params, user.token)
     .then((response) => {
             console.log("qwertyuiop",response.data.statistics)
+            
+
             deferred.resolve(response.data.statistics);
     }).catch((error) => {
         console.error("Error updating start km:", error);
@@ -985,7 +1025,22 @@ this.getUserAndAvgBids=function(startDate,endDate) {
     }
     ApiService.getDataInternaln(`/owner/stats/gettopearningcarmodal/${user.id}`,params, user.token)
     .then((response) => {
-            deferred.resolve(response.data.statistics);
+
+        console.log(response.data.statistics);
+
+        const platformStats = response.data.statistics.platformStats || {};
+        const avgBidPerModel = platformStats.modelCount > 0 
+            ? (platformStats.totalBids || 0) / platformStats.modelCount 
+            : 0;
+
+        // Prepare owner models data
+        const ownerModels = response.data.statistics.ownerModels || [];
+        const responseData = {
+            carModels: ownerModels.map(item => item.carModel),
+            ownerBidCounts: ownerModels.map(item => item.count),
+            avgPlatformBids: ownerModels.map(() => avgBidPerModel)
+        };
+            deferred.resolve(responseData);
     }).catch((error) => {
         console.error("Error updating start km:", error);
             deferred.reject(error.data?.message || "Server error");
@@ -1006,13 +1061,26 @@ this.getCategoryBookingCounts=function(startDate,endDate) {
     }
     ApiService.getDataInternaln(`/owner/stats/gettopearningcarcategories/${user.id}`,params, user.token)
     .then((response) => {
-            deferred.resolve(response.data.statistics);
+
+        const categoryMap = new Map(
+            response.data.statistics.aggregationResult.map(item => [item.category, item.count])
+        );
+
+        const bookings = response.data.statistics.categories.map(category => 
+            categoryMap.get(category) || 0
+        );
+
+        const result={
+            categories:response.data.statistics.categories,
+            bookings
+        }
+            deferred.resolve(result);
     }).catch((error) => {
         console.error("Error updating start km:", error);
             deferred.reject(error.data?.message || "Server error");
     });
 
-    return deferred.promise;
+        return deferred.promise;
     
 }
 
@@ -1094,8 +1162,24 @@ this.getBidsPerDay=function() {
     const user = JSON.parse(sessionStorage.getItem("user"));  
     ApiService.getDataInternal(`/admin/stats/bidlast7days`,user.token)
       .then(response => {
-        console.log(response.data);
-        deferred.resolve(response.data.statistics);
+        
+        
+           /**
+     * mapping data in bidsMao which are date and amount
+     */
+    const bidsMap = new Map(
+        response.data.statistics.aggregationResult?.bidsData?.map(item => [item.date, item.amount]) || []
+      );
+      /**
+       * mapping bidAmounts with per day data and adding 0  where no bids.
+       */
+      const bidAmounts = response.data.statistics.days.map(date => bidsMap.get(date) || 0);
+  
+        const result={
+            days: response.data.statistics.days,
+            bidAmounts
+        }
+        deferred.resolve(result);
       })
       .catch(error => {
         console.error("Error updating status:", error);
@@ -1177,7 +1261,7 @@ this.getNewUserOverTime=function(startDate,endDate) {
 
 this.getActiveBiddingPerHour=function(startDate,endDate) {
 
-    const deferred=$q.defer();
+        const deferred=$q.defer();
     const params={
         "startDate":startDate,
         "endDate":endDate
@@ -1185,7 +1269,14 @@ this.getActiveBiddingPerHour=function(startDate,endDate) {
     const user = JSON.parse(sessionStorage.getItem("user"));
     ApiService.getDataInternaln(`/admin/stats/activeBiddingPerHour`,params,user.token)
       .then(response => {
-        console.log("oioi",response.data);
+
+        const bidsPerHour = Array(24).fill(0);
+  
+        // Map MongoDB results to the array
+        response.data.statistics.forEach(result => {
+          bidsPerHour[result._id] = result.count;
+        });
+        console.log("qwsabids",bidsPerHour);
         deferred.resolve(response.data.statistics);
       })
       .catch(error => {
@@ -1199,7 +1290,7 @@ this.getActiveBiddingPerHour=function(startDate,endDate) {
 
 this.getActiveBiddingPerHourOwner=function(startDate,endDate) {
     console.log("ololoodspp")
-    const deferred=$q.defer();
+        const deferred=$q.defer();
     const params={
         "startDate":startDate,
         "endDate":endDate
@@ -1208,7 +1299,14 @@ this.getActiveBiddingPerHourOwner=function(startDate,endDate) {
     ApiService.getDataInternaln(`/owner/stats/activeBiddingPerHour/${user.id}`,params, user.token)
       .then(response => {
         console.log("vvb",response.data);
-        deferred.resolve(response.data.statistics);
+        const bidsPerHour = Array(24).fill(0);
+  
+        // Map MongoDB results to the array
+        response.data.statistics.forEach(result => {
+          bidsPerHour[result._id] = result.count;
+        });
+        console.log("qwsabids",bidsPerHour);
+        deferred.resolve(bidsPerHour);
       })
       .catch(error => {
         console.error("Error updating status:", error);

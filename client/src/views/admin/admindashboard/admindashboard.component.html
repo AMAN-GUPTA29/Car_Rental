@@ -1,63 +1,194 @@
-<body ng-controller="AdminHomeController" >
-    
-    <admin-sidebar></admin-sidebar>
-    
-    <header class="admin-header text-center">
-        <h1>Hello, Admin {{ adminName }}</h1>
-    </header>
+<div class="container-fluid" ng-controller="AdminHomeController" ng-init="init()" style="height: 100vh; padding: 0; overflow-x: hidden; position: relative;">
+    <!-- Sidebar -->
+    <admin-sidebar style="position: fixed; top: 0; left: 0; width: 280px; height: 100vh; z-index: 1000;"></admin-sidebar>
 
-    <div class="filter-container">
-        <label for="start-date">Start Date:</label>
-        <input type="date" id="start-date" ng-model="startDate">
-    
-        <label for="end-date">End Date:</label>
-        <input type="date" id="end-date" ng-model="endDate">
-    
-        <button id="filter-button4" ng-click="changedate()">Show Data</button>
-    </div>
-    
-    <div class="container" ng-init="init()">
-        <div class="col-md-offset-2 row">
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="biddingChart"></canvas>
-                </div>
+    <!-- Main Content Area -->
+    <div class="main-content" style="position: fixed; left: 300px; top: 0; width: calc(100% - 320px); height: 100vh; transition: left 0.3s ease; overflow-x: hidden; overflow-y: auto; padding-bottom: 20px;">
+        <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: none; margin: 10px 10px 0 0; display: flex; flex-direction: column;">
+            <div class="panel-heading" style="color: rgb(68, 68, 68); border-radius: 8px 8px 0 0; padding: 20px; flex-shrink: 0; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-bottom: 1px solid rgba(0,0,0,0.05);">
+                <h3 class="panel-title text-center" style="font-size: 24px; margin: 0; font-weight: 500;">
+                    <i class="fa fa-dashboard"></i> Admin Dashboard
+                    <div style="font-size: 16px; color: #6c757d; margin-top: 10px;">Hello, Admin {{ adminName }}</div>
+                </h3>
             </div>
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="activeInactiveUsersChart"></canvas>
+            
+            <div class="panel-body" style="padding: 20px;">
+                <!-- Date Filter -->
+                <div class="filter-container" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="start-date" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                    <i class="fa fa-calendar" style="color: #007bff; width: 20px;"></i> Start Date
+                                </label>
+                                <input type="date" class="form-control" id="start-date" ng-model="startDate" style="height: 40px; border-radius: 4px; border: 1px solid #ddd;">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="end-date" style="color: #555; font-weight: 500; margin-bottom: 8px;">
+                                    <i class="fa fa-calendar" style="color: #007bff; width: 20px;"></i> End Date
+                                </label>
+                                <input type="date" class="form-control" id="end-date" ng-model="endDate" style="height: 40px; border-radius: 4px; border: 1px solid #ddd;">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary" ng-click="changedate()" style="margin-top: 25px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 4px; padding: 10px 20px; width: 100%; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <i class="fa fa-filter"></i> Show Data
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="mostPopularCarsChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="mostBookedCarCategoriesChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="averageBidPerCategoryChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="carsListedByCategoryChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="newUsersChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6" style="padding: 5px; height: 300px;">
-                <div class="chart-container" style="height: 100%;">
-                    <canvas id="biddingHoursChart"></canvas>
+
+                <!-- Charts Section -->
+                <div class="row">
+                    <!-- Bidding Overview Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">Bidding Overview</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="biddingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active/Inactive Users Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">Active/Inactive Users</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="activeInactiveUsersChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Popular Cars Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">Most Popular Cars</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="mostPopularCarsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Car Categories Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">Most Booked Car Categories</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="mostBookedCarCategoriesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Average Bid Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">Average Bid Per Category</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="averageBidPerCategoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cars by Category Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">Cars Listed By Category</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="carsListedByCategoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Users Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">New Users</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="newUsersChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bidding Hours Chart -->
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <div class="chart-panel panel panel-default" style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                            <div class="panel-heading" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 10px; border-radius: 8px 8px 0 0;">
+                                <h4 class="panel-title" style="color: #495057; font-weight: 500; margin: 0; font-size: 16px;">Bidding Hours Analysis</h4>
+                            </div>
+                            <div class="panel-body" style="height: calc(100% - 45px); padding: 15px;">
+                                <canvas id="biddingHoursChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</body>
+</div>
+
+<style>
+    .chart-panel:hover {
+        transform: translateY(-5px);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,123,255,0.2);
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+
+    /* Responsive design for sidebar */
+    @media (max-width: 1100px) {
+        .main-content {
+            left: 10px !important;
+            width: calc(100% - 20px) !important;
+        }
+        
+        admin-sidebar {
+            width: 0 !important;
+            overflow: hidden;
+        }
+        
+        .col-md-6 {
+            width: 100%;
+        }
+        
+        .filter-container .col-md-4 {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .filter-container .btn {
+            width: 100%;
+            margin-top: 10px !important;
+        }
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+</style>

@@ -1,7 +1,6 @@
 import Bidding from "../../models/bookings/booking.schema.js";
 import {SQS} from "@aws-sdk/client-sqs"
 
-
   async function awsSQSConsumer () {
         const sqs = new SQS({
             region: process.env.AWS_REGION,
@@ -10,7 +9,6 @@ import {SQS} from "@aws-sdk/client-sqs"
                 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
             }
         });
-
         
             try {
                
